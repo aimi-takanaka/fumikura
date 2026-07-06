@@ -13,6 +13,11 @@
 
                 <nav class="flex items-center gap-2">
                     @auth
+                        @if (auth()->user()->is_admin)
+                            <flux:button :href="route('admin.images.create')" variant="ghost" size="sm" icon="plus" wire:navigate>
+                                {{ __('お題を投稿') }}
+                            </flux:button>
+                        @endif
                         <flux:button :href="route('dashboard')" variant="ghost" size="sm" icon="layout-grid" wire:navigate>
                             {{ __('ダッシュボード') }}
                         </flux:button>
@@ -30,6 +35,12 @@
         </header>
 
         <main class="mx-auto max-w-6xl px-4 py-8">
+            @if (session('status'))
+                <flux:callout variant="success" icon="check-circle" class="mb-6" dismissible>
+                    <flux:callout.text>{{ session('status') }}</flux:callout.text>
+                </flux:callout>
+            @endif
+
             {{ $slot }}
         </main>
 
