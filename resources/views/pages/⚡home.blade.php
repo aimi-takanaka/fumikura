@@ -41,10 +41,13 @@ new #[Layout('layouts.public')] #[Title('お題一覧')] class extends Component
     @else
         <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             @foreach ($images as $image)
-                <flux:card
+                <a
+                    href="{{ route('images.show', $image) }}"
                     wire:key="image-{{ $image->id }}"
-                    class="overflow-hidden p-0"
+                    wire:navigate
+                    class="block transition hover:opacity-90"
                 >
+                <flux:card class="overflow-hidden p-0">
                     <div class="relative aspect-video overflow-hidden bg-zinc-100 dark:bg-zinc-800">
                         @if ($image->file_path && Illuminate\Support\Facades\Storage::disk('public')->exists($image->file_path))
                             <img
@@ -70,6 +73,7 @@ new #[Layout('layouts.public')] #[Title('お題一覧')] class extends Component
                         </div>
                     </div>
                 </flux:card>
+                </a>
             @endforeach
         </div>
     @endif
