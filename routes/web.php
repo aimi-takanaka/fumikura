@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::livewire('/', 'pages::home')->name('home');
 Route::livewire('/images/{image}', 'pages::images.show')->name('images.show');
+Route::livewire('/stories/{story}', 'pages::stories.show')->name('stories.show');
 
 Route::middleware('auth')->group(function () {
     Route::livewire('/images/{image}/stories/create', 'pages::stories.create')->name('stories.create');
