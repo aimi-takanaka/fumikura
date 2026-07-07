@@ -20,7 +20,27 @@ new #[Layout('layouts.public')] class extends Component
     {
         abort_if($story->status === StoryStatus::Draft && ! auth()->check(), 403);
 
-        $this->story = $story->load(['user', 'image'])->loadCount('likes');
+        $this->story = $story->load(['user', 'image']);
+    }
+
+    /**
+     * Toggle the current user's like on this story.
+     */
+    public function toggleLike(): void
+    {
+        abort_unless(auth()->check(), 403);
+
+        $existingLike = $this->story->likes()
+            ->where('user_id', auth()->id())
+            ->first();
+
+        if ($existingLike) {
+            $existingLike->delete();
+        } else {
+            $this->story->likes()->create([
+                'user_id' => auth()->id(),
+            ]);
+        }
     }
 
     /**
@@ -68,6 +88,9 @@ new #[Layout('layouts.public')] class extends Component
                 ->with('user')
                 ->latest()
                 ->get(),
+            'likesCount' => $this->story->likes()->count(),
+            'isLiked' => auth()->check()
+                && $this->story->likes()->where('user_id', auth()->id())->exists(),
         ];
     }
 }; ?>
@@ -98,9 +121,21 @@ new #[Layout('layouts.public')] class extends Component
         <div class="leading-relaxed whitespace-pre-line">{{ $story->body }}</div>
 
         <div class="mt-8 flex items-center gap-4">
-            <flux:text class="flex items-center gap-1">
-                <flux:icon.heart variant="micro" /> {{ $story->likes_count }}
-            </flux:text>
+            @auth
+                <flux:button
+                    wire:click="toggleLike"
+                    :variant="$isLiked ? 'primary' : 'ghost'"
+                    size="sm"
+                    icon="heart"
+                >
+                    {{ $likesCount }}
+                </flux:button>
+            @else
+                <flux:text class="flex items-center gap-1">
+                    <flux:icon.heart variant="micro" /> {{ $likesCount }}
+                </flux:text>
+            @endauth
+
             <flux:text class="flex items-center gap-1">
                 <flux:icon.chat-bubble-oval-left variant="micro" /> {{ $comments->count() }}
             </flux:text>
