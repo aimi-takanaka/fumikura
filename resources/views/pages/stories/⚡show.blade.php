@@ -44,6 +44,26 @@ new #[Layout('layouts.public')] class extends Component
     }
 
     /**
+     * Toggle the current user's bookmark on this story.
+     */
+    public function toggleBookmark(): void
+    {
+        abort_unless(auth()->check(), 403);
+
+        $existingBookmark = $this->story->bookmarks()
+            ->where('user_id', auth()->id())
+            ->first();
+
+        if ($existingBookmark) {
+            $existingBookmark->delete();
+        } else {
+            $this->story->bookmarks()->create([
+                'user_id' => auth()->id(),
+            ]);
+        }
+    }
+
+    /**
      * Post a comment as the logged-in user.
      */
     public function addComment(): void
@@ -91,6 +111,8 @@ new #[Layout('layouts.public')] class extends Component
             'likesCount' => $this->story->likes()->count(),
             'isLiked' => auth()->check()
                 && $this->story->likes()->where('user_id', auth()->id())->exists(),
+            'isBookmarked' => auth()->check()
+                && $this->story->bookmarks()->where('user_id', auth()->id())->exists(),
         ];
     }
 }; ?>
@@ -139,6 +161,18 @@ new #[Layout('layouts.public')] class extends Component
             <flux:text class="flex items-center gap-1">
                 <flux:icon.chat-bubble-oval-left variant="micro" /> {{ $comments->count() }}
             </flux:text>
+
+            @auth
+                <flux:button
+                    wire:click="toggleBookmark"
+                    :variant="$isBookmarked ? 'primary' : 'ghost'"
+                    size="sm"
+                    icon="bookmark"
+                    class="ml-auto"
+                >
+                    {{ $isBookmarked ? '保存済み' : '保存' }}
+                </flux:button>
+            @endauth
         </div>
     </article>
 
