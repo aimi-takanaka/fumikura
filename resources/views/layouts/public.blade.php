@@ -18,6 +18,9 @@
                                 {{ __('お題を投稿') }}
                             </flux:button>
                         @endif
+                        <flux:button :href="route('bookmarks')" variant="ghost" size="sm" icon="bookmark" wire:navigate>
+                            {{ __('お気に入り') }}
+                        </flux:button>
                         <flux:button :href="route('dashboard')" variant="ghost" size="sm" icon="layout-grid" wire:navigate>
                             {{ __('ダッシュボード') }}
                         </flux:button>
