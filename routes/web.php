@@ -8,6 +8,7 @@ Route::livewire('/stories/{story}', 'pages::stories.show')->name('stories.show')
 
 Route::middleware('auth')->group(function () {
     Route::livewire('/images/{image}/stories/create', 'pages::stories.create')->name('stories.create');
+    Route::livewire('/stories/{story}/edit', 'pages::stories.edit')->name('stories.edit');
     Route::livewire('/bookmarks', 'pages::bookmarks')->name('bookmarks');
 });
 

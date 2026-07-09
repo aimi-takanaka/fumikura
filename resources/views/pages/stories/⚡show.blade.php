@@ -136,6 +136,12 @@ new #[Layout('layouts.public')] class extends Component
         <div class="mt-2 flex items-center gap-3">
             <flux:text size="sm">{{ $story->user?->name ?? '不明' }}</flux:text>
             <flux:text size="sm">{{ $story->created_at->format('Y年n月j日') }}</flux:text>
+
+            @if ($story->user_id === auth()->id())
+                <flux:button :href="route('stories.edit', $story)" variant="ghost" size="sm" icon="pencil-square" wire:navigate class="ml-auto">
+                    編集
+                </flux:button>
+            @endif
         </div>
 
         <flux:separator class="my-6" />
