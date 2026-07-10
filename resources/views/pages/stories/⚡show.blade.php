@@ -97,6 +97,22 @@ new #[Layout('layouts.public')] class extends Component
     }
 
     /**
+     * Delete the story, allowing only its author.
+     */
+    public function deleteStory(): void
+    {
+        abort_unless($this->story->user_id === auth()->id(), 403);
+
+        $image = $this->story->image;
+
+        $this->story->delete();
+
+        session()->flash('status', 'ストーリーを削除しました。');
+
+        $this->redirectRoute('images.show', $image, navigate: true);
+    }
+
+    /**
      * Data passed to the view.
      *
      * @return array<string, mixed>
@@ -138,9 +154,20 @@ new #[Layout('layouts.public')] class extends Component
             <flux:text size="sm">{{ $story->created_at->format('Y年n月j日') }}</flux:text>
 
             @if ($story->user_id === auth()->id())
-                <flux:button :href="route('stories.edit', $story)" variant="ghost" size="sm" icon="pencil-square" wire:navigate class="ml-auto">
-                    編集
-                </flux:button>
+                <div class="ml-auto flex items-center gap-2">
+                    <flux:button :href="route('stories.edit', $story)" variant="ghost" size="sm" icon="pencil-square" wire:navigate>
+                        編集
+                    </flux:button>
+                    <flux:button
+                        wire:click="deleteStory"
+                        wire:confirm="このストーリーを削除しますか？この操作は取り消せません。"
+                        variant="ghost"
+                        size="sm"
+                        icon="trash"
+                    >
+                        削除
+                    </flux:button>
+                </div>
             @endif
         </div>
 
