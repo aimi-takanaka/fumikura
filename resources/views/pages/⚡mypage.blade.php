@@ -1,12 +1,18 @@
 <?php
 
+use App\Models\Story;
 use App\StoryStatus;
+use Illuminate\Database\Eloquent\Collection;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
 new #[Layout('layouts.public')] #[Title('マイページ')] class extends Component
 {
+    public string $search = '';
+
+    public string $statusFilter = 'all';
+
     /**
      * Delete one of the current user's stories.
      */
@@ -20,6 +26,26 @@ new #[Layout('layouts.public')] #[Title('マイページ')] class extends Compon
     }
 
     /**
+     * Build the filtered story query for the current user.
+     *
+     * @return Collection<int, Story>
+     */
+    private function filteredStories(): Collection
+    {
+        $query = auth()->user()->stories()->with('image')->latest();
+
+        if ($this->statusFilter !== 'all') {
+            $query->where('status', $this->statusFilter);
+        }
+
+        if ($this->search !== '') {
+            $query->where('title', 'like', '%'.$this->search.'%');
+        }
+
+        return $query->get();
+    }
+
+    /**
      * Data passed to the view.
      *
      * @return array<string, mixed>
@@ -27,10 +53,8 @@ new #[Layout('layouts.public')] #[Title('マイページ')] class extends Compon
     public function with(): array
     {
         return [
-            'stories' => auth()->user()->stories()
-                ->with('image')
-                ->latest()
-                ->get(),
+            'hasStories' => auth()->user()->stories()->exists(),
+            'stories' => $this->filteredStories(),
         ];
     }
 }; ?>
@@ -67,10 +91,38 @@ new #[Layout('layouts.public')] #[Title('マイページ')] class extends Compon
             </flux:button>
         </div>
 
-        @if ($stories->isEmpty())
+        @if ($hasStories)
+            <div class="mt-4 flex flex-col gap-3 sm:flex-row sm:items-end">
+                <flux:field class="flex-1">
+                    <flux:label>タイトルで検索</flux:label>
+                    <flux:input
+                        wire:model.live.debounce.300ms="search"
+                        placeholder="タイトルを入力"
+                        icon="magnifying-glass"
+                        clearable
+                    />
+                </flux:field>
+
+                <flux:field class="sm:w-48">
+                    <flux:label>ステータス</flux:label>
+                    <flux:select wire:model.live="statusFilter">
+                        <flux:select.option value="all">すべて</flux:select.option>
+                        <flux:select.option value="complete">完成</flux:select.option>
+                        <flux:select.option value="draft">散文・アイデア</flux:select.option>
+                    </flux:select>
+                </flux:field>
+            </div>
+        @endif
+
+        @if (! $hasStories)
             <flux:callout icon="document-text" class="mt-4">
                 <flux:callout.heading>まだ投稿がありません</flux:callout.heading>
                 <flux:callout.text>お題ページからストーリーを書いてみましょう。</flux:callout.text>
+            </flux:callout>
+        @elseif ($stories->isEmpty())
+            <flux:callout icon="funnel" class="mt-4">
+                <flux:callout.heading>条件に合う投稿がありません</flux:callout.heading>
+                <flux:callout.text>検索キーワードやステータスの絞り込みを変えてみてください。</flux:callout.text>
             </flux:callout>
         @else
             <div class="mt-4 flex flex-col gap-4">
