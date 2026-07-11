@@ -43,3 +43,12 @@ it('shows the dashboard link to authenticated users', function () {
         ->assertOk()
         ->assertSee('ダッシュボード');
 });
+
+it('shows a logout control to authenticated users', function () {
+    $this->actingAs(User::factory()->create());
+
+    $this->get('/')
+        ->assertOk()
+        ->assertSee('data-test="logout-button"', false)
+        ->assertSee('Log out');
+});
