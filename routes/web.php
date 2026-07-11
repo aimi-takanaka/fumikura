@@ -10,6 +10,7 @@ Route::middleware('auth')->group(function () {
     Route::livewire('/images/{image}/stories/create', 'pages::stories.create')->name('stories.create');
     Route::livewire('/stories/{story}/edit', 'pages::stories.edit')->name('stories.edit');
     Route::livewire('/bookmarks', 'pages::bookmarks')->name('bookmarks');
+    Route::livewire('/mypage', 'pages::mypage')->name('mypage');
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
