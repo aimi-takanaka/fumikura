@@ -144,3 +144,43 @@ it('combines status filter and title search', function () {
         ->assertDontSee('海辺の下書き')
         ->assertDontSee('森の完成作');
 });
+
+it('paginates stories when there are more than ten', function () {
+    $user = User::factory()->create();
+
+    Story::factory()->for($user)->count(11)->create();
+
+    Livewire::actingAs($user)
+        ->test('pages::mypage')
+        ->assertSee('Showing 1 to 10 of 11 results', false)
+        ->call('nextPage')
+        ->assertSee('Showing 11 to 11 of 11 results', false);
+});
+
+it('does not show pagination when there are ten or fewer stories', function () {
+    $user = User::factory()->create();
+
+    Story::factory()->for($user)->count(10)->create();
+
+    $this->actingAs($user)
+        ->get(route('mypage'))
+        ->assertOk()
+        ->assertDontSee('data-flux-pagination', false);
+});
+
+it('resets to the first page when search changes', function () {
+    $user = User::factory()->create();
+
+    Story::factory()->for($user)->count(10)->create(['title' => '普通の物語']);
+    Story::factory()->for($user)->create(['title' => '特別な物語']);
+
+    Livewire::actingAs($user)
+        ->test('pages::mypage')
+        ->call('gotoPage', 2)
+        ->assertSet('paginators.page', 2)
+        ->assertSee('特別な物語')
+        ->set('search', '特別')
+        ->assertSet('paginators.page', 1)
+        ->assertSee('特別な物語')
+        ->assertDontSee('条件に合う投稿がありません');
+});

@@ -2,16 +2,37 @@
 
 use App\Models\Story;
 use App\StoryStatus;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 new #[Layout('layouts.public')] #[Title('マイページ')] class extends Component
 {
+    use WithPagination;
+
+    private const PER_PAGE = 10;
+
     public string $search = '';
 
     public string $statusFilter = 'all';
+
+    /**
+     * Reset pagination when the search query changes.
+     */
+    public function updatedSearch(): void
+    {
+        $this->resetPage();
+    }
+
+    /**
+     * Reset pagination when the status filter changes.
+     */
+    public function updatedStatusFilter(): void
+    {
+        $this->resetPage();
+    }
 
     /**
      * Delete one of the current user's stories.
@@ -28,9 +49,9 @@ new #[Layout('layouts.public')] #[Title('マイページ')] class extends Compon
     /**
      * Build the filtered story query for the current user.
      *
-     * @return Collection<int, Story>
+     * @return LengthAwarePaginator<int, Story>
      */
-    private function filteredStories(): Collection
+    private function filteredStories(): LengthAwarePaginator
     {
         $query = auth()->user()->stories()->with('image')->latest();
 
@@ -42,7 +63,7 @@ new #[Layout('layouts.public')] #[Title('マイページ')] class extends Compon
             $query->where('title', 'like', '%'.$this->search.'%');
         }
 
-        return $query->get();
+        return $query->paginate(self::PER_PAGE);
     }
 
     /**
@@ -165,6 +186,10 @@ new #[Layout('layouts.public')] #[Title('マイページ')] class extends Compon
                     </flux:card>
                 @endforeach
             </div>
+
+            @if ($stories->hasPages())
+                <flux:pagination :paginator="$stories" class="mt-6" />
+            @endif
         @endif
     </section>
 </div>
