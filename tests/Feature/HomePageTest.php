@@ -3,6 +3,7 @@
 use App\Models\Image;
 use App\Models\Story;
 use App\Models\User;
+use Livewire\Livewire;
 
 it('lets guests view the home page with image titles', function () {
     $image = Image::factory()->create(['title' => '海辺の写真']);
@@ -51,4 +52,21 @@ it('shows a logout control to authenticated users', function () {
         ->assertOk()
         ->assertSee('data-test="logout-button"', false)
         ->assertSee('Log out');
+});
+
+it('paginates images when there are more than ten', function () {
+    Image::factory()->count(11)->create();
+
+    Livewire::test('pages::home')
+        ->assertSee('Showing 1 to 10 of 11 results', false)
+        ->call('nextPage')
+        ->assertSee('Showing 11 to 11 of 11 results', false);
+});
+
+it('does not show pagination when there are ten or fewer images', function () {
+    Image::factory()->count(10)->create();
+
+    $this->get('/')
+        ->assertOk()
+        ->assertDontSee('data-flux-pagination', false);
 });

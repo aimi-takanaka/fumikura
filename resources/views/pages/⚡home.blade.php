@@ -5,9 +5,14 @@ use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 new #[Layout('layouts.public')] #[Title('お題一覧')] class extends Component
 {
+    use WithPagination;
+
+    private const PER_PAGE = 10;
+
     /**
      * Data passed to the view.
      *
@@ -22,7 +27,7 @@ new #[Layout('layouts.public')] #[Title('お題一覧')] class extends Component
                     'stories as completed_stories_count' => fn (Builder $query) => $query->complete(),
                 ])
                 ->latest()
-                ->get(),
+                ->paginate(self::PER_PAGE),
         ];
     }
 }; ?>
@@ -76,5 +81,9 @@ new #[Layout('layouts.public')] #[Title('お題一覧')] class extends Component
                 </a>
             @endforeach
         </div>
+
+        @if ($images->hasPages())
+            <flux:pagination :paginator="$images" class="mt-6" />
+        @endif
     @endif
 </div>
