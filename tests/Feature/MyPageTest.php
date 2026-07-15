@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Image;
 use App\Models\Story;
 use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -115,6 +116,46 @@ it('searches stories by title', function () {
         ->set('search', '海辺')
         ->assertSee('海辺の夕暮れ')
         ->assertDontSee('森の朝');
+});
+
+it('searches stories by body', function () {
+    $user = User::factory()->create();
+
+    Story::factory()->for($user)->complete()->create([
+        'title' => '無関係なタイトル',
+        'body' => '波の音が静かに響いていた。',
+    ]);
+    Story::factory()->for($user)->complete()->create([
+        'title' => '別の物語',
+        'body' => '森の中を歩いた。',
+    ]);
+
+    Livewire::actingAs($user)
+        ->test('pages::mypage')
+        ->set('search', '波の音')
+        ->assertSee('無関係なタイトル')
+        ->assertDontSee('別の物語');
+});
+
+it('searches stories by image title', function () {
+    $user = User::factory()->create();
+
+    Story::factory()->for($user)->complete()->create([
+        'title' => '無関係なタイトル',
+        'body' => '無関係な本文',
+        'image_id' => Image::factory()->create(['title' => '夕焼けの海'])->id,
+    ]);
+    Story::factory()->for($user)->complete()->create([
+        'title' => '別の物語',
+        'body' => '別の本文',
+        'image_id' => Image::factory()->create(['title' => '朝の森'])->id,
+    ]);
+
+    Livewire::actingAs($user)
+        ->test('pages::mypage')
+        ->set('search', '夕焼け')
+        ->assertSee('無関係なタイトル')
+        ->assertDontSee('別の物語');
 });
 
 it('shows a filtered empty state when no stories match', function () {

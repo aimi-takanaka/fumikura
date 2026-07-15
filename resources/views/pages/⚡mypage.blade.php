@@ -60,7 +60,13 @@ new #[Layout('layouts.public')] #[Title('マイページ')] class extends Compon
         }
 
         if ($this->search !== '') {
-            $query->where('title', 'like', '%'.$this->search.'%');
+            $search = '%'.$this->search.'%';
+
+            $query->where(function ($query) use ($search) {
+                $query->where('title', 'like', $search)
+                    ->orWhere('body', 'like', $search)
+                    ->orWhereHas('image', fn ($query) => $query->where('title', 'like', $search));
+            });
         }
 
         return $query->paginate(self::PER_PAGE);
@@ -115,10 +121,10 @@ new #[Layout('layouts.public')] #[Title('マイページ')] class extends Compon
         @if ($hasStories)
             <div class="mt-4 flex flex-col gap-3 sm:flex-row sm:items-end">
                 <flux:field class="flex-1">
-                    <flux:label>タイトルで検索</flux:label>
+                    <flux:label>キーワードで検索</flux:label>
                     <flux:input
                         wire:model.live.debounce.300ms="search"
-                        placeholder="タイトルを入力"
+                        placeholder="タイトル・本文・お題で検索"
                         icon="magnifying-glass"
                         clearable
                     />
