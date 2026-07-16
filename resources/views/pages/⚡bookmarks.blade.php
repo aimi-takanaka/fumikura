@@ -36,7 +36,7 @@ new #[Layout('layouts.public')] #[Title('お気に入り')] class extends Compon
     }
 }; ?>
 
-<div class="mx-auto max-w-2xl">
+<div>
     <flux:heading size="xl">お気に入り</flux:heading>
     <flux:text class="mt-1">保存したストーリーをここから読み返せます。</flux:text>
 

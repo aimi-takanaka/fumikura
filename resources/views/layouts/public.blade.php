@@ -5,7 +5,7 @@
     </head>
     <body class="min-h-screen bg-white text-zinc-900 antialiased dark:bg-zinc-900 dark:text-zinc-100">
         <header class="border-b border-zinc-200 bg-white/80 backdrop-blur dark:border-zinc-700 dark:bg-zinc-900/80">
-            <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
+            <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4">
                 <a href="{{ route('home') }}" class="flex items-center gap-2" wire:navigate>
                     <x-app-logo-icon class="size-7 fill-current text-zinc-900 dark:text-white" />
                     <span class="text-lg font-semibold">文倉</span>
@@ -76,7 +76,7 @@
             </div>
         </header>
 
-        <main class="mx-auto max-w-6xl px-4 py-8">
+        <main class="mx-auto max-w-7xl px-4 py-8">
             @if (session('status'))
                 <flux:callout variant="success" icon="check-circle" class="mb-6" dismissible>
                     <flux:callout.text>{{ session('status') }}</flux:callout.text>

@@ -86,7 +86,7 @@ new #[Layout('layouts.public')] #[Title('マイページ')] class extends Compon
     }
 }; ?>
 
-<div class="mx-auto max-w-2xl">
+<div>
     <flux:heading size="xl">マイページ</flux:heading>
     <flux:text class="mt-1">自分のプロフィールと、投稿したストーリーをまとめて管理できます。</flux:text>
 
