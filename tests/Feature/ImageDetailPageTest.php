@@ -39,7 +39,7 @@ it('shows both completed and draft stories to logged-in users', function () {
 it('links each home page card to its image detail page', function () {
     $image = Image::factory()->create();
 
-    $this->get('/')
+    $this->get(route('images.index'))
         ->assertOk()
         ->assertSee(route('images.show', $image));
 });

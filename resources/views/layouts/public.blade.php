@@ -12,6 +12,9 @@
                 </a>
 
                 <nav class="flex items-center gap-2">
+                    <flux:button :href="route('images.index')" variant="ghost" size="sm" icon="photo" wire:navigate>
+                        {{ __('お題一覧') }}
+                    </flux:button>
                     @auth
                         @if (auth()->user()->is_admin)
                             <flux:button :href="route('admin.images.create')" variant="ghost" size="sm" icon="plus" wire:navigate>
