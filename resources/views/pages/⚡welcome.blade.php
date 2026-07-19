@@ -1,10 +1,61 @@
 <?php
 
+use App\Models\Image;
+use App\StoryStatus;
+use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 new #[Layout('layouts.public')] class extends Component
 {
+    use WithPagination;
+
+    private const PER_PAGE = 10;
+
+    public string $sort = 'latest';
+
+    /**
+     * Reset pagination when the sort order changes.
+     */
+    public function updatedSort(): void
+    {
+        $this->resetPage();
+    }
+
+    /**
+     * Build the sorted image query for the topic list.
+     *
+     * @return Builder<Image>
+     */
+    private function imagesQuery(): Builder
+    {
+        $query = Image::query()
+            ->with('user')
+            ->withCount([
+                'stories as completed_stories_count' => fn (Builder $query) => $query->complete(),
+                'stories as draft_stories_count' => fn (Builder $query) => $query->where('status', StoryStatus::Draft),
+                'stories as stories_count',
+            ]);
+
+        return match ($this->sort) {
+            'popular' => $query->orderByDesc('stories_count')->orderByDesc('id'),
+            'most_completed' => $query->orderByDesc('completed_stories_count')->orderByDesc('id'),
+            default => $query->latest(),
+        };
+    }
+
+    /**
+     * Data passed to the view.
+     *
+     * @return array<string, mixed>
+     */
+    public function with(): array
+    {
+        return [
+            'images' => $this->imagesQuery()->paginate(self::PER_PAGE),
+        ];
+    }
 }; ?>
 
 <div class="mx-auto max-w-[780px] border border-zinc-300 bg-white dark:border-zinc-700 dark:bg-zinc-900">
@@ -27,7 +78,7 @@ new #[Layout('layouts.public')] class extends Component
                     無料ではじめる
                 </flux:button>
             @else
-                <flux:button :href="route('images.index')" variant="primary" icon="photo" wire:navigate>
+                <flux:button href="#topics" variant="primary" icon="photo">
                     お題を見る
                 </flux:button>
             @endguest
@@ -40,6 +91,90 @@ new #[Layout('layouts.public')] class extends Component
                 class="size-full object-cover"
             />
         </div>
+    </section>
+
+    {{-- Topics --}}
+    <section id="topics" class="border-b border-dashed border-zinc-300 px-6 py-5 dark:border-zinc-600 sm:px-[26px]">
+        <p class="mb-2.5 text-[10px] font-bold uppercase tracking-widest text-zinc-400">Topics（未ログインでも閲覧可）</p>
+
+        <h2 class="mb-3 text-[15px] font-bold">お題一覧</h2>
+
+        <div class="mb-3.5 flex flex-wrap gap-2 text-[10.5px] text-zinc-500 dark:text-zinc-400">
+            <button
+                type="button"
+                wire:click="$set('sort', 'latest')"
+                @class([
+                    'rounded-full border px-2.5 py-1 transition',
+                    'border-zinc-800 bg-zinc-800 text-white dark:border-zinc-100 dark:bg-zinc-100 dark:text-zinc-900' => $sort === 'latest',
+                    'border-zinc-300 dark:border-zinc-600' => $sort !== 'latest',
+                ])
+            >
+                新着
+            </button>
+            <button
+                type="button"
+                wire:click="$set('sort', 'popular')"
+                @class([
+                    'rounded-full border px-2.5 py-1 transition',
+                    'border-zinc-800 bg-zinc-800 text-white dark:border-zinc-100 dark:bg-zinc-100 dark:text-zinc-900' => $sort === 'popular',
+                    'border-zinc-300 dark:border-zinc-600' => $sort !== 'popular',
+                ])
+            >
+                人気
+            </button>
+            <button
+                type="button"
+                wire:click="$set('sort', 'most_completed')"
+                @class([
+                    'rounded-full border px-2.5 py-1 transition',
+                    'border-zinc-800 bg-zinc-800 text-white dark:border-zinc-100 dark:bg-zinc-100 dark:text-zinc-900' => $sort === 'most_completed',
+                    'border-zinc-300 dark:border-zinc-600' => $sort !== 'most_completed',
+                ])
+            >
+                完成ストーリーが多い順
+            </button>
+        </div>
+
+        @if ($images->isEmpty())
+            <flux:callout icon="photo">
+                <flux:callout.heading>まだお題がありません</flux:callout.heading>
+                <flux:callout.text>管理者がお題画像を投稿すると、ここに一覧が表示されます。</flux:callout.text>
+            </flux:callout>
+        @else
+            <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                @foreach ($images as $image)
+                    <a
+                        href="{{ route('images.show', $image) }}"
+                        wire:key="topic-{{ $image->id }}"
+                        wire:navigate
+                        class="block border border-zinc-300 transition hover:opacity-90 dark:border-zinc-600"
+                    >
+                        <div class="relative h-20 overflow-hidden bg-zinc-100 dark:bg-zinc-800">
+                            @if ($image->file_path && Illuminate\Support\Facades\Storage::disk('public')->exists($image->file_path))
+                                <img
+                                    src="{{ Illuminate\Support\Facades\Storage::disk('public')->url($image->file_path) }}"
+                                    alt="{{ $image->title }}"
+                                    class="size-full object-cover"
+                                />
+                            @else
+                                <x-placeholder-pattern class="absolute inset-0 size-full stroke-gray-900/20 dark:stroke-neutral-100/20" />
+                            @endif
+                        </div>
+                        <div class="px-2.5 py-2 text-[10.5px] leading-relaxed text-zinc-500 dark:text-zinc-400">
+                            {{ $image->title }}<br>
+                            <span class="font-bold text-zinc-800 dark:text-zinc-200">
+                                完成{{ $image->completed_stories_count }}件
+                            </span>
+                            ・大喜利{{ $image->draft_stories_count }}件
+                        </div>
+                    </a>
+                @endforeach
+            </div>
+
+            @if ($images->hasPages())
+                <flux:pagination :paginator="$images" class="mt-6" />
+            @endif
+        @endif
     </section>
 
     {{-- Problem --}}
@@ -71,7 +206,7 @@ new #[Layout('layouts.public')] class extends Component
 
         <h2 class="mb-3.5 text-[15px] font-bold">選ばれる理由</h2>
 
-        <div class="grid grid-cols-1 gap-3.5 sm:grid-cols-3">
+        <div class="grid grid-cols-1 gap-3.5 sm:grid-cols-2">
             <div class="border border-zinc-300 px-3 py-4 text-center dark:border-zinc-600">
                 <div class="mx-auto mb-2.5 flex size-9 items-center justify-center rounded-full border border-zinc-800 dark:border-zinc-300">
                     <x-app-logo-icon class="size-5" />
@@ -99,6 +234,61 @@ new #[Layout('layouts.public')] class extends Component
                 <h3 class="mb-2 text-[12.5px] font-bold">物語は書く人の数だけ広がる</h3>
                 <p class="m-0 text-[10.5px] leading-relaxed text-zinc-500 dark:text-zinc-400">
                     同じ絵でも解釈は無限。読むことも創作の刺激になる
+                </p>
+            </div>
+
+            <div class="border border-zinc-300 px-3 py-4 text-center dark:border-zinc-600">
+                <div class="mx-auto mb-2.5 flex size-9 items-center justify-center rounded-full border border-zinc-800 dark:border-zinc-300">
+                    <flux:icon.chat-bubble-left-ellipsis variant="micro" class="size-4" />
+                </div>
+                <h3 class="mb-2 text-[12.5px] font-bold">物語にしなくても参加できる</h3>
+                <p class="m-0 text-[10.5px] leading-relaxed text-zinc-500 dark:text-zinc-400">
+                    ひとことのアイデア投稿だけでもOK。みんなの発想が次の一歩のヒントになる
+                </p>
+            </div>
+        </div>
+    </section>
+
+    {{-- My Page --}}
+    <section class="border-b border-dashed border-zinc-300 px-6 py-5 dark:border-zinc-600 sm:px-[26px]">
+        <p class="mb-2.5 text-[10px] font-bold uppercase tracking-widest text-zinc-400">My Page</p>
+
+        <h2 class="mb-3.5 text-[15px] font-bold">マイページで、少しずつ育てていける</h2>
+
+        <p class="mb-4 text-[12px] leading-relaxed text-zinc-500 dark:text-zinc-400">
+            投稿したアイデアは、マイページでステータス管理。<br>
+            思いついたその日に完成させなくても大丈夫。気が向いたときに、下書き→完成へと進められます。
+        </p>
+
+        <div class="flex items-center justify-center">
+            <div class="w-[110px] text-center">
+                <div class="mx-auto mb-2 flex size-[26px] items-center justify-center rounded-full bg-zinc-500 text-[11px] text-white">
+                    1
+                </div>
+                <p class="m-0 text-[10.5px] leading-relaxed text-zinc-500 dark:text-zinc-400">
+                    アイデア<br><span class="text-zinc-400">(大喜利投稿)</span>
+                </p>
+            </div>
+
+            <div class="px-2.5 text-base text-zinc-300 dark:text-zinc-600">›</div>
+
+            <div class="w-[110px] text-center">
+                <div class="mx-auto mb-2 flex size-[26px] items-center justify-center rounded-full bg-zinc-600 text-[11px] text-white dark:bg-zinc-400 dark:text-zinc-900">
+                    2
+                </div>
+                <p class="m-0 text-[10.5px] leading-relaxed text-zinc-500 dark:text-zinc-400">
+                    下書き<br><span class="text-zinc-400">(非公開)</span>
+                </p>
+            </div>
+
+            <div class="px-2.5 text-base text-zinc-300 dark:text-zinc-600">›</div>
+
+            <div class="w-[110px] text-center">
+                <div class="mx-auto mb-2 flex size-[26px] items-center justify-center rounded-full bg-zinc-800 text-[11px] text-white dark:bg-zinc-100 dark:text-zinc-900">
+                    3
+                </div>
+                <p class="m-0 text-[10.5px] leading-relaxed text-zinc-500 dark:text-zinc-400">
+                    完成<br><span class="text-zinc-400">(公開)</span>
                 </p>
             </div>
         </div>
@@ -172,7 +362,7 @@ new #[Layout('layouts.public')] class extends Component
                 無料ではじめる
             </flux:button>
         @else
-            <flux:button :href="route('images.index')" variant="primary" icon="photo" wire:navigate>
+            <flux:button href="#topics" variant="primary" icon="photo">
                 お題を見る
             </flux:button>
         @endguest

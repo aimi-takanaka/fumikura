@@ -34,7 +34,7 @@ new #[Layout('layouts.public')] #[Title('お題画像の投稿')] class extends 
 
         session()->flash('status', 'お題画像を投稿しました。');
 
-        $this->redirectRoute('images.index', navigate: true);
+        $this->redirect(route('home').'#topics', navigate: true);
     }
 }; ?>
 
@@ -78,7 +78,7 @@ new #[Layout('layouts.public')] #[Title('お題画像の投稿')] class extends 
             @endif
 
             <div class="flex items-center justify-end gap-3">
-                <flux:button :href="route('images.index')" variant="ghost" wire:navigate>キャンセル</flux:button>
+                <flux:button href="{{ route('home') }}#topics" variant="ghost" wire:navigate>キャンセル</flux:button>
                 <flux:button type="submit" variant="primary">
                     <span wire:loading.remove wire:target="save">投稿する</span>
                     <span wire:loading wire:target="save">投稿中...</span>

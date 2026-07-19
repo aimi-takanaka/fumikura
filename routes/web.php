@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 
 Route::livewire('/', 'pages::welcome')->name('home');
-Route::livewire('/images', 'pages::home')->name('images.index');
+Route::redirect('/images', '/#topics')->name('images.index');
 Route::livewire('/images/{image}', 'pages::images.show')->name('images.show');
 Route::livewire('/stories/{story}', 'pages::stories.show')->name('stories.show');
 
