@@ -60,14 +60,14 @@ new #[Layout('layouts.public')] class extends Component
 
 <div>
     {{-- Hero --}}
-    <section class="border-b border-dashed border-zinc-300 py-14 text-center dark:border-zinc-600">
-        <p class="mb-2.5 text-base text-zinc-400">Hero</p>
+    <section class="border-b border-ai/15 py-14 text-center">
+        <p class="mb-2.5 text-sm font-bold uppercase tracking-widest text-ai">Hero</p>
 
-        <h1 class="mb-3.5 inline-block border border-dashed border-zinc-300 px-3.5 py-3.5 text-3xl font-bold dark:border-zinc-600">
+        <h1 class="mb-3.5 text-3xl font-bold text-sumi">
             言葉に詰まったら、絵を見よう。
         </h1>
 
-        <p class="mx-auto mb-5 max-w-[420px] text-base leading-relaxed text-zinc-500 dark:text-zinc-400">
+        <p class="mx-auto mb-5 max-w-[420px] text-base leading-relaxed text-sumi/70">
             「書きたい」はあるのに「何を」が出てこない。<br>
             文倉は、単語ではなく一枚の絵をお題にする創作プラットフォームです。
         </p>
@@ -84,55 +84,39 @@ new #[Layout('layouts.public')] class extends Component
             @endguest
         </div>
 
-        <div class="flex h-[220px] items-center justify-center overflow-hidden border border-zinc-300 bg-zinc-100 dark:border-zinc-600 dark:bg-zinc-800">
+        <div class="overflow-hidden rounded-lg border border-ai/20 bg-washi-light">
             <img
                 src="{{ asset('img/logo/banner-header-1500x500.png') }}"
                 alt="お題イラストのサンプル"
-                class="size-full object-cover"
+                class="h-[220px] w-full object-cover"
             />
         </div>
     </section>
 
     {{-- Topics --}}
-    <section id="topics" class="border-b border-dashed border-zinc-300 py-5 dark:border-zinc-600">
-        <p class="mb-2.5 text-base text-zinc-400">Topics（未ログインでも閲覧可）</p>
+    <section id="topics" class="border-b border-ai/15 py-8">
+        <p class="mb-2.5 text-sm font-bold uppercase tracking-widest text-ai">Topics（未ログインでも閲覧可）</p>
 
-        <h2 class="mb-3 text-lg font-bold">お題一覧</h2>
+        <h2 class="mb-3 text-lg font-bold text-sumi">お題一覧</h2>
 
-        <div class="mb-3.5 flex flex-wrap gap-2 text-base text-zinc-500 dark:text-zinc-400">
-            <button
-                type="button"
-                wire:click="$set('sort', 'latest')"
-                @class([
-                    'rounded-full border px-2.5 py-1 transition',
-                    'border-zinc-800 bg-zinc-800 text-white dark:border-zinc-100 dark:bg-zinc-100 dark:text-zinc-900' => $sort === 'latest',
-                    'border-zinc-300 dark:border-zinc-600' => $sort !== 'latest',
-                ])
-            >
-                新着
-            </button>
-            <button
-                type="button"
-                wire:click="$set('sort', 'popular')"
-                @class([
-                    'rounded-full border px-2.5 py-1 transition',
-                    'border-zinc-800 bg-zinc-800 text-white dark:border-zinc-100 dark:bg-zinc-100 dark:text-zinc-900' => $sort === 'popular',
-                    'border-zinc-300 dark:border-zinc-600' => $sort !== 'popular',
-                ])
-            >
-                人気
-            </button>
-            <button
-                type="button"
-                wire:click="$set('sort', 'most_completed')"
-                @class([
-                    'rounded-full border px-2.5 py-1 transition',
-                    'border-zinc-800 bg-zinc-800 text-white dark:border-zinc-100 dark:bg-zinc-100 dark:text-zinc-900' => $sort === 'most_completed',
-                    'border-zinc-300 dark:border-zinc-600' => $sort !== 'most_completed',
-                ])
-            >
-                完成ストーリーが多い順
-            </button>
+        <div class="mb-4 flex flex-wrap gap-2">
+            @foreach ([
+                'latest' => '新着',
+                'popular' => '人気',
+                'most_completed' => '完成ストーリーが多い順',
+            ] as $value => $label)
+                <button
+                    type="button"
+                    wire:click="$set('sort', '{{ $value }}')"
+                    @class([
+                        'rounded-full border px-3 py-1 text-sm transition',
+                        'border-shu bg-shu text-washi-light' => $sort === $value,
+                        'border-ai/30 text-ai hover:border-shu/40 hover:text-shu' => $sort !== $value,
+                    ])
+                >
+                    {{ $label }}
+                </button>
+            @endforeach
         </div>
 
         @if ($images->isEmpty())
@@ -147,9 +131,9 @@ new #[Layout('layouts.public')] class extends Component
                         href="{{ route('images.show', $image) }}"
                         wire:key="topic-{{ $image->id }}"
                         wire:navigate
-                        class="block border border-zinc-300 transition hover:opacity-90 dark:border-zinc-600"
+                        class="block overflow-hidden rounded-lg border border-ai/15 bg-washi-light transition hover:border-ai/40"
                     >
-                        <div class="relative h-20 overflow-hidden bg-zinc-100 dark:bg-zinc-800">
+                        <div class="relative aspect-video overflow-hidden bg-washi">
                             @if ($image->file_path && Illuminate\Support\Facades\Storage::disk('public')->exists($image->file_path))
                                 <img
                                     src="{{ Illuminate\Support\Facades\Storage::disk('public')->url($image->file_path) }}"
@@ -157,15 +141,15 @@ new #[Layout('layouts.public')] class extends Component
                                     class="size-full object-cover"
                                 />
                             @else
-                                <x-placeholder-pattern class="absolute inset-0 size-full stroke-gray-900/20 dark:stroke-neutral-100/20" />
+                                <x-placeholder-pattern class="absolute inset-0 size-full stroke-ai/20" />
                             @endif
                         </div>
-                        <div class="px-2.5 py-2 text-base leading-relaxed text-zinc-500 dark:text-zinc-400">
-                            {{ $image->title }}<br>
-                            <span class="font-bold text-zinc-800 dark:text-zinc-200">
-                                完成{{ $image->completed_stories_count }}件
-                            </span>
-                            ・大喜利{{ $image->draft_stories_count }}件
+                        <div class="px-3 py-3 text-base leading-relaxed text-ai">
+                            <div class="truncate font-medium text-sumi">{{ $image->title }}</div>
+                            <div class="mt-1">
+                                <span class="font-bold text-sumi">完成{{ $image->completed_stories_count }}件</span>
+                                ・大喜利{{ $image->draft_stories_count }}件
+                            </div>
                         </div>
                     </a>
                 @endforeach
@@ -178,184 +162,154 @@ new #[Layout('layouts.public')] class extends Component
     </section>
 
     {{-- Problem --}}
-    <section class="border-b border-dashed border-zinc-300 py-5 dark:border-zinc-600">
-        <p class="mb-2.5 text-base text-zinc-400">Problem</p>
+    <section class="border-b border-ai/15 py-8">
+        <p class="mb-2.5 text-sm font-bold uppercase tracking-widest text-ai">Problem</p>
 
-        <h2 class="mb-3.5 text-lg font-bold">こんな経験、ありませんか？</h2>
+        <h2 class="mb-4 text-lg font-bold text-sumi">こんな経験、ありませんか？</h2>
 
-        <ul class="grid gap-2.5">
-            <li class="rounded border border-zinc-300 bg-zinc-100 px-4 py-3 text-base text-zinc-600 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-300">
-                書きたい気持ちはあるのに、何を書けばいいかわからない
-            </li>
-            <li class="rounded border border-zinc-300 bg-zinc-100 px-4 py-3 text-base text-zinc-600 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-300">
-                三題噺のような単語のお題だと、うまく物語に落とし込めない
-            </li>
-            <li class="rounded border border-zinc-300 bg-zinc-100 px-4 py-3 text-base text-zinc-600 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-300">
-                真っ白なページを前にすると、逆に手が止まってしまう
-            </li>
+        <ul class="grid gap-3">
+            @foreach ([
+                '書きたい気持ちはあるのに、何を書けばいいかわからない',
+                '三題噺のような単語のお題だと、うまく物語に落とし込めない',
+                '真っ白なページを前にすると、逆に手が止まってしまう',
+            ] as $problem)
+                <li class="rounded-lg border border-ai/15 bg-washi-light px-4 py-3 text-base text-sumi/80">
+                    {{ $problem }}
+                </li>
+            @endforeach
         </ul>
 
-        <p class="mt-3.5 text-center text-sm text-zinc-500 dark:text-zinc-400">
+        <p class="mt-4 text-center text-sm text-ai">
             ↓ だから、文倉は "絵"からはじめる
         </p>
     </section>
 
     {{-- Features --}}
-    <section class="border-b border-dashed border-zinc-300 py-5 dark:border-zinc-600">
-        <p class="mb-2.5 text-base text-zinc-400">Features</p>
+    <section class="border-b border-ai/15 py-8">
+        <p class="mb-2.5 text-sm font-bold uppercase tracking-widest text-ai">Features</p>
 
-        <h2 class="mb-3.5 text-lg font-bold">選ばれる理由</h2>
+        <h2 class="mb-4 text-lg font-bold text-sumi">選ばれる理由</h2>
 
-        <div class="grid grid-cols-1 gap-3.5 sm:grid-cols-2">
-            <div class="border border-zinc-300 px-3 py-4 text-center dark:border-zinc-600">
-                <div class="mx-auto mb-2.5 flex size-9 items-center justify-center rounded-full border border-zinc-800 dark:border-zinc-300">
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div class="rounded-lg border border-ai/15 bg-washi-light px-4 py-5 text-center">
+                <div class="mx-auto mb-3 flex size-10 items-center justify-center rounded-full border-2 border-shu">
                     <x-app-logo-icon class="size-5" />
                 </div>
-                <h3 class="mb-2 text-base font-bold">言葉より想像しやすい</h3>
-                <p class="m-0 text-base leading-relaxed text-zinc-500 dark:text-zinc-400">
-                    絵は物語の空気や感情を先に連れてきてくれる
-                </p>
+                <h3 class="mb-2 text-base font-bold text-sumi">言葉より想像しやすい</h3>
+                <p class="m-0 text-base leading-relaxed text-sumi/70">絵は物語の空気や感情を先に連れてきてくれる</p>
             </div>
 
-            <div class="border border-zinc-300 px-3 py-4 text-center dark:border-zinc-600">
-                <div class="mx-auto mb-2.5 flex size-9 items-center justify-center rounded-full border border-zinc-800 dark:border-zinc-300">
-                    <flux:icon.pencil-square variant="micro" class="size-4" />
+            <div class="rounded-lg border border-ai/15 bg-washi-light px-4 py-5 text-center">
+                <div class="mx-auto mb-3 flex size-10 items-center justify-center rounded-full border-2 border-shu">
+                    <flux:icon.pencil-square variant="micro" class="size-4 text-ai" />
                 </div>
-                <h3 class="mb-2 text-base font-bold">書き出しに迷わない</h3>
-                <p class="m-0 text-base leading-relaxed text-zinc-500 dark:text-zinc-400">
-                    目の前の一枚が、そのまま創作のきっかけになる
-                </p>
+                <h3 class="mb-2 text-base font-bold text-sumi">書き出しに迷わない</h3>
+                <p class="m-0 text-base leading-relaxed text-sumi/70">目の前の一枚が、そのまま創作のきっかけになる</p>
             </div>
 
-            <div class="border border-zinc-300 px-3 py-4 text-center dark:border-zinc-600">
-                <div class="mx-auto mb-2.5 flex size-9 items-center justify-center rounded-full border border-zinc-800 dark:border-zinc-300">
-                    <flux:icon.book-open variant="micro" class="size-4" />
+            <div class="rounded-lg border border-ai/15 bg-washi-light px-4 py-5 text-center">
+                <div class="mx-auto mb-3 flex size-10 items-center justify-center rounded-full border-2 border-shu">
+                    <flux:icon.book-open variant="micro" class="size-4 text-ai" />
                 </div>
-                <h3 class="mb-2 text-base font-bold">物語は書く人の数だけ広がる</h3>
-                <p class="m-0 text-base leading-relaxed text-zinc-500 dark:text-zinc-400">
-                    同じ絵でも解釈は無限。読むことも創作の刺激になる
-                </p>
+                <h3 class="mb-2 text-base font-bold text-sumi">物語は書く人の数だけ広がる</h3>
+                <p class="m-0 text-base leading-relaxed text-sumi/70">同じ絵でも解釈は無限。読むことも創作の刺激になる</p>
             </div>
 
-            <div class="border border-zinc-300 px-3 py-4 text-center dark:border-zinc-600">
-                <div class="mx-auto mb-2.5 flex size-9 items-center justify-center rounded-full border border-zinc-800 dark:border-zinc-300">
-                    <flux:icon.chat-bubble-left-ellipsis variant="micro" class="size-4" />
+            <div class="rounded-lg border border-ai/15 bg-washi-light px-4 py-5 text-center">
+                <div class="mx-auto mb-3 flex size-10 items-center justify-center rounded-full border-2 border-shu">
+                    <flux:icon.chat-bubble-left-ellipsis variant="micro" class="size-4 text-ai" />
                 </div>
-                <h3 class="mb-2 text-base font-bold">物語にしなくても参加できる</h3>
-                <p class="m-0 text-base leading-relaxed text-zinc-500 dark:text-zinc-400">
-                    ひとことのアイデア投稿だけでもOK。みんなの発想が次の一歩のヒントになる
-                </p>
+                <h3 class="mb-2 text-base font-bold text-sumi">物語にしなくても参加できる</h3>
+                <p class="m-0 text-base leading-relaxed text-sumi/70">ひとことのアイデア投稿だけでもOK。みんなの発想が次の一歩のヒントになる</p>
             </div>
         </div>
     </section>
 
     {{-- My Page --}}
-    <section class="border-b border-dashed border-zinc-300 py-5 dark:border-zinc-600">
-        <p class="mb-2.5 text-base text-zinc-400">My Page</p>
+    <section class="border-b border-ai/15 py-8">
+        <p class="mb-2.5 text-sm font-bold uppercase tracking-widest text-ai">My Page</p>
 
-        <h2 class="mb-3.5 text-lg font-bold">マイページで、少しずつ育てていける</h2>
+        <h2 class="mb-4 text-lg font-bold text-sumi">マイページで、少しずつ育てていける</h2>
 
-        <p class="mb-4 text-base leading-relaxed text-zinc-500 dark:text-zinc-400">
+        <p class="mb-6 text-base leading-relaxed text-sumi/70">
             投稿したアイデアは、マイページでステータス管理。<br>
             思いついたその日に完成させなくても大丈夫。気が向いたときに、下書き→完成へと進められます。
         </p>
 
         <div class="flex items-center justify-center">
-            <div class="w-[110px] text-center">
-                <div class="mx-auto mb-2 flex size-[26px] items-center justify-center rounded-full bg-zinc-500 text-sm text-white">
-                    1
-                </div>
-                <p class="m-0 text-base leading-relaxed text-zinc-500 dark:text-zinc-400">
-                    アイデア<br><span class="text-zinc-400">(大喜利投稿)</span>
+            <div class="w-[120px] text-center">
+                <div class="mx-auto mb-2 flex size-8 items-center justify-center rounded-full bg-ai text-sm text-washi-light">1</div>
+                <p class="m-0 text-base leading-relaxed text-sumi/70">
+                    アイデア<br><span class="text-ai/60">(大喜利投稿)</span>
                 </p>
             </div>
 
-            <div class="px-2.5 text-base text-zinc-300 dark:text-zinc-600">›</div>
+            <div class="px-3 text-lg text-ai/30">›</div>
 
-            <div class="w-[110px] text-center">
-                <div class="mx-auto mb-2 flex size-[26px] items-center justify-center rounded-full bg-zinc-600 text-sm text-white dark:bg-zinc-400 dark:text-zinc-900">
-                    2
-                </div>
-                <p class="m-0 text-base leading-relaxed text-zinc-500 dark:text-zinc-400">
-                    下書き<br><span class="text-zinc-400">(非公開)</span>
+            <div class="w-[120px] text-center">
+                <div class="mx-auto mb-2 flex size-8 items-center justify-center rounded-full bg-sumi text-sm text-washi-light">2</div>
+                <p class="m-0 text-base leading-relaxed text-sumi/70">
+                    下書き<br><span class="text-ai/60">(非公開)</span>
                 </p>
             </div>
 
-            <div class="px-2.5 text-base text-zinc-300 dark:text-zinc-600">›</div>
+            <div class="px-3 text-lg text-ai/30">›</div>
 
-            <div class="w-[110px] text-center">
-                <div class="mx-auto mb-2 flex size-[26px] items-center justify-center rounded-full bg-zinc-800 text-sm text-white dark:bg-zinc-100 dark:text-zinc-900">
-                    3
-                </div>
-                <p class="m-0 text-base leading-relaxed text-zinc-500 dark:text-zinc-400">
-                    完成<br><span class="text-zinc-400">(公開)</span>
+            <div class="w-[120px] text-center">
+                <div class="mx-auto mb-2 flex size-8 items-center justify-center rounded-full bg-shu text-sm text-washi-light">3</div>
+                <p class="m-0 text-base leading-relaxed text-sumi/70">
+                    完成<br><span class="text-ai/60">(公開)</span>
                 </p>
             </div>
         </div>
     </section>
 
     {{-- How it works --}}
-    <section id="how-it-works" class="border-b border-dashed border-zinc-300 py-5 dark:border-zinc-600">
-        <p class="mb-2.5 text-base text-zinc-400">How it works</p>
+    <section id="how-it-works" class="border-b border-ai/15 py-8">
+        <p class="mb-2.5 text-sm font-bold uppercase tracking-widest text-ai">How it works</p>
 
-        <h2 class="mb-4 text-lg font-bold">はじめかた</h2>
+        <h2 class="mb-6 text-lg font-bold text-sumi">はじめかた</h2>
 
-        <div class="flex items-start justify-between gap-2.5">
-            <div class="flex-1 text-center">
-                <div class="mx-auto mb-2 flex size-[26px] items-center justify-center rounded-full bg-zinc-800 text-sm text-white dark:bg-zinc-100 dark:text-zinc-900">
-                    1
+        <div class="flex items-start justify-between gap-3">
+            @foreach (['お題の絵を見る', '物語を書く', '公開してみんなに読んでもらう'] as $step)
+                @if (! $loop->first)
+                    <div class="pt-1 text-sm text-ai/30">›</div>
+                @endif
+                <div class="flex-1 text-center">
+                    <div class="mx-auto mb-2 flex size-8 items-center justify-center rounded-full bg-ai text-sm text-washi-light">
+                        {{ $loop->iteration }}
+                    </div>
+                    <p class="m-0 text-base text-sumi/70">{{ $step }}</p>
                 </div>
-                <p class="m-0 text-base text-zinc-500 dark:text-zinc-400">お題の絵を見る</p>
-            </div>
-
-            <div class="pt-1 text-sm text-zinc-300 dark:text-zinc-600">›</div>
-
-            <div class="flex-1 text-center">
-                <div class="mx-auto mb-2 flex size-[26px] items-center justify-center rounded-full bg-zinc-800 text-sm text-white dark:bg-zinc-100 dark:text-zinc-900">
-                    2
-                </div>
-                <p class="m-0 text-base text-zinc-500 dark:text-zinc-400">物語を書く</p>
-            </div>
-
-            <div class="pt-1 text-sm text-zinc-300 dark:text-zinc-600">›</div>
-
-            <div class="flex-1 text-center">
-                <div class="mx-auto mb-2 flex size-[26px] items-center justify-center rounded-full bg-zinc-800 text-sm text-white dark:bg-zinc-100 dark:text-zinc-900">
-                    3
-                </div>
-                <p class="m-0 text-base text-zinc-500 dark:text-zinc-400">公開してみんなに読んでもらう</p>
-            </div>
+            @endforeach
         </div>
     </section>
 
     {{-- Sample --}}
-    <section class="border-b border-dashed border-zinc-300 py-5 dark:border-zinc-600">
-        <p class="mb-2.5 text-base text-zinc-400">Sample</p>
+    <section class="border-b border-ai/15 py-8">
+        <p class="mb-2.5 text-sm font-bold uppercase tracking-widest text-ai">Sample</p>
 
-        <h2 class="mb-3.5 text-lg font-bold">実際に生まれた物語（例）</h2>
+        <h2 class="mb-4 text-lg font-bold text-sumi">実際に生まれた物語（例）</h2>
 
-        <div class="mb-3 grid grid-cols-[130px_1fr] items-start gap-4 border border-zinc-300 p-3.5 dark:border-zinc-600">
-            <div class="h-[90px] border border-zinc-300 bg-zinc-100 dark:border-zinc-600 dark:bg-zinc-800"></div>
-            <div class="text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">
-                「その日、扉の向こうには知らない誰かの日記が置かれていた——」<br>
-                <span class="mt-1.5 block text-base text-zinc-400">同じお題から生まれた物語 ①</span>
+        @foreach ([
+            ['quote' => '「その日、扉の向こうには知らない誰かの日記が置かれていた——」', 'label' => '同じお題から生まれた物語 ①'],
+            ['quote' => '「窓の外の光が、いつもと違う色をしていることに気づいたのは……」', 'label' => '同じお題から生まれた物語 ②'],
+        ] as $sample)
+            <div @class(['grid grid-cols-[130px_1fr] items-start gap-4 rounded-lg border border-ai/15 bg-washi-light p-4', 'mb-3' => ! $loop->last])>
+                <div class="h-[90px] rounded border border-ai/15 bg-washi"></div>
+                <div class="text-sm leading-relaxed text-sumi/70">
+                    {{ $sample['quote'] }}<br>
+                    <span class="mt-2 block text-base text-ai/60">{{ $sample['label'] }}</span>
+                </div>
             </div>
-        </div>
-
-        <div class="grid grid-cols-[130px_1fr] items-start gap-4 border border-zinc-300 p-3.5 dark:border-zinc-600">
-            <div class="h-[90px] border border-zinc-300 bg-zinc-100 dark:border-zinc-600 dark:bg-zinc-800"></div>
-            <div class="text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">
-                「窓の外の光が、いつもと違う色をしていることに気づいたのは……」<br>
-                <span class="mt-1.5 block text-base text-zinc-400">同じお題から生まれた物語 ②</span>
-            </div>
-        </div>
+        @endforeach
     </section>
 
     {{-- CTA --}}
-    <section class="border-b border-dashed border-zinc-300 py-10 text-center dark:border-zinc-600">
-        <p class="mb-2.5 text-base text-zinc-400">CTA</p>
+    <section class="border-b border-ai/15 py-12 text-center">
+        <p class="mb-2.5 text-sm font-bold uppercase tracking-widest text-ai">CTA</p>
 
-        <p class="mb-4 text-xl font-bold">一枚の絵から、あなたの物語をはじめよう。</p>
+        <p class="mb-6 text-xl font-bold text-sumi">一枚の絵から、あなたの物語をはじめよう。</p>
 
         @guest
             <flux:button :href="route('register')" variant="primary" wire:navigate>
@@ -369,7 +323,7 @@ new #[Layout('layouts.public')] class extends Component
     </section>
 
     {{-- Footer --}}
-    <footer class="flex flex-col gap-2 py-4 text-base text-zinc-500 dark:text-zinc-400 sm:flex-row sm:items-center sm:justify-between">
+    <footer class="flex flex-col gap-2 py-6 text-base text-ai/70 sm:flex-row sm:items-center sm:justify-between">
         <span>© 文倉</span>
         <span>利用規約　プライバシーポリシー　お問い合わせ</span>
     </footer>
