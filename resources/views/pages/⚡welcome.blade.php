@@ -61,9 +61,9 @@ new #[Layout('layouts.public')] class extends Component
 <div>
     {{-- Hero --}}
     <section class="border-b border-dashed border-zinc-300 py-14 text-center dark:border-zinc-600">
-        <p class="mb-2.5 text-sm font-bold uppercase tracking-widest text-zinc-400">Hero</p>
+        <p class="mb-2.5 text-base text-zinc-400">Hero</p>
 
-        <h1 class="mb-3.5 inline-block border border-dashed border-zinc-300 px-3.5 py-3.5 text-2xl font-bold dark:border-zinc-600">
+        <h1 class="mb-3.5 inline-block border border-dashed border-zinc-300 px-3.5 py-3.5 text-3xl font-bold dark:border-zinc-600">
             言葉に詰まったら、絵を見よう。
         </h1>
 
@@ -95,9 +95,9 @@ new #[Layout('layouts.public')] class extends Component
 
     {{-- Topics --}}
     <section id="topics" class="border-b border-dashed border-zinc-300 py-5 dark:border-zinc-600">
-        <p class="mb-2.5 text-sm font-bold uppercase tracking-widest text-zinc-400">Topics（未ログインでも閲覧可）</p>
+        <p class="mb-2.5 text-base text-zinc-400">Topics（未ログインでも閲覧可）</p>
 
-        <h2 class="mb-3 text-[15px] font-bold">お題一覧</h2>
+        <h2 class="mb-3 text-lg font-bold">お題一覧</h2>
 
         <div class="mb-3.5 flex flex-wrap gap-2 text-base text-zinc-500 dark:text-zinc-400">
             <button
@@ -179,9 +179,9 @@ new #[Layout('layouts.public')] class extends Component
 
     {{-- Problem --}}
     <section class="border-b border-dashed border-zinc-300 py-5 dark:border-zinc-600">
-        <p class="mb-2.5 text-sm font-bold uppercase tracking-widest text-zinc-400">Problem</p>
+        <p class="mb-2.5 text-base text-zinc-400">Problem</p>
 
-        <h2 class="mb-3.5 text-[15px] font-bold">こんな経験、ありませんか？</h2>
+        <h2 class="mb-3.5 text-lg font-bold">こんな経験、ありませんか？</h2>
 
         <ul class="grid gap-2.5">
             <li class="rounded border border-zinc-300 bg-zinc-100 px-4 py-3 text-base text-zinc-600 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-300">
@@ -195,16 +195,16 @@ new #[Layout('layouts.public')] class extends Component
             </li>
         </ul>
 
-        <p class="mt-3.5 text-center text-[11px] text-zinc-500 dark:text-zinc-400">
+        <p class="mt-3.5 text-center text-sm text-zinc-500 dark:text-zinc-400">
             ↓ だから、文倉は "絵"からはじめる
         </p>
     </section>
 
     {{-- Features --}}
     <section class="border-b border-dashed border-zinc-300 py-5 dark:border-zinc-600">
-        <p class="mb-2.5 text-sm font-bold uppercase tracking-widest text-zinc-400">Features</p>
+        <p class="mb-2.5 text-base text-zinc-400">Features</p>
 
-        <h2 class="mb-3.5 text-[15px] font-bold">選ばれる理由</h2>
+        <h2 class="mb-3.5 text-lg font-bold">選ばれる理由</h2>
 
         <div class="grid grid-cols-1 gap-3.5 sm:grid-cols-2">
             <div class="border border-zinc-300 px-3 py-4 text-center dark:border-zinc-600">
@@ -251,18 +251,18 @@ new #[Layout('layouts.public')] class extends Component
 
     {{-- My Page --}}
     <section class="border-b border-dashed border-zinc-300 py-5 dark:border-zinc-600">
-        <p class="mb-2.5 text-sm font-bold uppercase tracking-widest text-zinc-400">My Page</p>
+        <p class="mb-2.5 text-base text-zinc-400">My Page</p>
 
-        <h2 class="mb-3.5 text-[15px] font-bold">マイページで、少しずつ育てていける</h2>
+        <h2 class="mb-3.5 text-lg font-bold">マイページで、少しずつ育てていける</h2>
 
-        <p class="mb-4 text-[12px] leading-relaxed text-zinc-500 dark:text-zinc-400">
+        <p class="mb-4 text-base leading-relaxed text-zinc-500 dark:text-zinc-400">
             投稿したアイデアは、マイページでステータス管理。<br>
             思いついたその日に完成させなくても大丈夫。気が向いたときに、下書き→完成へと進められます。
         </p>
 
         <div class="flex items-center justify-center">
             <div class="w-[110px] text-center">
-                <div class="mx-auto mb-2 flex size-[26px] items-center justify-center rounded-full bg-zinc-500 text-[11px] text-white">
+                <div class="mx-auto mb-2 flex size-[26px] items-center justify-center rounded-full bg-zinc-500 text-sm text-white">
                     1
                 </div>
                 <p class="m-0 text-base leading-relaxed text-zinc-500 dark:text-zinc-400">
@@ -273,7 +273,7 @@ new #[Layout('layouts.public')] class extends Component
             <div class="px-2.5 text-base text-zinc-300 dark:text-zinc-600">›</div>
 
             <div class="w-[110px] text-center">
-                <div class="mx-auto mb-2 flex size-[26px] items-center justify-center rounded-full bg-zinc-600 text-[11px] text-white dark:bg-zinc-400 dark:text-zinc-900">
+                <div class="mx-auto mb-2 flex size-[26px] items-center justify-center rounded-full bg-zinc-600 text-sm text-white dark:bg-zinc-400 dark:text-zinc-900">
                     2
                 </div>
                 <p class="m-0 text-base leading-relaxed text-zinc-500 dark:text-zinc-400">
@@ -284,7 +284,7 @@ new #[Layout('layouts.public')] class extends Component
             <div class="px-2.5 text-base text-zinc-300 dark:text-zinc-600">›</div>
 
             <div class="w-[110px] text-center">
-                <div class="mx-auto mb-2 flex size-[26px] items-center justify-center rounded-full bg-zinc-800 text-[11px] text-white dark:bg-zinc-100 dark:text-zinc-900">
+                <div class="mx-auto mb-2 flex size-[26px] items-center justify-center rounded-full bg-zinc-800 text-sm text-white dark:bg-zinc-100 dark:text-zinc-900">
                     3
                 </div>
                 <p class="m-0 text-base leading-relaxed text-zinc-500 dark:text-zinc-400">
@@ -296,13 +296,13 @@ new #[Layout('layouts.public')] class extends Component
 
     {{-- How it works --}}
     <section id="how-it-works" class="border-b border-dashed border-zinc-300 py-5 dark:border-zinc-600">
-        <p class="mb-2.5 text-sm font-bold uppercase tracking-widest text-zinc-400">How it works</p>
+        <p class="mb-2.5 text-base text-zinc-400">How it works</p>
 
-        <h2 class="mb-4 text-[15px] font-bold">はじめかた</h2>
+        <h2 class="mb-4 text-lg font-bold">はじめかた</h2>
 
         <div class="flex items-start justify-between gap-2.5">
             <div class="flex-1 text-center">
-                <div class="mx-auto mb-2 flex size-[26px] items-center justify-center rounded-full bg-zinc-800 text-[11px] text-white dark:bg-zinc-100 dark:text-zinc-900">
+                <div class="mx-auto mb-2 flex size-[26px] items-center justify-center rounded-full bg-zinc-800 text-sm text-white dark:bg-zinc-100 dark:text-zinc-900">
                     1
                 </div>
                 <p class="m-0 text-base text-zinc-500 dark:text-zinc-400">お題の絵を見る</p>
@@ -311,7 +311,7 @@ new #[Layout('layouts.public')] class extends Component
             <div class="pt-1 text-sm text-zinc-300 dark:text-zinc-600">›</div>
 
             <div class="flex-1 text-center">
-                <div class="mx-auto mb-2 flex size-[26px] items-center justify-center rounded-full bg-zinc-800 text-[11px] text-white dark:bg-zinc-100 dark:text-zinc-900">
+                <div class="mx-auto mb-2 flex size-[26px] items-center justify-center rounded-full bg-zinc-800 text-sm text-white dark:bg-zinc-100 dark:text-zinc-900">
                     2
                 </div>
                 <p class="m-0 text-base text-zinc-500 dark:text-zinc-400">物語を書く</p>
@@ -320,7 +320,7 @@ new #[Layout('layouts.public')] class extends Component
             <div class="pt-1 text-sm text-zinc-300 dark:text-zinc-600">›</div>
 
             <div class="flex-1 text-center">
-                <div class="mx-auto mb-2 flex size-[26px] items-center justify-center rounded-full bg-zinc-800 text-[11px] text-white dark:bg-zinc-100 dark:text-zinc-900">
+                <div class="mx-auto mb-2 flex size-[26px] items-center justify-center rounded-full bg-zinc-800 text-sm text-white dark:bg-zinc-100 dark:text-zinc-900">
                     3
                 </div>
                 <p class="m-0 text-base text-zinc-500 dark:text-zinc-400">公開してみんなに読んでもらう</p>
@@ -330,13 +330,13 @@ new #[Layout('layouts.public')] class extends Component
 
     {{-- Sample --}}
     <section class="border-b border-dashed border-zinc-300 py-5 dark:border-zinc-600">
-        <p class="mb-2.5 text-sm font-bold uppercase tracking-widest text-zinc-400">Sample</p>
+        <p class="mb-2.5 text-base text-zinc-400">Sample</p>
 
-        <h2 class="mb-3.5 text-[15px] font-bold">実際に生まれた物語（例）</h2>
+        <h2 class="mb-3.5 text-lg font-bold">実際に生まれた物語（例）</h2>
 
         <div class="mb-3 grid grid-cols-[130px_1fr] items-start gap-4 border border-zinc-300 p-3.5 dark:border-zinc-600">
             <div class="h-[90px] border border-zinc-300 bg-zinc-100 dark:border-zinc-600 dark:bg-zinc-800"></div>
-            <div class="text-[11px] leading-relaxed text-zinc-500 dark:text-zinc-400">
+            <div class="text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">
                 「その日、扉の向こうには知らない誰かの日記が置かれていた——」<br>
                 <span class="mt-1.5 block text-base text-zinc-400">同じお題から生まれた物語 ①</span>
             </div>
@@ -344,7 +344,7 @@ new #[Layout('layouts.public')] class extends Component
 
         <div class="grid grid-cols-[130px_1fr] items-start gap-4 border border-zinc-300 p-3.5 dark:border-zinc-600">
             <div class="h-[90px] border border-zinc-300 bg-zinc-100 dark:border-zinc-600 dark:bg-zinc-800"></div>
-            <div class="text-[11px] leading-relaxed text-zinc-500 dark:text-zinc-400">
+            <div class="text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">
                 「窓の外の光が、いつもと違う色をしていることに気づいたのは……」<br>
                 <span class="mt-1.5 block text-base text-zinc-400">同じお題から生まれた物語 ②</span>
             </div>
@@ -353,9 +353,9 @@ new #[Layout('layouts.public')] class extends Component
 
     {{-- CTA --}}
     <section class="border-b border-dashed border-zinc-300 py-10 text-center dark:border-zinc-600">
-        <p class="mb-2.5 text-sm font-bold uppercase tracking-widest text-zinc-400">CTA</p>
+        <p class="mb-2.5 text-base text-zinc-400">CTA</p>
 
-        <p class="mb-4 text-[17px] font-bold">一枚の絵から、あなたの物語をはじめよう。</p>
+        <p class="mb-4 text-xl font-bold">一枚の絵から、あなたの物語をはじめよう。</p>
 
         @guest
             <flux:button :href="route('register')" variant="primary" wire:navigate>
