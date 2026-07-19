@@ -67,7 +67,7 @@ new #[Layout('layouts.public')] class extends Component
             言葉に詰まったら、絵を見よう。
         </h1>
 
-        <p class="mx-auto mb-5 max-w-[420px] text-base leading-relaxed text-sumi/70">
+        <p class="mx-auto mb-5 max-w-xl text-base leading-relaxed text-sumi/70">
             「書きたい」はあるのに「何を」が出てこない。<br>
             文倉は、単語ではなく一枚の絵をお題にする創作プラットフォームです。
         </p>
