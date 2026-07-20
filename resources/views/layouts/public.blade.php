@@ -12,7 +12,7 @@
                 </a>
 
                 <nav class="flex items-center gap-2">
-                    <flux:button href="{{ route('home') }}#topics" variant="ghost" size="sm" icon="photo" wire:navigate class="text-ai hover:text-shu">
+                    <flux:button :href="route('topics.index')" variant="ghost" size="sm" icon="photo" wire:navigate class="text-ai hover:text-shu">
                         {{ __('お題一覧') }}
                     </flux:button>
                     @auth

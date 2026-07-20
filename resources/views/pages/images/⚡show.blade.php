@@ -36,7 +36,7 @@ new #[Layout('layouts.public')] class extends Component
 }; ?>
 
 <div>
-    <flux:button href="{{ route('home') }}#topics" variant="ghost" size="sm" icon="arrow-left" wire:navigate class="mb-4">
+    <flux:button :href="route('topics.index')" variant="ghost" size="sm" icon="arrow-left" wire:navigate class="mb-4">
         お題一覧へ戻る
     </flux:button>
 

@@ -36,7 +36,7 @@ it('stores an uploaded image and creates the record', function () {
         ->set('photo', UploadedFile::fake()->create('sunset.jpg', 100, 'image/jpeg'))
         ->call('save')
         ->assertHasNoErrors()
-        ->assertRedirect(route('home').'#topics');
+        ->assertRedirect(route('topics.index'));
 
     $image = Image::first();
 

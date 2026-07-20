@@ -36,10 +36,10 @@ it('shows both completed and draft stories to logged-in users', function () {
         ->assertSee('下書きの物語');
 });
 
-it('links each home page card to its image detail page', function () {
+it('links each topic list card to its image detail page', function () {
     $image = Image::factory()->create();
 
-    $this->get(route('home'))
+    $this->get(route('topics.index'))
         ->assertOk()
         ->assertSee(route('images.show', $image));
 });
