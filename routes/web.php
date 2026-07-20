@@ -15,10 +15,6 @@ Route::middleware('auth')->group(function () {
     Route::livewire('/mypage', 'pages::mypage')->name('mypage');
 });
 
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::view('dashboard', 'dashboard')->name('dashboard');
-});
-
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::livewire('/admin/images/create', 'pages::admin.create-image')->name('admin.images.create');
 });

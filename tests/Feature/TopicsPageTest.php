@@ -36,12 +36,14 @@ it('shows an empty state when there are no images', function () {
         ->assertSee('まだお題がありません');
 });
 
-it('shows the image index link in the header to authenticated users', function () {
+it('hides removed header links from authenticated users', function () {
     $this->actingAs(User::factory()->create());
 
     $this->get(route('topics.index'))
         ->assertOk()
-        ->assertSee(route('topics.index'), false);
+        ->assertDontSee(route('topics.index'), false)
+        ->assertDontSee(route('bookmarks'), false)
+        ->assertSee('マイページ');
 });
 
 it('hides the image index link in the header from guests', function () {

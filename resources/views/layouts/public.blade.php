@@ -13,9 +13,6 @@
 
                 <nav class="flex items-center gap-2">
                     @auth
-                        <flux:button :href="route('topics.index')" variant="ghost" size="sm" icon="photo" wire:navigate class="text-ai hover:text-shu">
-                            {{ __('お題一覧') }}
-                        </flux:button>
                         @if (auth()->user()->is_admin)
                             <flux:button :href="route('admin.images.create')" variant="ghost" size="sm" icon="plus" wire:navigate class="text-ai hover:text-shu">
                                 {{ __('お題を投稿') }}
@@ -23,12 +20,6 @@
                         @endif
                         <flux:button :href="route('mypage')" variant="ghost" size="sm" icon="user" wire:navigate class="text-ai hover:text-shu">
                             {{ __('マイページ') }}
-                        </flux:button>
-                        <flux:button :href="route('bookmarks')" variant="ghost" size="sm" icon="bookmark" wire:navigate class="text-ai hover:text-shu">
-                            {{ __('お気に入り') }}
-                        </flux:button>
-                        <flux:button :href="route('dashboard')" variant="ghost" size="sm" icon="layout-grid" wire:navigate class="text-ai hover:text-shu">
-                            {{ __('ダッシュボード') }}
                         </flux:button>
 
                         <flux:dropdown position="bottom" align="end">
