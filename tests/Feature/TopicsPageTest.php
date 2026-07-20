@@ -2,6 +2,7 @@
 
 use App\Models\Image;
 use App\Models\Story;
+use App\Models\User;
 use Livewire\Livewire;
 
 it('shows the topic list page', function () {
@@ -35,10 +36,18 @@ it('shows an empty state when there are no images', function () {
         ->assertSee('まだお題がありません');
 });
 
-it('shows the image index link in the header', function () {
+it('shows the image index link in the header to authenticated users', function () {
+    $this->actingAs(User::factory()->create());
+
     $this->get(route('topics.index'))
         ->assertOk()
-        ->assertSee('お題一覧');
+        ->assertSee(route('topics.index'), false);
+});
+
+it('hides the image index link in the header from guests', function () {
+    $this->get(route('home'))
+        ->assertOk()
+        ->assertDontSee(route('topics.index'), false);
 });
 
 it('paginates images when there are more than ten', function () {

@@ -12,10 +12,10 @@
                 </a>
 
                 <nav class="flex items-center gap-2">
-                    <flux:button :href="route('topics.index')" variant="ghost" size="sm" icon="photo" wire:navigate class="text-ai hover:text-shu">
-                        {{ __('お題一覧') }}
-                    </flux:button>
                     @auth
+                        <flux:button :href="route('topics.index')" variant="ghost" size="sm" icon="photo" wire:navigate class="text-ai hover:text-shu">
+                            {{ __('お題一覧') }}
+                        </flux:button>
                         @if (auth()->user()->is_admin)
                             <flux:button :href="route('admin.images.create')" variant="ghost" size="sm" icon="plus" wire:navigate class="text-ai hover:text-shu">
                                 {{ __('お題を投稿') }}
