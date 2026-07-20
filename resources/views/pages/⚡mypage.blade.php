@@ -111,12 +111,7 @@ new #[Layout('layouts.public')] #[Title('マイページ')] class extends Compon
     <flux:separator class="my-8" />
 
     <section>
-        <div class="flex items-center justify-between gap-4">
-            <flux:heading size="lg">自分の投稿</flux:heading>
-            <flux:button :href="route('bookmarks')" variant="ghost" size="sm" icon="bookmark" wire:navigate>
-                お気に入り一覧
-            </flux:button>
-        </div>
+        @include('partials.mypage-tabs')
 
         @if ($hasStories)
             <div class="mt-4 flex flex-col gap-3 sm:flex-row sm:items-end">

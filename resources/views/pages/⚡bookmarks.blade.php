@@ -6,7 +6,7 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-new #[Layout('layouts.public')] #[Title('お気に入り')] class extends Component
+new #[Layout('layouts.public')] #[Title('マイページ')] class extends Component
 {
     /**
      * Remove one of the current user's bookmarks.
@@ -37,11 +37,14 @@ new #[Layout('layouts.public')] #[Title('お気に入り')] class extends Compon
 }; ?>
 
 <div>
-    <flux:heading size="xl">お気に入り</flux:heading>
+    <flux:heading size="xl">マイページ</flux:heading>
     <flux:text class="mt-1">保存したストーリーをここから読み返せます。</flux:text>
 
     <flux:separator class="my-6" />
 
+    @include('partials.mypage-tabs')
+
+    <div class="mt-6">
     @if ($bookmarks->isEmpty())
         <flux:callout icon="bookmark">
             <flux:callout.heading>まだお気に入りがありません</flux:callout.heading>
@@ -81,4 +84,5 @@ new #[Layout('layouts.public')] #[Title('お気に入り')] class extends Compon
             @endforeach
         </div>
     @endif
+    </div>
 </div>
