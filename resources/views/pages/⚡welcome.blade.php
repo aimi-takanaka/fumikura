@@ -13,9 +13,17 @@ new #[Layout('layouts.public')] class extends Component
      */
     public function mount(): void
     {
-        if (auth()->check()) {
-            $this->redirectRoute('topics.index', navigate: true);
+        if (! auth()->check()) {
+            return;
         }
+
+        if (! auth()->user()->hasVerifiedEmail()) {
+            $this->redirectRoute('verification.notice', navigate: true);
+
+            return;
+        }
+
+        $this->redirectRoute('topics.index', navigate: true);
     }
 
     /**

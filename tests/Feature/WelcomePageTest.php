@@ -58,3 +58,10 @@ it('redirects authenticated users to the topic list', function () {
     $this->get(route('home'))
         ->assertRedirect(route('topics.index'));
 });
+
+it('redirects unverified authenticated users to the verification notice', function () {
+    $this->actingAs(User::factory()->unverified()->create());
+
+    $this->get(route('home'))
+        ->assertRedirect(route('verification.notice'));
+});
