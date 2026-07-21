@@ -4,7 +4,14 @@
     'label' => __('Sign in with a passkey'),
     'loadingLabel' => __('Authenticating...'),
     'separator' => __('Or continue with email'),
+    'variant' => 'auth',
 ])
+
+@php
+    $separatorBorderClass = $variant === 'fumikura' ? 'border-ai/15' : 'border-zinc-200 dark:border-zinc-700';
+    $separatorBgClass = $variant === 'fumikura' ? 'bg-washi' : 'bg-white dark:bg-zinc-900';
+    $separatorTextClass = $variant === 'fumikura' ? 'text-sumi/60' : 'text-zinc-500 dark:text-zinc-400';
+@endphp
 
 @assets
 @vite('resources/js/passkeys.js')
@@ -63,10 +70,10 @@
 
             <div class="relative my-6">
                 <div class="absolute inset-0 flex items-center">
-                    <div class="w-full border-t border-zinc-200 dark:border-zinc-700"></div>
+                    <div class="w-full border-t {{ $separatorBorderClass }}"></div>
                 </div>
                 <div class="relative flex justify-center text-xs uppercase">
-                    <span class="px-2 text-zinc-500 dark:text-zinc-400 bg-white dark:bg-zinc-900">
+                    <span class="px-2 {{ $separatorTextClass }} {{ $separatorBgClass }}">
                         {{ $separator }}
                     </span>
                 </div>

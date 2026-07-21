@@ -7,5 +7,7 @@ test('confirm password screen can be rendered', function () {
 
     $response = $this->actingAs($user)->get(route('password.confirm'));
 
-    $response->assertOk();
+    $response->assertOk()
+        ->assertSee('文倉')
+        ->assertSee('パスワード確認');
 });
