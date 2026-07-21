@@ -133,15 +133,15 @@ new #[Layout('layouts.public')] class extends Component
         <h2 class="mb-4 text-lg font-bold text-sumi">マイページで、少しずつ育てていける</h2>
 
         <p class="mb-6 text-base leading-relaxed text-sumi/70">
-            投稿したアイデアは、マイページでステータス管理。<br>
-            思いついたその日に完成させなくても大丈夫。気が向いたときに、下書き→完成へと進められます。
+            投稿したストーリーは、マイページでステータス管理。<br>
+            アイデア → 下書き → 完成と、少しずつ育てていけます。
         </p>
 
         <div class="flex items-center justify-center">
             <div class="w-[140px] text-center">
                 <div class="mx-auto mb-2 flex size-8 items-center justify-center rounded-full bg-ai text-sm text-washi-light">1</div>
                 <p class="m-0 text-base leading-relaxed text-sumi/70">
-                    アイデア<br><span class="text-ai/60">(大喜利投稿/公開)</span>
+                    アイデア<br><span class="text-ai/60">(ログイン済みなら閲覧可)</span>
                 </p>
             </div>
 
@@ -150,7 +150,7 @@ new #[Layout('layouts.public')] class extends Component
             <div class="w-[140px] text-center">
                 <div class="mx-auto mb-2 flex size-8 items-center justify-center rounded-full bg-sumi text-sm text-washi-light">2</div>
                 <p class="m-0 text-base leading-relaxed text-sumi/70">
-                    下書き<br><span class="text-ai/60">(非公開)</span>
+                    下書き<br><span class="text-ai/60">(本人のみ)</span>
                 </p>
             </div>
 
@@ -159,7 +159,7 @@ new #[Layout('layouts.public')] class extends Component
             <div class="w-[140px] text-center">
                 <div class="mx-auto mb-2 flex size-8 items-center justify-center rounded-full bg-shu text-sm text-washi-light">3</div>
                 <p class="m-0 text-base leading-relaxed text-sumi/70">
-                    完成<br><span class="text-ai/60">(公開)</span>
+                    完成<br><span class="text-ai/60">(誰でも閲覧可)</span>
                 </p>
             </div>
         </div>

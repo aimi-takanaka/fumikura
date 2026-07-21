@@ -39,14 +39,37 @@ it('casts the story status to an enum with a label', function () {
     $story = Story::factory()->complete()->create();
 
     expect($story->status)->toBe(StoryStatus::Complete)
-        ->and($story->status->label())->toBe('完成');
+        ->and($story->status->label())->toBe('完成')
+        ->and(StoryStatus::Idea->label())->toBe('アイデア')
+        ->and(StoryStatus::Draft->label())->toBe('下書き');
 });
 
 it('only returns completed stories through the complete scope', function () {
     Story::factory()->complete()->count(2)->create();
+    Story::factory()->idea()->count(2)->create();
     Story::factory()->draft()->count(3)->create();
 
     expect(Story::complete()->count())->toBe(2);
+});
+
+it('scopes readable stories for guests to completed stories only', function () {
+    Story::factory()->complete()->count(2)->create();
+    Story::factory()->idea()->count(1)->create();
+    Story::factory()->draft()->count(1)->create();
+
+    expect(Story::readableBy(null)->count())->toBe(2);
+});
+
+it('scopes readable stories for logged-in users to completed, idea, and own drafts', function () {
+    $user = User::factory()->create();
+    $other = User::factory()->create();
+
+    Story::factory()->complete()->count(2)->create();
+    Story::factory()->idea()->count(1)->create();
+    Story::factory()->for($user)->draft()->create();
+    Story::factory()->for($other)->draft()->create();
+
+    expect(Story::readableBy($user)->count())->toBe(4);
 });
 
 it('prevents a user from liking the same story twice', function () {

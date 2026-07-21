@@ -99,4 +99,38 @@ class Story extends Model
     {
         $query->where('status', StoryStatus::Complete);
     }
+
+    /**
+     * Scope a query to stories readable by the given user.
+     *
+     * @param  Builder<Story>  $query
+     */
+    public function scopeReadableBy(Builder $query, ?User $user): void
+    {
+        if ($user === null) {
+            $query->where('status', StoryStatus::Complete);
+
+            return;
+        }
+
+        $query->where(function (Builder $query) use ($user): void {
+            $query->whereIn('status', [StoryStatus::Complete, StoryStatus::Idea])
+                ->orWhere(function (Builder $query) use ($user): void {
+                    $query->where('status', StoryStatus::Draft)
+                        ->where('user_id', $user->id);
+                });
+        });
+    }
+
+    /**
+     * Determine whether the story can be read by the given user.
+     */
+    public function isReadableBy(?User $user): bool
+    {
+        return match ($this->status) {
+            StoryStatus::Complete => true,
+            StoryStatus::Idea => $user !== null,
+            StoryStatus::Draft => $user?->is($this->user) ?? false,
+        };
+    }
 }

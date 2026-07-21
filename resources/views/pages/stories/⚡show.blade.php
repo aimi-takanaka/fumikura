@@ -1,7 +1,6 @@
 <?php
 
 use App\Models\Story;
-use App\StoryStatus;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
@@ -18,7 +17,7 @@ new #[Layout('layouts.public')] class extends Component
      */
     public function mount(Story $story): void
     {
-        abort_if($story->status === StoryStatus::Draft && ! auth()->check(), 403);
+        abort_unless($story->isReadableBy(auth()->user()), 403);
 
         $this->story = $story->load(['user', 'image']);
     }
@@ -142,11 +141,7 @@ new #[Layout('layouts.public')] class extends Component
         <div class="flex items-start justify-between gap-4">
             <flux:heading size="xl">{{ $story->title }}</flux:heading>
 
-            @if ($story->status === StoryStatus::Complete)
-                <flux:badge color="lime">完成</flux:badge>
-            @else
-                <flux:badge color="zinc">散文・アイデア</flux:badge>
-            @endif
+            <x-story-status-badge :status="$story->status" />
         </div>
 
         <div class="mt-2 flex items-center gap-3">

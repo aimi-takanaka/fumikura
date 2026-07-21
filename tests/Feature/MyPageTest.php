@@ -99,13 +99,30 @@ it('filters stories by draft status', function () {
     $user = User::factory()->create();
 
     Story::factory()->for($user)->complete()->create(['title' => '完成した物語']);
+    Story::factory()->for($user)->idea()->create(['title' => 'アイデアの物語']);
     Story::factory()->for($user)->draft()->create(['title' => '下書きの物語']);
 
     Livewire::actingAs($user)
         ->test('pages::mypage')
         ->set('statusFilter', 'draft')
         ->assertSee('下書きの物語')
-        ->assertDontSee('完成した物語');
+        ->assertDontSee('完成した物語')
+        ->assertDontSee('アイデアの物語');
+});
+
+it('filters stories by idea status', function () {
+    $user = User::factory()->create();
+
+    Story::factory()->for($user)->complete()->create(['title' => '完成した物語']);
+    Story::factory()->for($user)->idea()->create(['title' => 'アイデアの物語']);
+    Story::factory()->for($user)->draft()->create(['title' => '下書きの物語']);
+
+    Livewire::actingAs($user)
+        ->test('pages::mypage')
+        ->set('statusFilter', 'idea')
+        ->assertSee('アイデアの物語')
+        ->assertDontSee('完成した物語')
+        ->assertDontSee('下書きの物語');
 });
 
 it('searches stories by title', function () {

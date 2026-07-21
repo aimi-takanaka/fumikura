@@ -40,7 +40,17 @@ class StoryFactory extends Factory
     }
 
     /**
-     * Indicate that the story is a draft (prose / idea).
+     * Indicate that the story is an idea visible to logged-in users.
+     */
+    public function idea(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'status' => StoryStatus::Idea,
+        ]);
+    }
+
+    /**
+     * Indicate that the story is a private draft visible only to its author.
      */
     public function draft(): static
     {

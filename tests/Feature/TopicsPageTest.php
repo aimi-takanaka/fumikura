@@ -19,15 +19,15 @@ it('lets guests view the topic list with image titles', function () {
         ->assertSee('海辺の写真');
 });
 
-it('counts completed and draft stories for each image', function () {
+it('counts completed and idea stories for each image', function () {
     $image = Image::factory()->create();
     Story::factory()->for($image)->complete()->count(2)->create();
-    Story::factory()->for($image)->draft()->count(3)->create();
+    Story::factory()->for($image)->idea()->count(3)->create();
 
     $this->get(route('topics.index'))
         ->assertOk()
         ->assertSee('完成2件')
-        ->assertSee('大喜利3件');
+        ->assertSee('アイデア3件');
 });
 
 it('shows an empty state when there are no images', function () {

@@ -34,7 +34,7 @@ trait ListsTopics
             ->with('user')
             ->withCount([
                 'stories as completed_stories_count' => fn (Builder $query) => $query->complete(),
-                'stories as draft_stories_count' => fn (Builder $query) => $query->where('status', StoryStatus::Draft),
+                'stories as idea_stories_count' => fn (Builder $query) => $query->where('status', StoryStatus::Idea),
                 'stories as stories_count',
             ]);
 

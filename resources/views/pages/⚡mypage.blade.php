@@ -1,7 +1,6 @@
 <?php
 
 use App\Models\Story;
-use App\StoryStatus;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
@@ -130,7 +129,8 @@ new #[Layout('layouts.public')] #[Title('マイページ')] class extends Compon
                     <flux:select wire:model.live="statusFilter">
                         <flux:select.option value="all">すべて</flux:select.option>
                         <flux:select.option value="complete">完成</flux:select.option>
-                        <flux:select.option value="draft">散文・アイデア</flux:select.option>
+                        <flux:select.option value="idea">アイデア</flux:select.option>
+                        <flux:select.option value="draft">下書き</flux:select.option>
                     </flux:select>
                 </flux:field>
             </div>
@@ -153,11 +153,7 @@ new #[Layout('layouts.public')] #[Title('マイページ')] class extends Compon
                         <div class="flex items-start justify-between gap-4">
                             <a href="{{ route('stories.show', $story) }}" wire:navigate class="min-w-0 transition hover:opacity-80">
                                 <div class="flex items-center gap-2">
-                                    @if ($story->status === StoryStatus::Complete)
-                                        <flux:badge size="sm" color="lime">完成</flux:badge>
-                                    @else
-                                        <flux:badge size="sm" color="zinc">散文・アイデア</flux:badge>
-                                    @endif
+                                    <x-story-status-badge :status="$story->status" />
                                     <flux:text size="sm">{{ $story->created_at->format('Y年n月j日') }}</flux:text>
                                 </div>
                                 <flux:heading size="lg" class="mt-2 truncate">{{ $story->title }}</flux:heading>

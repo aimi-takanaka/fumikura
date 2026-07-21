@@ -1,7 +1,6 @@
 <?php
 
 use App\Models\Bookmark;
-use App\StoryStatus;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -57,11 +56,7 @@ new #[Layout('layouts.public')] #[Title('マイページ')] class extends Compon
                     <div class="flex items-start justify-between gap-4">
                         <a href="{{ route('stories.show', $bookmark->story) }}" wire:navigate class="min-w-0 transition hover:opacity-80">
                             <div class="flex items-center gap-2">
-                                @if ($bookmark->story->status === StoryStatus::Complete)
-                                    <flux:badge size="sm" color="lime">完成</flux:badge>
-                                @else
-                                    <flux:badge size="sm" color="zinc">散文・アイデア</flux:badge>
-                                @endif
+                                <x-story-status-badge :status="$bookmark->story->status" />
                             </div>
                             <flux:heading size="lg" class="mt-2 truncate">{{ $bookmark->story->title }}</flux:heading>
                             <flux:text size="sm" class="mt-1">

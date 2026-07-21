@@ -20,15 +20,15 @@ it('lets guests view the topic list with image titles on the welcome page', func
         ->assertSee('海辺の写真');
 });
 
-it('counts completed and draft stories for each image on the welcome page', function () {
+it('counts completed and idea stories for each image on the welcome page', function () {
     $image = Image::factory()->create();
     Story::factory()->for($image)->complete()->count(2)->create();
-    Story::factory()->for($image)->draft()->count(3)->create();
+    Story::factory()->for($image)->idea()->count(3)->create();
 
     $this->get(route('home'))
         ->assertOk()
         ->assertSee('完成2件')
-        ->assertSee('大喜利3件');
+        ->assertSee('アイデア3件');
 });
 
 it('links to registration from the welcome page', function () {

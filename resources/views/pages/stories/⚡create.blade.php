@@ -75,8 +75,9 @@ new #[Layout('layouts.public')] #[Title('ストーリーを書く')] class exten
             />
 
             <flux:radio.group wire:model="status" label="ステータス">
-                <flux:radio value="complete" label="完成（誰でも読めます）" />
-                <flux:radio value="draft" label="散文・アイデア（下書き / ログインユーザーのみ）" />
+                @foreach (\App\StoryStatus::cases() as $storyStatus)
+                    <flux:radio value="{{ $storyStatus->value }}" :label="$storyStatus->formLabel()" />
+                @endforeach
             </flux:radio.group>
 
             <div class="flex items-center justify-end gap-3">

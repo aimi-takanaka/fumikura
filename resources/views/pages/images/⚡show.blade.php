@@ -1,7 +1,6 @@
 <?php
 
 use App\Models\Image;
-use App\StoryStatus;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
@@ -28,7 +27,7 @@ new #[Layout('layouts.public')] class extends Component
             'stories' => $this->image->stories()
                 ->with('user')
                 ->withCount(['likes', 'comments'])
-                ->unless(auth()->check(), fn ($query) => $query->complete())
+                ->readableBy(auth()->user())
                 ->latest()
                 ->get(),
         ];
@@ -70,7 +69,7 @@ new #[Layout('layouts.public')] class extends Component
 
         @guest
             <flux:text class="mb-4" size="sm">
-                ※ ログインすると、下書き（散文・アイデア）も読めるようになります。
+                ※ ログインすると、アイデア投稿も読めるようになります。
             </flux:text>
         @endguest
 
@@ -95,11 +94,7 @@ new #[Layout('layouts.public')] class extends Component
                                 <flux:text size="sm" class="mt-1">{{ $story->user?->name ?? '不明' }}</flux:text>
                             </div>
 
-                            @if ($story->status === StoryStatus::Complete)
-                                <flux:badge size="sm" color="lime">完成</flux:badge>
-                            @else
-                                <flux:badge size="sm" color="zinc">散文・アイデア</flux:badge>
-                            @endif
+                            <x-story-status-badge :status="$story->status" />
                         </div>
 
                         <flux:text class="mt-3 line-clamp-3">{{ $story->body }}</flux:text>

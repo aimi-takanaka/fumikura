@@ -50,7 +50,7 @@
                         <div class="truncate font-medium text-sumi">{{ $image->title }}</div>
                         <div class="mt-1">
                             <span class="font-bold text-sumi">完成{{ $image->completed_stories_count }}件</span>
-                            ・大喜利{{ $image->draft_stories_count }}件
+                            ・アイデア{{ $image->idea_stories_count }}件
                         </div>
                     </div>
                 </a>

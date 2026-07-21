@@ -13,6 +13,22 @@ it('shows a completed story to guests', function () {
         ->assertSee($story->body);
 });
 
+it('forbids guests from viewing an idea story', function () {
+    $story = Story::factory()->idea()->create();
+
+    $this->get(route('stories.show', $story))
+        ->assertForbidden();
+});
+
+it('allows logged-in users to view an idea story', function () {
+    $story = Story::factory()->idea()->create(['title' => 'ひらめきの一行']);
+
+    $this->actingAs(User::factory()->create())
+        ->get(route('stories.show', $story))
+        ->assertOk()
+        ->assertSee('ひらめきの一行');
+});
+
 it('forbids guests from viewing a draft story', function () {
     $story = Story::factory()->draft()->create();
 
@@ -20,13 +36,22 @@ it('forbids guests from viewing a draft story', function () {
         ->assertForbidden();
 });
 
-it('allows logged-in users to view a draft story', function () {
-    $story = Story::factory()->draft()->create(['title' => '書きかけの散文']);
+it('allows the author to view their draft story', function () {
+    $user = User::factory()->create();
+    $story = Story::factory()->for($user)->draft()->create(['title' => '書きかけの下書き']);
+
+    $this->actingAs($user)
+        ->get(route('stories.show', $story))
+        ->assertOk()
+        ->assertSee('書きかけの下書き');
+});
+
+it('forbids other logged-in users from viewing a draft story', function () {
+    $story = Story::factory()->draft()->create(['title' => '他人の下書き']);
 
     $this->actingAs(User::factory()->create())
         ->get(route('stories.show', $story))
-        ->assertOk()
-        ->assertSee('書きかけの散文');
+        ->assertForbidden();
 });
 
 it('links story cards on the image detail page to the story detail', function () {
@@ -41,4 +66,13 @@ it('links story cards on the image detail page to the story detail', function ()
 it('returns 404 for a missing story', function () {
     $this->get('/stories/999999')
         ->assertNotFound();
+});
+
+it('shows status labels on the story detail page', function () {
+    $story = Story::factory()->idea()->create();
+
+    $this->actingAs(User::factory()->create())
+        ->get(route('stories.show', $story))
+        ->assertOk()
+        ->assertSee('アイデア');
 });

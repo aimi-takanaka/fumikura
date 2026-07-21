@@ -60,7 +60,7 @@ class PaginationDemoSeeder extends Seeder
                 ->create([
                     'title' => "【ダミー】記事 {$number}",
                     'body' => "ページネーション確認用のダミー記事です。（{$number}）",
-                    'status' => $i % 2 === 0 ? StoryStatus::Complete : StoryStatus::Draft,
+                    'status' => $i % 3 === 0 ? StoryStatus::Complete : ($i % 3 === 1 ? StoryStatus::Idea : StoryStatus::Draft),
                 ]);
         }
 
