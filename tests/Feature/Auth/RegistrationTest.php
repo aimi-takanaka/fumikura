@@ -12,7 +12,9 @@ beforeEach(function () {
 test('registration screen can be rendered', function () {
     $response = $this->get(route('register'));
 
-    $response->assertOk();
+    $response->assertOk()
+        ->assertSee('文倉')
+        ->assertSee(__('Register'));
 });
 
 test('new users can register', function () {
