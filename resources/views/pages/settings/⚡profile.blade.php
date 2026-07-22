@@ -5,16 +5,19 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Flux\Flux;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 
 new #[Layout('layouts.public')] #[Title('Profile settings')] class extends Component {
-    use ProfileValidationRules;
+    use ProfileValidationRules, WithFileUploads;
 
     public string $name = '';
     public string $email = '';
+    public $avatar = null;
 
     /**
      * Mount the component.
@@ -34,7 +37,18 @@ new #[Layout('layouts.public')] #[Title('Profile settings')] class extends Compo
 
         $validated = $this->validate($this->profileRules($user->id));
 
-        $user->fill($validated);
+        if ($this->avatar) {
+            if ($user->avatar_path !== null) {
+                Storage::disk('public')->delete($user->avatar_path);
+            }
+
+            $user->avatar_path = $this->avatar->store('avatars', 'public');
+        }
+
+        $user->fill([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+        ]);
 
         if ($user->isDirty('email')) {
             $user->email_verified_at = null;
@@ -42,7 +56,29 @@ new #[Layout('layouts.public')] #[Title('Profile settings')] class extends Compo
 
         $user->save();
 
+        $this->reset('avatar');
+
         Flux::toast(variant: 'success', text: __('Profile updated.'));
+    }
+
+    /**
+     * Remove the current user's avatar.
+     */
+    public function removeAvatar(): void
+    {
+        $user = Auth::user();
+
+        if ($user->avatar_path === null) {
+            return;
+        }
+
+        Storage::disk('public')->delete($user->avatar_path);
+
+        $user->forceFill(['avatar_path' => null])->save();
+
+        $this->reset('avatar');
+
+        Flux::toast(variant: 'success', text: __('Avatar removed.'));
     }
 
     /**
@@ -82,8 +118,43 @@ new #[Layout('layouts.public')] #[Title('Profile settings')] class extends Compo
 
     <flux:heading class="sr-only">{{ __('Profile settings') }}</flux:heading>
 
-    <x-pages::settings.layout :heading="__('Profile')" :subheading="__('Update your name and email address')">
+    <x-pages::settings.layout :heading="__('Profile')" :subheading="__('Update your name, email address, and avatar')">
         <form wire:submit="updateProfileInformation" class="my-6 w-full space-y-6">
+            <div class="flex items-center gap-4">
+                <flux:avatar
+                    :name="auth()->user()->name"
+                    :initials="auth()->user()->initials()"
+                    :src="$avatar && $avatar->isPreviewable() ? $avatar->temporaryUrl() : auth()->user()->avatarUrl()"
+                    size="lg"
+                />
+
+                <div class="flex flex-col gap-2">
+                    <flux:field>
+                        <flux:label>{{ __('Avatar') }}</flux:label>
+
+                        <input
+                            type="file"
+                            wire:model="avatar"
+                            accept="image/*"
+                            class="block w-full text-sm text-sumi/70 file:mr-4 file:rounded-md file:border-0 file:bg-washi file:px-4 file:py-2 file:text-sm file:font-medium file:text-ai hover:file:bg-washi-light"
+                        />
+
+                        <flux:description>JPEG / PNG などの画像、最大2MBまで。</flux:description>
+                        <flux:error name="avatar" />
+                    </flux:field>
+
+                    @if (auth()->user()->avatar_path)
+                        <flux:button type="button" variant="ghost" size="sm" wire:click="removeAvatar" wire:confirm="アバター画像を削除しますか？">
+                            {{ __('Remove avatar') }}
+                        </flux:button>
+                    @endif
+                </div>
+            </div>
+
+            <div wire:loading wire:target="avatar" class="text-sm text-ai/70">
+                アップロード中...
+            </div>
+
             <flux:input wire:model="name" :label="__('Name')" type="text" required autofocus autocomplete="name" />
 
             <div>

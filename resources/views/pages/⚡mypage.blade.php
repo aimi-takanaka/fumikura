@@ -98,6 +98,7 @@ new #[Layout('layouts.public')] #[Title('マイページ')] class extends Compon
                 <flux:avatar
                     :name="auth()->user()->name"
                     :initials="auth()->user()->initials()"
+                    :src="auth()->user()->avatarUrl()"
                 />
                 <div>
                     <flux:heading>{{ auth()->user()->name }}</flux:heading>

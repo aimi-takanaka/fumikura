@@ -59,10 +59,13 @@ new #[Layout('layouts.public')] #[Title('マイページ')] class extends Compon
                                 <x-story-status-badge :status="$bookmark->story->status" />
                             </div>
                             <flux:heading size="lg" class="mt-2 truncate">{{ $bookmark->story->title }}</flux:heading>
-                            <flux:text size="sm" class="mt-1">
-                                {{ $bookmark->story->user?->name ?? '不明' }}
-                                ・お題「{{ $bookmark->story->image->title }}」
-                            </flux:text>
+                            <div class="mt-1 flex items-center gap-2">
+                                <x-user-avatar :user="$bookmark->story->user" />
+                                <flux:text size="sm">
+                                    {{ $bookmark->story->user?->name ?? '不明' }}
+                                    ・お題「{{ $bookmark->story->image->title }}」
+                                </flux:text>
+                            </div>
                             <flux:text class="mt-2 line-clamp-2">{{ $bookmark->story->body }}</flux:text>
                         </a>
 

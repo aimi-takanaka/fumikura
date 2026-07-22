@@ -145,6 +145,7 @@ new #[Layout('layouts.public')] class extends Component
         </div>
 
         <div class="mt-2 flex items-center gap-3">
+            <x-user-avatar :user="$story->user" />
             <flux:text size="sm">{{ $story->user?->name ?? '不明' }}</flux:text>
             <flux:text size="sm">{{ $story->created_at->format('Y年n月j日') }}</flux:text>
 
@@ -229,6 +230,7 @@ new #[Layout('layouts.public')] class extends Component
                         <div class="flex items-start justify-between gap-4">
                             <div class="min-w-0">
                                 <div class="flex items-center gap-2">
+                                    <x-user-avatar :user="$comment->user" />
                                     <flux:text class="font-medium">{{ $comment->user?->name ?? '不明' }}</flux:text>
                                     <flux:text size="sm">{{ $comment->created_at->diffForHumans() }}</flux:text>
                                 </div>

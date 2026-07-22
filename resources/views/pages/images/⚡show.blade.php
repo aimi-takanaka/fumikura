@@ -91,7 +91,10 @@ new #[Layout('layouts.public')] class extends Component
                         <div class="flex items-start justify-between gap-4">
                             <div class="min-w-0">
                                 <flux:heading size="lg" class="truncate">{{ $story->title }}</flux:heading>
-                                <flux:text size="sm" class="mt-1">{{ $story->user?->name ?? '不明' }}</flux:text>
+                                <div class="mt-1 flex items-center gap-2">
+                                    <x-user-avatar :user="$story->user" />
+                                    <flux:text size="sm">{{ $story->user?->name ?? '不明' }}</flux:text>
+                                </div>
                             </div>
 
                             <x-story-status-badge :status="$story->status" />
