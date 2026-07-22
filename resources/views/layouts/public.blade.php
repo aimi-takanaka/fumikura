@@ -26,6 +26,7 @@
                             <flux:profile
                                 :name="auth()->user()->name"
                                 :initials="auth()->user()->initials()"
+                                :avatar="auth()->user()->avatarUrl()"
                                 icon:trailing="chevrons-up-down"
                             />
 
