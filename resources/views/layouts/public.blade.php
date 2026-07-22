@@ -18,9 +18,6 @@
                                 {{ __('お題を投稿') }}
                             </flux:button>
                         @endif
-                        <flux:button :href="route('mypage')" variant="ghost" size="sm" icon="user" wire:navigate class="text-ai hover:text-shu">
-                            {{ __('マイページ') }}
-                        </flux:button>
 
                         <flux:dropdown position="bottom" align="end">
                             <flux:profile
@@ -43,6 +40,9 @@
                                     </div>
                                 </div>
                                 <flux:menu.separator />
+                                <flux:menu.item :href="route('mypage')" icon="user" wire:navigate>
+                                    {{ __('マイページ') }}
+                                </flux:menu.item>
                                 <flux:menu.item :href="route('profile.edit')" icon="cog" wire:navigate>
                                     {{ __('Settings') }}
                                 </flux:menu.item>
