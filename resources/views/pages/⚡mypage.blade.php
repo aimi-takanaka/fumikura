@@ -159,6 +159,7 @@ new #[Layout('layouts.public')] #[Title('マイページ')] class extends Compon
                                 </div>
                                 <flux:heading size="lg" class="mt-2 truncate">{{ $story->title }}</flux:heading>
                                 <flux:text size="sm" class="mt-1">お題「{{ $story->image->title }}」</flux:text>
+                                <x-topic-thumbnail :image="$story->image" />
                                 <flux:text class="mt-2 line-clamp-2">{{ $story->body }}</flux:text>
                             </a>
 

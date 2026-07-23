@@ -66,6 +66,7 @@ new #[Layout('layouts.public')] #[Title('マイページ')] class extends Compon
                                     ・お題「{{ $bookmark->story->image->title }}」
                                 </flux:text>
                             </div>
+                            <x-topic-thumbnail :image="$bookmark->story->image" />
                             <flux:text class="mt-2 line-clamp-2">{{ $bookmark->story->body }}</flux:text>
                         </a>
 

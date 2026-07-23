@@ -4,6 +4,7 @@ use App\Models\Image;
 use App\Models\Story;
 use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Livewire;
 
 it('redirects guests to login', function () {
@@ -39,6 +40,26 @@ it('shows only the current user\'s stories', function () {
         ->assertOk()
         ->assertSee('自分の物語')
         ->assertDontSee('他人の物語');
+});
+
+it('shows the topic thumbnail below the topic title on my stories', function () {
+    Storage::fake('public');
+
+    $user = User::factory()->create();
+    $image = Image::factory()->create([
+        'title' => '海辺のお題',
+        'file_path' => 'images/beach.jpg',
+    ]);
+
+    Storage::disk('public')->put('images/beach.jpg', 'image-content');
+
+    Story::factory()->for($user)->for($image)->complete()->create(['title' => '夏の物語']);
+
+    $this->actingAs($user)
+        ->get(route('mypage'))
+        ->assertOk()
+        ->assertSee('海辺のお題')
+        ->assertSee($image->url(), false);
 });
 
 it('shows an empty state when there are no stories', function () {

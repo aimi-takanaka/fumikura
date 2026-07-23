@@ -1,5 +1,7 @@
 <section @if ($showAnchor ?? false) id="topics" @endif class="border-b border-ai/15 py-8">
-    <h2 class="mb-3 text-lg font-bold text-sumi">{{ $heading ?? 'お題一覧' }}</h2>
+    @if ($showHeading ?? true)
+        <h2 class="mb-3 text-lg font-bold text-sumi">{{ $heading ?? 'お題一覧' }}</h2>
+    @endif
 
     <div class="mb-4 flex flex-wrap gap-2">
         @foreach ([

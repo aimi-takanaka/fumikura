@@ -63,8 +63,6 @@ new #[Layout('layouts.public')] class extends Component
         </div>
     </section>
 
-    @include('partials.topic-list', ['showAnchor' => true])
-
     {{-- Problem --}}
     <section class="border-b border-ai/15 py-8">
 
@@ -186,29 +184,16 @@ new #[Layout('layouts.public')] class extends Component
     </section>
 
     {{-- Sample --}}
-    <section class="border-b border-ai/15 py-8">
-        <p class="mb-2.5 text-sm font-bold uppercase tracking-widest text-ai">Sample</p>
-
-        <h2 class="mb-4 text-lg font-bold text-sumi">実際に生まれた物語（例）</h2>
-
-        @foreach ([
-            ['quote' => '「その日、扉の向こうには知らない誰かの日記が置かれていた——」', 'label' => '同じお題から生まれた物語 ①'],
-            ['quote' => '「窓の外の光が、いつもと違う色をしていることに気づいたのは……」', 'label' => '同じお題から生まれた物語 ②'],
-        ] as $sample)
-            <div @class(['grid grid-cols-[130px_1fr] items-start gap-4 rounded-lg border border-ai/15 bg-washi-light p-4', 'mb-3' => ! $loop->last])>
-                <div class="h-[90px] rounded border border-ai/15 bg-washi"></div>
-                <div class="text-sm leading-relaxed text-sumi/70">
-                    {{ $sample['quote'] }}<br>
-                    <span class="mt-2 block text-base text-ai/60">{{ $sample['label'] }}</span>
-                </div>
-            </div>
-        @endforeach
+    <section class="py-8">
+        <h2 class="mb-4 text-lg font-bold text-sumi">実際に生まれた物語</h2>
+        @include('partials.topic-list', [
+            'showAnchor' => true,
+            'showHeading' => false,
+        ])
     </section>
 
     {{-- CTA --}}
     <section class="border-b border-ai/15 py-12 text-center">
-        <p class="mb-2.5 text-sm font-bold uppercase tracking-widest text-ai">CTA</p>
-
         <p class="mb-6 text-xl font-bold text-sumi">一枚の絵から、あなたの物語をはじめよう。</p>
 
         <flux:button :href="route('register')" variant="primary" wire:navigate>

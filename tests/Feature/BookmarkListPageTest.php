@@ -1,9 +1,11 @@
 <?php
 
 use App\Models\Bookmark;
+use App\Models\Image;
 use App\Models\Story;
 use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Livewire;
 
 it('redirects guests to login', function () {
@@ -29,6 +31,27 @@ it('shows only the current user\'s bookmarked stories', function () {
         ->assertSee('自分の投稿')
         ->assertSee('お気に入り一覧')
         ->assertSee(route('mypage'), false);
+});
+
+it('shows the topic thumbnail below the topic title on bookmarked stories', function () {
+    Storage::fake('public');
+
+    $user = User::factory()->create();
+    $image = Image::factory()->create([
+        'title' => '森のお題',
+        'file_path' => 'images/forest.jpg',
+    ]);
+
+    Storage::disk('public')->put('images/forest.jpg', 'image-content');
+
+    $story = Story::factory()->for($image)->complete()->create(['title' => '森の物語']);
+    Bookmark::factory()->for($story)->for($user)->create();
+
+    $this->actingAs($user)
+        ->get(route('bookmarks'))
+        ->assertOk()
+        ->assertSee('森のお題')
+        ->assertSee($image->url(), false);
 });
 
 it('shows an empty state when there are no bookmarks', function () {

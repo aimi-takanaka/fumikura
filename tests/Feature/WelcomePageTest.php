@@ -9,7 +9,7 @@ it('shows the welcome page at the site root', function () {
         ->assertOk()
         ->assertSee('言葉に詰まったら、絵を見よう。')
         ->assertSee('無料ではじめる')
-        ->assertSee('お題一覧');
+        ->assertDontSee('お題一覧');
 });
 
 it('lets guests view the topic list with image titles on the welcome page', function () {

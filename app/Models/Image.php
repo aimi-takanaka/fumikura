@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * @property int $id
@@ -42,5 +43,21 @@ class Image extends Model
     public function stories(): HasMany
     {
         return $this->hasMany(Story::class);
+    }
+
+    /**
+     * Get the public URL for this image, if the file exists.
+     */
+    public function url(): ?string
+    {
+        if ($this->file_path === null) {
+            return null;
+        }
+
+        if (! Storage::disk('public')->exists($this->file_path)) {
+            return null;
+        }
+
+        return Storage::disk('public')->url($this->file_path);
     }
 }
