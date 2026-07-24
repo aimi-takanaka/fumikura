@@ -22,6 +22,16 @@ it('lets logged-in users view the create form', function () {
         ->assertSee('ストーリーを書く');
 });
 
+it('shows the body character count on the create form', function () {
+    $image = Image::factory()->create();
+
+    Livewire::actingAs(User::factory()->create())
+        ->test('pages::stories.create', ['image' => $image])
+        ->assertSee('0 文字')
+        ->set('body', 'テスト本文')
+        ->assertSee('5 文字');
+});
+
 it('creates a story tied to the image and the author', function () {
     $image = Image::factory()->create();
     $user = User::factory()->create();

@@ -66,13 +66,19 @@ new #[Layout('layouts.public')] #[Title('ストーリーを書く')] class exten
                 required
             />
 
-            <flux:textarea
-                wire:model="body"
-                label="本文"
-                placeholder="物語をここに書いてください..."
-                rows="12"
-                required
-            />
+            <flux:field>
+                <flux:label>本文</flux:label>
+
+                <flux:textarea
+                    wire:model.live="body"
+                    placeholder="物語をここに書いてください..."
+                    rows="12"
+                    required
+                />
+
+                <flux:description class="text-end">{{ mb_strlen($body) }} 文字</flux:description>
+                <flux:error name="body" />
+            </flux:field>
 
             <flux:radio.group wire:model="status" label="ステータス">
                 @foreach (\App\StoryStatus::cases() as $storyStatus)
