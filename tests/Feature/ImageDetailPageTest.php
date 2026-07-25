@@ -26,7 +26,7 @@ it('shows completed stories but hides idea and draft stories from guests', funct
         ->assertDontSee('下書きの物語');
 });
 
-it('shows read more with a leading space after short story bodies', function () {
+it('does not show read more when the full story body is displayed', function () {
     $image = Image::factory()->create();
     Story::factory()->for($image)->complete()->create([
         'title' => '短い物語',
@@ -36,7 +36,7 @@ it('shows read more with a leading space after short story bodies', function () 
     $this->get(route('images.show', $image))
         ->assertOk()
         ->assertSee('カメラ目線', false)
-        ->assertSee('　続きを読む', false);
+        ->assertDontSee('続きを読む', false);
 });
 
 it('shows read more inline after an ellipsis for long story bodies', function () {
@@ -69,11 +69,11 @@ it('shows read more inline after truncated multiline story bodies', function () 
 
 it('applies the character limit after truncating multiline story bodies', function () {
     $image = Image::factory()->create();
-    $thirdLine = str_repeat('う', 25);
+    $thirdLine = str_repeat('う', 40);
 
     Story::factory()->for($image)->complete()->create([
         'title' => '長い改行テスト',
-        'body' => str_repeat('あ', 25)."\n".str_repeat('い', 25)."\n".$thirdLine."\n".'4行目',
+        'body' => str_repeat('あ', 40)."\n".str_repeat('い', 40)."\n".$thirdLine."\n".'4行目',
     ]);
 
     $this->get(route('images.show', $image))
