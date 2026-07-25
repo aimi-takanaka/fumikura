@@ -67,7 +67,7 @@ new #[Layout('layouts.public')] #[Title('マイページ')] class extends Compon
                                 </flux:text>
                             </div>
                             <x-topic-thumbnail :image="$bookmark->story->image" />
-                            <flux:text class="mt-2 line-clamp-2">{{ $bookmark->story->body }}</flux:text>
+                            <x-story-read-more :body="$bookmark->story->body" :lines="2" class="mt-2" />
                         </a>
 
                         <flux:button

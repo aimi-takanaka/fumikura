@@ -100,7 +100,7 @@ new #[Layout('layouts.public')] class extends Component
                             <x-story-status-badge :status="$story->status" />
                         </div>
 
-                        <flux:text class="mt-3 line-clamp-3">{{ $story->body }}</flux:text>
+                        <x-story-read-more :body="$story->body" :lines="3" class="mt-3" />
 
                         <div class="mt-4 flex items-center gap-4">
                             <flux:text size="sm" class="flex items-center gap-1">

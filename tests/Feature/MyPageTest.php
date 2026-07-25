@@ -39,6 +39,7 @@ it('shows only the current user\'s stories', function () {
         ->get(route('mypage'))
         ->assertOk()
         ->assertSee('自分の物語')
+        ->assertSee('続きを読む')
         ->assertDontSee('他人の物語');
 });
 

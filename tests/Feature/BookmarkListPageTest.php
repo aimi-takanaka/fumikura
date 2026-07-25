@@ -27,6 +27,7 @@ it('shows only the current user\'s bookmarked stories', function () {
         ->get(route('bookmarks'))
         ->assertOk()
         ->assertSee('自分が保存した話')
+        ->assertSee('続きを読む')
         ->assertDontSee('他人が保存した話')
         ->assertSee('自分の投稿')
         ->assertSee('お気に入り一覧')
