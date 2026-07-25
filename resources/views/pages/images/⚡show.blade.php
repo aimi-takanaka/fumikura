@@ -2,6 +2,7 @@
 
 use App\Models\Image;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 new #[Layout('layouts.public')] class extends Component
@@ -14,6 +15,15 @@ new #[Layout('layouts.public')] class extends Component
     public function mount(Image $image): void
     {
         $this->image = $image->load('user');
+    }
+
+    /**
+     * Re-render the story list after comments change in the modal.
+     */
+    #[On('comments-updated')]
+    public function refreshCommentCounts(): void
+    {
+        //
     }
 
     /**
@@ -81,39 +91,46 @@ new #[Layout('layouts.public')] class extends Component
         @else
             <div class="flex flex-col gap-4">
                 @foreach ($stories as $story)
-                    <a
-                        href="{{ route('stories.show', $story) }}"
-                        wire:key="story-{{ $story->id }}"
-                        wire:navigate
-                        class="block transition hover:opacity-90"
-                    >
-                    <flux:card>
-                        <div class="flex items-start justify-between gap-4">
-                            <div class="min-w-0">
-                                <flux:heading size="lg" class="truncate">{{ $story->title }}</flux:heading>
-                                <div class="mt-1 flex items-center gap-2">
-                                    <x-user-avatar :user="$story->user" />
-                                    <flux:text size="sm">{{ $story->user?->name ?? '不明' }}</flux:text>
+                    <flux:card wire:key="story-{{ $story->id }}">
+                        <a
+                            href="{{ route('stories.show', $story) }}"
+                            wire:navigate
+                            class="block transition hover:opacity-90"
+                        >
+                            <div class="flex items-start justify-between gap-4">
+                                <div class="min-w-0">
+                                    <flux:heading size="lg" class="truncate">{{ $story->title }}</flux:heading>
+                                    <div class="mt-1 flex items-center gap-2">
+                                        <x-user-avatar :user="$story->user" />
+                                        <flux:text size="sm">{{ $story->user?->name ?? '不明' }}</flux:text>
+                                    </div>
                                 </div>
+
+                                <x-story-status-badge :status="$story->status" />
                             </div>
 
-                            <x-story-status-badge :status="$story->status" />
-                        </div>
-
-                        <x-story-read-more :body="$story->body" :lines="3" class="mt-3" />
+                            <x-story-read-more :body="$story->body" :lines="3" class="mt-3" />
+                        </a>
 
                         <div class="mt-4 flex items-center gap-4">
                             <flux:text size="sm" class="flex items-center gap-1">
                                 <flux:icon.heart variant="micro" /> {{ $story->likes_count }}
                             </flux:text>
-                            <flux:text size="sm" class="flex items-center gap-1">
-                                <flux:icon.chat-bubble-oval-left variant="micro" /> {{ $story->comments_count }}
-                            </flux:text>
+                            <flux:button
+                                wire:click="$dispatch('open-story-comments', { storyId: {{ $story->id }} })"
+                                variant="ghost"
+                                size="sm"
+                                icon="chat-bubble-oval-left"
+                                inset
+                            >
+                                {{ $story->comments_count }}
+                            </flux:button>
                         </div>
                     </flux:card>
-                    </a>
                 @endforeach
             </div>
         @endif
     </div>
+
+    <livewire:story-comments-modal />
 </div>
