@@ -26,6 +26,6 @@
         ])
         @if ($isBookmarks) aria-current="page" @endif
     >
-        お気に入り一覧
+        保存済み
     </a>
 </nav>
