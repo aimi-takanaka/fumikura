@@ -1,5 +1,6 @@
 <?php
 
+use App\Livewire\Concerns\ProofreadsStoryBody;
 use App\Models\Image;
 use App\StoryStatus;
 use Illuminate\Validation\Rule;
@@ -9,6 +10,7 @@ use Livewire\Component;
 
 new #[Layout('layouts.public')] #[Title('ストーリーを書く')] class extends Component
 {
+    use ProofreadsStoryBody;
     public Image $image;
 
     public string $title = '';
@@ -78,6 +80,8 @@ new #[Layout('layouts.public')] #[Title('ストーリーを書く')] class exten
 
                 <flux:description class="text-end">{{ mb_strlen($body) }} 文字</flux:description>
                 <flux:error name="body" />
+
+                @include('partials.story-proofreading-panel')
             </flux:field>
 
             <flux:radio.group wire:model="status" label="ステータス">

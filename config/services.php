@@ -35,4 +35,14 @@ return [
         ],
     ],
 
+    'gemini' => [
+        'key' => env('GEMINI_API_KEY'),
+        'model' => env('GEMINI_MODEL', 'gemini-flash-latest'),
+        'max_characters' => (int) env('GEMINI_MAX_CHARACTERS', 5000),
+    ],
+
+    'http' => [
+        'ca_bundle' => env('CURL_CA_BUNDLE', base_path('bootstrap/certs/cacert.pem')),
+    ],
+
 ];
