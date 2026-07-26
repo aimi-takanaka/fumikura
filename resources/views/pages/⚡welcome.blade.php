@@ -204,6 +204,10 @@ new #[Layout('layouts.public')] class extends Component
     {{-- Footer --}}
     <footer class="flex flex-col gap-2 py-6 text-base text-ai/70 sm:flex-row sm:items-center sm:justify-between">
         <span>© 文倉</span>
-        <span>利用規約　プライバシーポリシー　お問い合わせ</span>
+        <div class="flex flex-wrap gap-x-4 gap-y-1">
+            <flux:link :href="route('terms')" wire:navigate>利用規約</flux:link>
+            <span>プライバシーポリシー</span>
+            <span>お問い合わせ</span>
+        </div>
     </footer>
 </div>
