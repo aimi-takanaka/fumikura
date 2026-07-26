@@ -206,7 +206,7 @@ new #[Layout('layouts.public')] class extends Component
         <span>© 文倉</span>
         <div class="flex flex-wrap gap-x-4 gap-y-1">
             <flux:link :href="route('terms')" wire:navigate>利用規約</flux:link>
-            <span>プライバシーポリシー</span>
+            <flux:link :href="route('privacy')" wire:navigate>プライバシーポリシー</flux:link>
             <span>お問い合わせ</span>
         </div>
     </footer>

@@ -163,7 +163,9 @@ new #[Layout('layouts.public')] #[Title('利用規約')] class extends Component
         <section>
             <flux:heading size="lg">第11条（個人情報の取扱い）</flux:heading>
             <flux:text class="mt-3 leading-relaxed">
-                運営者は、本サービスの利用によって取得する個人情報については、別途定める「プライバシーポリシー」に従い適切に取り扱うものとします。
+                運営者は、本サービスの利用によって取得する個人情報については、別途定める
+                <flux:link :href="route('privacy')" wire:navigate>プライバシーポリシー</flux:link>
+                に従い適切に取り扱うものとします。
             </flux:text>
         </section>
 
