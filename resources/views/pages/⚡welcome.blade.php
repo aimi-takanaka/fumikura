@@ -92,33 +92,41 @@ new #[Layout('layouts.public')] class extends Component
 
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div class="rounded-lg border border-ai/15 bg-washi-light px-4 py-5 text-center">
-                <div class="mx-auto mb-3 flex size-10 items-center justify-center rounded-full border-2 border-shu">
-                    <x-app-logo-icon class="size-5" />
-                </div>
+                <img
+                    src="{{ asset('img/welcome/features-1.png') }}"
+                    alt="言葉より想像しやすい"
+                    class="mx-auto mb-3 h-56 w-auto object-contain"
+                />
                 <h3 class="mb-2 text-base font-bold text-sumi">言葉より想像しやすい</h3>
                 <p class="m-0 text-base leading-relaxed text-sumi/70">絵は物語の空気や感情を先に連れてきてくれる</p>
             </div>
 
             <div class="rounded-lg border border-ai/15 bg-washi-light px-4 py-5 text-center">
-                <div class="mx-auto mb-3 flex size-10 items-center justify-center rounded-full border-2 border-shu">
-                    <flux:icon.pencil-square variant="micro" class="size-4 text-ai" />
-                </div>
+                <img
+                    src="{{ asset('img/welcome/features-2.png') }}"
+                    alt="書き出しに迷わない"
+                    class="mx-auto mb-3 h-56 w-auto object-contain"
+                />
                 <h3 class="mb-2 text-base font-bold text-sumi">書き出しに迷わない</h3>
                 <p class="m-0 text-base leading-relaxed text-sumi/70">目の前の一枚が、そのまま創作のきっかけになる</p>
             </div>
 
             <div class="rounded-lg border border-ai/15 bg-washi-light px-4 py-5 text-center">
-                <div class="mx-auto mb-3 flex size-10 items-center justify-center rounded-full border-2 border-shu">
-                    <flux:icon.book-open variant="micro" class="size-4 text-ai" />
-                </div>
+                <img
+                    src="{{ asset('img/welcome/features-3.png') }}"
+                    alt="物語は書く人の数だけ広がる"
+                    class="mx-auto mb-3 h-56 w-auto object-contain"
+                />
                 <h3 class="mb-2 text-base font-bold text-sumi">物語は書く人の数だけ広がる</h3>
                 <p class="m-0 text-base leading-relaxed text-sumi/70">同じ絵でも解釈は無限。読むことも創作の刺激になる</p>
             </div>
 
             <div class="rounded-lg border border-ai/15 bg-washi-light px-4 py-5 text-center">
-                <div class="mx-auto mb-3 flex size-10 items-center justify-center rounded-full border-2 border-shu">
-                    <flux:icon.chat-bubble-left-ellipsis variant="micro" class="size-4 text-ai" />
-                </div>
+                <img
+                    src="{{ asset('img/welcome/features-4.png') }}"
+                    alt="物語にしなくても参加できる"
+                    class="mx-auto mb-3 h-56 w-auto object-contain"
+                />
                 <h3 class="mb-2 text-base font-bold text-sumi">物語にしなくても参加できる</h3>
                 <p class="m-0 text-base leading-relaxed text-sumi/70">ひとことのアイデア投稿だけでもOK。みんなの発想が次の一歩のヒントになる</p>
             </div>
