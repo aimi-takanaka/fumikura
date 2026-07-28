@@ -8,7 +8,17 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Kaisei+Tokumin:wght@400;500&family=Noto+Sans+JP:wght@400;500;700&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+
+<script>
+    (function () {
+        var font = localStorage.getItem('story-body-font');
+
+        if (font === 'zen-maru' || font === 'kaisei-tokumin') {
+            document.documentElement.dataset.storyBodyFont = font;
+        }
+    })();
+</script>
 
 @fonts
 

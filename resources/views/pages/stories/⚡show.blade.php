@@ -169,7 +169,11 @@ new #[Layout('layouts.public')] class extends Component
 
         <flux:separator class="my-6" />
 
-        <div class="leading-relaxed whitespace-pre-line">{{ $story->body }}</div>
+        <div class="mb-3 flex justify-end">
+            <x-story-body-font-picker />
+        </div>
+
+        <div class="story-body leading-relaxed whitespace-pre-line">{{ $story->body }}</div>
 
         <div class="mt-8 flex items-center gap-4">
             @auth

@@ -76,3 +76,16 @@ it('shows status labels on the story detail page', function () {
         ->assertOk()
         ->assertSee('アイデア');
 });
+
+it('shows a story body font picker and story body class on the story detail page', function () {
+    $story = Story::factory()->complete()->create();
+
+    $this->get(route('stories.show', $story))
+        ->assertOk()
+        ->assertSee('フォント変更')
+        ->assertSee('Noto Sans JP（標準）')
+        ->assertSee('Zen Maru Gothic（丸ゴシック）')
+        ->assertSee('Kaisei Tokumin（明朝）')
+        ->assertSee('class="story-body leading-relaxed whitespace-pre-line"', false)
+        ->assertSee('story-body-font', false);
+});

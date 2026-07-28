@@ -50,6 +50,18 @@
     ::file-selector-button {
         border-color: color-mix(in srgb, var(--color-ai) 15%, transparent);
     }
+
+    .story-body {
+        font-family: 'Noto Sans JP', sans-serif;
+    }
+
+    html[data-story-body-font='zen-maru'] .story-body {
+        font-family: 'Zen Maru Gothic', sans-serif;
+    }
+
+    html[data-story-body-font='kaisei-tokumin'] .story-body {
+        font-family: 'Kaisei Tokumin', serif;
+    }
 }
 
 [data-flux-field]:not(ui-radio, ui-checkbox) {
