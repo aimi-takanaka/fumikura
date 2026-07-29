@@ -1,7 +1,9 @@
 <?php
 
+use App\Livewire\Concerns\EncouragesStorySubmission;
 use App\Livewire\Concerns\ProofreadsStoryBody;
 use App\Models\Image;
+use App\Services\GeminiProofreadingService;
 use App\StoryStatus;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Layout;
@@ -10,6 +12,7 @@ use Livewire\Component;
 
 new #[Layout('layouts.public')] #[Title('ストーリーを書く')] class extends Component
 {
+    use EncouragesStorySubmission;
     use ProofreadsStoryBody;
     public Image $image;
 
@@ -30,7 +33,7 @@ new #[Layout('layouts.public')] #[Title('ストーリーを書く')] class exten
     /**
      * Validate the input and store the new story.
      */
-    public function save(): void
+    public function save(GeminiProofreadingService $gemini): void
     {
         $validated = $this->validate([
             'title' => 'required|string|max:255',
@@ -42,6 +45,15 @@ new #[Layout('layouts.public')] #[Title('ストーリーを書く')] class exten
             ...$validated,
             'user_id' => auth()->id(),
         ]);
+
+        $this->flashFumiEncouragement(
+            $this->fetchFumiEncouragement(
+                $gemini,
+                StoryStatus::from($validated['status']),
+                $this->image->title,
+                $validated['body'],
+            ),
+        );
 
         session()->flash('status', 'ストーリーを投稿しました。');
 

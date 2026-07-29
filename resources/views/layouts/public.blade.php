@@ -79,6 +79,8 @@
                 </flux:callout>
             @endif
 
+            @include('partials.fumi-encouragement-callout')
+
             {{ $slot }}
         </main>
 

@@ -1,6 +1,7 @@
 <?php
 
 use App\Services\GeminiProofreadingService;
+use App\StoryStatus;
 use Illuminate\Support\Facades\Http;
 
 beforeEach(function () {
@@ -69,4 +70,59 @@ it('uses the configured ca bundle for outbound requests', function () {
     expect($result)->toBe('誤字・脱字は見つかりませんでした。');
 
     unlink($caBundle);
+});
+
+it('returns encouragement for a completed story from gemini', function () {
+    Http::fake([
+        'generativelanguage.googleapis.com/*' => Http::response([
+            'candidates' => [
+                [
+                    'content' => [
+                        'parts' => [
+                            ['text' => '灯台の光が印象的だね！完成おめでとう！'],
+                        ],
+                    ],
+                ],
+            ],
+        ]),
+    ]);
+
+    $result = app(GeminiProofreadingService::class)->encourageStory(
+        StoryStatus::Complete,
+        '海辺の灯台',
+        'その夜、灯台の光は消えた。',
+    );
+
+    expect($result)->toBe('灯台の光が印象的だね！完成おめでとう！');
+});
+
+it('builds status-specific encouragement prompts for gemini', function () {
+    Http::fake([
+        'generativelanguage.googleapis.com/*' => Http::response([
+            'candidates' => [
+                [
+                    'content' => [
+                        'parts' => [
+                            ['text' => 'ふみより'],
+                        ],
+                    ],
+                ],
+            ],
+        ]),
+    ]);
+
+    app(GeminiProofreadingService::class)->encourageStory(
+        StoryStatus::Idea,
+        '森の小道',
+        '鹿が道標を見上げている。',
+    );
+
+    Http::assertSent(function ($request) {
+        $prompt = data_get($request->data(), 'contents.0.parts.0.text');
+
+        return is_string($prompt)
+            && str_contains($prompt, 'ウサギの「ふみ」')
+            && str_contains($prompt, '【お題タイトル】森の小道')
+            && str_contains($prompt, '【アイデア投稿】鹿が道標を見上げている。');
+    });
 });
