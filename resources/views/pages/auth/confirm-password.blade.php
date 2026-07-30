@@ -11,15 +11,6 @@
             <div class="flex flex-col gap-6">
                 <x-auth-session-status class="text-center text-shu" :status="session('status')" />
 
-                <x-passkey-verify
-                    variant="fumikura"
-                    options-route="passkey.confirm-options"
-                    submit-route="passkey.confirm"
-                    :label="__('Confirm with passkey')"
-                    :loading-label="__('Confirming...')"
-                    :separator="__('Or confirm with password')"
-                />
-
                 <form method="POST" action="{{ route('password.confirm.store') }}" class="flex flex-col gap-6">
                     @csrf
 

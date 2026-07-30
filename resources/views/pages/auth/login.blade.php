@@ -11,8 +11,6 @@
             <div class="flex flex-col gap-6">
                 <x-auth-session-status class="text-center text-shu" :status="session('status')" />
 
-                <x-passkey-verify variant="fumikura" />
-
                 <form method="POST" action="{{ route('login.store') }}" class="flex flex-col gap-6">
                     @csrf
 
