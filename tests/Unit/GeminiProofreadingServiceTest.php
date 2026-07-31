@@ -39,11 +39,12 @@ it('throws when the gemini api key is missing', function () {
 
 it('throws when the gemini api request fails', function () {
     Http::fake([
-        'generativelanguage.googleapis.com/*' => Http::response([], 500),
+        'generativelanguage.googleapis.com/*' => Http::response(['error' => ['message' => 'boom']], 500),
     ]);
 
-    app(GeminiProofreadingService::class)->checkTypos('テスト');
-})->throws(RuntimeException::class, 'Gemini API request failed.');
+    expect(fn () => app(GeminiProofreadingService::class)->checkTypos('テスト'))
+        ->toThrow(RuntimeException::class, 'Gemini API request failed. {"error":{"message":"boom"}}');
+});
 
 it('uses the configured ca bundle for outbound requests', function () {
     $caBundle = storage_path('app/test-cacert.pem');

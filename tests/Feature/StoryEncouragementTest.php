@@ -138,3 +138,24 @@ it('rate limits fumi encouragement requests per user', function () {
         ->call('save')
         ->assertSessionMissing('fumi_message');
 });
+
+it('does not consume the encouragement rate limit when gemini fails', function () {
+    Http::fake([
+        'generativelanguage.googleapis.com/*' => Http::response([], 500),
+    ]);
+
+    $image = Image::factory()->create();
+    $user = User::factory()->create();
+
+    RateLimiter::clear('story-encouragement:'.$user->id);
+
+    Livewire::actingAs($user)
+        ->test('pages::stories.create', ['image' => $image])
+        ->set('title', '失敗')
+        ->set('body', '本文です。')
+        ->set('status', 'complete')
+        ->call('save')
+        ->assertSessionMissing('fumi_message');
+
+    expect(RateLimiter::attempts('story-encouragement:'.$user->id))->toBe(0);
+});

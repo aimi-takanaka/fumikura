@@ -32,15 +32,17 @@ trait EncouragesStorySubmission
             return null;
         }
 
-        RateLimiter::hit($rateLimitKey, 60);
-
         try {
-            return $gemini->encourageStory($status, $topicTitle, $body);
+            $message = $gemini->encourageStory($status, $topicTitle, $body);
         } catch (RuntimeException $exception) {
             report($exception);
 
             return null;
         }
+
+        RateLimiter::hit($rateLimitKey, 60);
+
+        return $message;
     }
 
     /**

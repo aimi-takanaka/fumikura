@@ -45,6 +45,9 @@ class GeminiProofreadingService
                 ->withHeaders([
                     'x-goog-api-key' => $apiKey,
                 ])
+                ->retry(2, 500, function ($exception) {
+                    return $exception instanceof ConnectionException;
+                }, throw: false)
                 ->post($url, [
                     'contents' => [
                         [
@@ -59,7 +62,11 @@ class GeminiProofreadingService
         }
 
         if ($response->failed()) {
-            throw new RuntimeException('Gemini API request failed.');
+            $details = trim($response->body());
+
+            throw new RuntimeException(
+                'Gemini API request failed.'.($details !== '' ? ' '.$details : ''),
+            );
         }
 
         $text = data_get($response->json(), 'candidates.0.content.parts.0.text');
