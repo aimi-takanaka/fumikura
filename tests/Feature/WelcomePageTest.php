@@ -69,6 +69,14 @@ it('shows my page illustrations on the welcome page', function () {
         ->assertSee('img/welcome/MyPage-3.PNG', false);
 });
 
+it('shows how it works illustrations on the welcome page', function () {
+    $this->get(route('home'))
+        ->assertOk()
+        ->assertSee('img/welcome/How-1.PNG', false)
+        ->assertSee('img/welcome/How-2.PNG', false)
+        ->assertSee('img/welcome/How-3.PNG', false);
+});
+
 it('redirects authenticated users to the topic list', function () {
     $this->actingAs(User::factory()->create());
 

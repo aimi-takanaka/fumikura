@@ -210,16 +210,27 @@ new #[Layout('layouts.public')] class extends Component
 
         <h2 class="mb-6 text-lg font-bold text-sumi">はじめかた</h2>
 
-        <div class="flex items-center justify-center">
-            @foreach (['お題の絵を見る', '物語を書く', '公開してみんなに読んでもらう'] as $step)
+        <div class="flex items-start justify-center">
+            @foreach ([
+                ['お題の絵を見る', 'How-1.PNG', 'w-[140px]', 'h-36', 'max-h-36'],
+                ['物語を書く', 'How-2.PNG', 'w-[180px]', 'h-44', 'max-h-50'],
+                ['公開！！', 'How-3.PNG', 'w-[140px]', 'h-36', 'max-h-36'],
+            ] as $step)
                 @if (! $loop->first)
-                    <div class="px-3 text-lg text-ai/30">›</div>
+                    <div class="px-3 pt-16 text-lg text-ai/30">›</div>
                 @endif
-                <div class="w-[140px] text-center">
+                <div class="{{ $step[2] }} text-center">
+                    <div class="mx-auto mb-3 flex {{ $step[3] }} items-end justify-center">
+                        <img
+                            src="{{ asset('img/welcome/'.$step[1]) }}"
+                            alt="{{ $step[0] }}"
+                            class="{{ $step[4] }} w-auto object-contain"
+                        />
+                    </div>
                     <div class="mx-auto mb-2 flex size-8 items-center justify-center rounded-full bg-ai text-sm text-washi-light">
                         {{ $loop->iteration }}
                     </div>
-                    <p class="m-0 text-base text-sumi/70">{{ $step }}</p>
+                    <p class="m-0 text-base text-sumi/70">{{ $step[0] }}</p>
                 </div>
             @endforeach
         </div>
