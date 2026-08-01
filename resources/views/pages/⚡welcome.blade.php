@@ -218,16 +218,16 @@ new #[Layout('layouts.public')] class extends Component
             ];
         @endphp
 
-        <div class="mx-auto grid max-w-2xl grid-cols-[1fr_auto_1fr_auto_1fr] items-end gap-x-3">
+        <div class="mx-auto grid max-w-xl grid-cols-[1fr_auto_1fr_auto_1fr] items-end gap-x-3">
             @foreach ($howSteps as $index => $step)
                 @if ($index > 0)
                     <div class="pb-2 text-center text-lg text-ai/30">›</div>
                 @endif
-                <div class="flex h-52 items-end justify-center">
+                <div class="flex h-36 items-end justify-center">
                     <img
                         src="{{ asset('img/welcome/'.$step[1]) }}"
                         alt="{{ $step[0] }}"
-                        class="h-full w-auto max-w-full object-contain object-bottom"
+                        class="max-h-36 w-auto max-w-full object-contain object-bottom"
                     />
                 </div>
             @endforeach
@@ -276,7 +276,7 @@ new #[Layout('layouts.public')] class extends Component
         <div class="flex flex-wrap gap-x-4 gap-y-1">
             <flux:link :href="route('terms')" wire:navigate>利用規約</flux:link>
             <flux:link :href="route('privacy')" wire:navigate>プライバシーポリシー</flux:link>
-            <span>お問い合わせ</span>
+            <flux:link :href="route('contact')" wire:navigate>お問い合わせ</flux:link>
         </div>
     </footer>
 </div>
