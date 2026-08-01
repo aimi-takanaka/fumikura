@@ -151,29 +151,55 @@ new #[Layout('layouts.public')] class extends Component
             アイデア → 下書き → 完成と、少しずつ育てていけます。
         </p>
 
-        <div class="flex items-center justify-center">
+        <div class="flex items-start justify-center">
             <div class="w-[140px] text-center">
+                <div class="mx-auto mb-3 flex h-36 items-end justify-center">
+                    <img
+                        src="{{ asset('img/welcome/MyPage-1.PNG') }}"
+                        alt="アイデア"
+                        class="max-h-36 w-auto object-contain"
+                    />
+                </div>
                 <div class="mx-auto mb-2 flex size-8 items-center justify-center rounded-full bg-ai text-sm text-washi-light">1</div>
                 <p class="m-0 text-base leading-relaxed text-sumi/70">
-                    アイデア<br><span class="text-ai/60">(ログイン済みなら閲覧可)</span>
+                    アイデア<br>
+                    <span class="text-sm text-ai/60">(みんなで見れる)</span><br>
+                    <span class="text-xs text-ai/60">※ログイン必須</span>
                 </p>
             </div>
 
             <div class="px-3 text-lg text-ai/30"></div>
 
             <div class="w-[140px] text-center">
+                <div class="mx-auto mb-3 flex h-36 items-end justify-center">
+                    <img
+                        src="{{ asset('img/welcome/MyPage-2.PNG') }}"
+                        alt="下書き"
+                        class="max-h-36 w-auto object-contain"
+                    />
+                </div>
                 <div class="mx-auto mb-2 flex size-8 items-center justify-center rounded-full bg-sumi text-sm text-washi-light">2</div>
                 <p class="m-0 text-base leading-relaxed text-sumi/70">
-                    下書き<br><span class="text-ai/60">(本人のみ)</span>
+                    下書き<br>
+                    <span class="text-sm text-ai/60">(本人のみ)</span>
                 </p>
             </div>
 
             <div class="px-3 text-lg text-ai/30"></div>
 
             <div class="w-[140px] text-center">
+                <div class="mx-auto mb-3 flex h-36 items-end justify-center">
+                    <img
+                        src="{{ asset('img/welcome/MyPage-3.PNG') }}"
+                        alt="完成"
+                        class="max-h-36 w-auto object-contain"
+                    />
+                </div>
                 <div class="mx-auto mb-2 flex size-8 items-center justify-center rounded-full bg-shu text-sm text-washi-light">3</div>
                 <p class="m-0 text-base leading-relaxed text-sumi/70">
-                    完成<br><span class="text-ai/60">(誰でも閲覧可)</span>
+                    完成<br>
+                    <span class="text-sm text-ai/60">(誰でも見れる)</span><br>
+                    <span class="text-xs text-ai/60">※ログイン不要</span>
                 </p>
             </div>
         </div>
