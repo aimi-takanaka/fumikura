@@ -210,28 +210,44 @@ new #[Layout('layouts.public')] class extends Component
 
         <h2 class="mb-6 text-lg font-bold text-sumi">はじめかた</h2>
 
-        <div class="flex items-start justify-center">
-            @foreach ([
-                ['お題の絵を見る', 'How-1.PNG', 'w-[140px]', 'h-36', 'max-h-36'],
-                ['物語を書く', 'How-2.PNG', 'w-[180px]', 'h-44', 'max-h-50'],
-                ['公開！！', 'How-3.PNG', 'w-[140px]', 'h-36', 'max-h-36'],
-            ] as $step)
-                @if (! $loop->first)
-                    <div class="px-3 pt-16 text-lg text-ai/30">›</div>
+        @php
+            $howSteps = [
+                ['お題の絵を見る', 'How-1.PNG'],
+                ['物語を書く', 'How-2.PNG'],
+                ['公開！！', 'How-3.PNG'],
+            ];
+        @endphp
+
+        <div class="mx-auto grid max-w-2xl grid-cols-[1fr_auto_1fr_auto_1fr] items-end gap-x-3">
+            @foreach ($howSteps as $index => $step)
+                @if ($index > 0)
+                    <div class="pb-2 text-center text-lg text-ai/30">›</div>
                 @endif
-                <div class="{{ $step[2] }} text-center">
-                    <div class="mx-auto mb-3 flex {{ $step[3] }} items-end justify-center">
-                        <img
-                            src="{{ asset('img/welcome/'.$step[1]) }}"
-                            alt="{{ $step[0] }}"
-                            class="{{ $step[4] }} w-auto object-contain"
-                        />
-                    </div>
-                    <div class="mx-auto mb-2 flex size-8 items-center justify-center rounded-full bg-ai text-sm text-washi-light">
-                        {{ $loop->iteration }}
-                    </div>
-                    <p class="m-0 text-base text-sumi/70">{{ $step[0] }}</p>
+                <div class="flex h-52 items-end justify-center">
+                    <img
+                        src="{{ asset('img/welcome/'.$step[1]) }}"
+                        alt="{{ $step[0] }}"
+                        class="h-full w-auto max-w-full object-contain object-bottom"
+                    />
                 </div>
+            @endforeach
+
+            @foreach ($howSteps as $index => $step)
+                @if ($index > 0)
+                    <div></div>
+                @endif
+                <div class="mt-3 flex justify-center">
+                    <div class="flex size-8 items-center justify-center rounded-full bg-ai text-sm text-washi-light">
+                        {{ $index + 1 }}
+                    </div>
+                </div>
+            @endforeach
+
+            @foreach ($howSteps as $index => $step)
+                @if ($index > 0)
+                    <div></div>
+                @endif
+                <p class="mt-2 text-center text-base text-sumi/70">{{ $step[0] }}</p>
             @endforeach
         </div>
     </section>
