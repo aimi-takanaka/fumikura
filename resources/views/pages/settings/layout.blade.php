@@ -1,5 +1,5 @@
-<div class="flex items-start max-md:flex-col">
-    <div class="me-10 flex w-full flex-col pb-4 md:w-[220px]">
+<div class="flex items-stretch max-md:flex-col">
+    <div class="flex w-full flex-col pb-4 md:w-[220px] md:shrink-0 md:border-e md:border-ai/15 md:pe-10 md:me-10">
         <flux:navlist aria-label="{{ __('Settings') }}" class="text-ai">
             <flux:navlist.item :href="route('profile.edit')" wire:navigate>{{ __('Profile') }}</flux:navlist.item>
             <flux:navlist.item :href="route('security.edit')" wire:navigate>{{ __('Security') }}</flux:navlist.item>
@@ -21,7 +21,7 @@
 
     <flux:separator class="border-ai/15 md:hidden" />
 
-    <div class="flex-1 self-stretch max-md:pt-6">
+    <div class="flex-1 max-md:pt-6">
         <flux:heading class="text-sumi">{{ $heading ?? '' }}</flux:heading>
         <flux:subheading class="text-sumi/70">{{ $subheading ?? '' }}</flux:subheading>
 
