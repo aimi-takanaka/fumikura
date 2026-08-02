@@ -92,7 +92,19 @@ new #[Layout('layouts.public')] #[Title('マイページ')] class extends Compon
     <flux:separator class="my-6" />
 
     <section>
-        <flux:heading size="lg">プロフィール</flux:heading>
+        <div class="flex items-center gap-2">
+            <flux:heading size="lg">プロフィール</flux:heading>
+            <flux:button
+                :href="route('profile.edit')"
+                variant="ghost"
+                size="sm"
+                icon="cog"
+                wire:navigate
+                data-test="mypage-settings-button"
+            >
+                {{ __('Settings') }}
+            </flux:button>
+        </div>
         <flux:card class="mt-4">
             <div class="flex items-center gap-4">
                 <flux:avatar

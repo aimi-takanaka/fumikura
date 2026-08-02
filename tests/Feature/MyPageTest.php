@@ -24,8 +24,10 @@ it('shows the current user profile', function () {
         ->assertSee('山田太郎')
         ->assertSee('taro@example.com')
         ->assertSee('自分の投稿')
-        ->assertSee('お気に入り一覧')
-        ->assertSee(route('bookmarks'), false);
+        ->assertSee('保存済み')
+        ->assertSee(route('bookmarks'), false)
+        ->assertSee('設定')
+        ->assertSee(route('profile.edit'), false);
 });
 
 it('shows only the current user\'s stories', function () {
