@@ -127,3 +127,115 @@ it('builds status-specific encouragement prompts for gemini', function () {
             && str_contains($prompt, '【アイデア投稿】鹿が道標を見上げている。');
     });
 });
+
+it('returns another story suggestions from gemini json', function () {
+    $payload = json_encode([
+        'suggestions' => [
+            [
+                'viewpoint' => 'ヒロインの妹',
+                'hook' => '彼女は窓の外で全部見ていた',
+                'comment' => '同じ夜を、妹の目で読むと景色ががらっと変わりそうだよ！',
+            ],
+        ],
+    ], JSON_UNESCAPED_UNICODE);
+
+    Http::fake([
+        'generativelanguage.googleapis.com/*' => Http::response([
+            'candidates' => [
+                [
+                    'content' => [
+                        'parts' => [
+                            ['text' => $payload],
+                        ],
+                    ],
+                ],
+            ],
+        ]),
+    ]);
+
+    $result = app(GeminiProofreadingService::class)->suggestAnotherStories(
+        '雨上がりの駅',
+        '彼はホームで傘を差し出した。',
+    );
+
+    expect($result)->toHaveCount(1)
+        ->and($result[0]['viewpoint'])->toBe('ヒロインの妹')
+        ->and($result[0]['hook'])->toBe('彼女は窓の外で全部見ていた')
+        ->and($result[0]['comment'])->toBe('同じ夜を、妹の目で読むと景色ががらっと変わりそうだよ！');
+
+    Http::assertSent(function ($request) {
+        $prompt = data_get($request->data(), 'contents.0.parts.0.text');
+        $mimeType = data_get($request->data(), 'generationConfig.responseMimeType');
+
+        return is_string($prompt)
+            && str_contains($prompt, '別の視点から見た物語のアイデア')
+            && str_contains($prompt, '【お題タイトル】雨上がりの駅')
+            && str_contains($prompt, '【完成した物語】彼はホームで傘を差し出した。')
+            && $mimeType === 'application/json';
+    });
+});
+
+it('parses fenced json for another story suggestions', function () {
+    $payload = <<<'JSON'
+```json
+{
+  "suggestions": [
+    {
+      "viewpoint": "駅の猫",
+      "hook": "ベンチの下から見ていた夜",
+      "comment": "人間には見えない細部が、猫視点だと浮かび上がりそうだね！"
+    }
+  ]
+}
+```
+JSON;
+
+    Http::fake([
+        'generativelanguage.googleapis.com/*' => Http::response([
+            'candidates' => [
+                [
+                    'content' => [
+                        'parts' => [
+                            ['text' => $payload],
+                        ],
+                    ],
+                ],
+            ],
+        ]),
+    ]);
+
+    $result = app(GeminiProofreadingService::class)->suggestAnotherStories('雨上がりの駅', '物語本文');
+
+    expect($result)->toHaveCount(1)
+        ->and($result[0]['viewpoint'])->toBe('駅の猫');
+});
+
+it('limits another story suggestions to two items', function () {
+    $payload = json_encode([
+        'suggestions' => [
+            ['viewpoint' => 'A', 'hook' => 'フック1', 'comment' => 'コメント1'],
+            ['viewpoint' => 'B', 'hook' => 'フック2', 'comment' => 'コメント2'],
+            ['viewpoint' => 'C', 'hook' => 'フック3', 'comment' => 'コメント3'],
+        ],
+    ], JSON_UNESCAPED_UNICODE);
+
+    Http::fake([
+        'generativelanguage.googleapis.com/*' => Http::response([
+            'candidates' => [
+                [
+                    'content' => [
+                        'parts' => [
+                            ['text' => $payload],
+                        ],
+                    ],
+                ],
+            ],
+        ]),
+    ]);
+
+    $result = app(GeminiProofreadingService::class)->suggestAnotherStories('お題', '本文');
+
+    expect($result)->toHaveCount(2)
+        ->and($result[0]['viewpoint'])->toBe('A')
+        ->and($result[1]['viewpoint'])->toBe('B');
+});

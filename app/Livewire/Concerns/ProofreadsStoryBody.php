@@ -2,6 +2,8 @@
 
 namespace App\Livewire\Concerns;
 
+use App\Models\Image;
+use App\Models\Story;
 use App\Services\GeminiProofreadingService;
 use Illuminate\Support\Facades\RateLimiter;
 use RuntimeException;
@@ -11,11 +13,17 @@ trait ProofreadsStoryBody
     public ?string $proofreadingResult = null;
 
     /**
-     * Clear the proofreading result when the body changes.
+     * @var list<array{viewpoint: string, hook: string, comment: string}>
+     */
+    public array $anotherStorySuggestions = [];
+
+    /**
+     * Clear AI helper results when the body changes.
      */
     public function updatedBody(): void
     {
         $this->proofreadingResult = null;
+        $this->anotherStorySuggestions = [];
     }
 
     /**
@@ -55,10 +63,73 @@ trait ProofreadsStoryBody
     }
 
     /**
+     * Suggest alternate-viewpoint stories using Gemini.
+     */
+    public function suggestAnotherStories(GeminiProofreadingService $proofreadingService): void
+    {
+        $this->validate([
+            'body' => 'required|string|max:'.config('services.gemini.max_characters', 5000),
+        ]);
+
+        $rateLimitKey = 'story-another-suggestions:'.auth()->id();
+
+        if (RateLimiter::tooManyAttempts($rateLimitKey, 5)) {
+            $seconds = RateLimiter::availableIn($rateLimitKey);
+
+            $this->addError('body', "アナザーストーリーの提案は1分あたり5回までです。{$seconds}秒後に再試行してください。");
+
+            return;
+        }
+
+        RateLimiter::hit($rateLimitKey, 60);
+
+        try {
+            $this->anotherStorySuggestions = $proofreadingService->suggestAnotherStories(
+                $this->resolveTopicTitle(),
+                $this->body,
+            );
+        } catch (RuntimeException $exception) {
+            report($exception);
+
+            $message = 'アナザーストーリーの提案に失敗しました。しばらくしてから再度お試しください。';
+
+            if (app()->isLocal() && str_contains($exception->getMessage(), 'cURL error 60')) {
+                $message = 'アナザーストーリーの提案に失敗しました。PHPのSSL証明書設定（curl.cainfo）を確認してください。';
+            }
+
+            $this->addError('body', $message);
+        }
+    }
+
+    /**
      * Hide the proofreading result panel.
      */
     public function dismissProofreadingResult(): void
     {
         $this->proofreadingResult = null;
+    }
+
+    /**
+     * Hide the another-story suggestions panel.
+     */
+    public function dismissAnotherStorySuggestions(): void
+    {
+        $this->anotherStorySuggestions = [];
+    }
+
+    /**
+     * Resolve the topic title from the create or edit page component.
+     */
+    private function resolveTopicTitle(): string
+    {
+        if (property_exists($this, 'image') && $this->image instanceof Image) {
+            return $this->image->title;
+        }
+
+        if (property_exists($this, 'story') && $this->story instanceof Story) {
+            return $this->story->image->title;
+        }
+
+        return '';
     }
 }
