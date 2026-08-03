@@ -47,14 +47,27 @@
 
     @if (count($anotherStorySuggestions) > 0)
         <flux:callout color="lime" class="mt-3">
-            <flux:callout.heading>アナザーストーリーの提案</flux:callout.heading>
+            <flux:callout.heading>ふみの提案</flux:callout.heading>
             <flux:callout.text>
-                <ul class="mt-2 space-y-4">
-                    @foreach ($anotherStorySuggestions as $suggestion)
-                        <li class="space-y-1">
-                            <p class="font-medium text-zinc-800 dark:text-zinc-100">視点：{{ $suggestion['viewpoint'] }}</p>
-                            <p class="text-zinc-700 dark:text-zinc-200">「{{ $suggestion['hook'] }}」</p>
+                <ul class="mt-2 space-y-5">
+                    @foreach ($anotherStorySuggestions as $index => $suggestion)
+                        <li class="space-y-2">
+                            <p class="font-medium text-zinc-800 dark:text-zinc-100">
+                                「{{ $suggestion['viewpoint'] }}」視点はいかがでしょうか？
+                            </p>
+                            <p class="text-zinc-700 dark:text-zinc-200">{{ $suggestion['hook'] }}</p>
                             <p class="text-sm text-zinc-600 dark:text-zinc-300">{{ $suggestion['comment'] }}</p>
+                            <flux:button
+                                type="button"
+                                wire:click="startAnotherStoryDraft({{ $index }})"
+                                variant="primary"
+                                size="sm"
+                                icon="pencil-square"
+                                wire:loading.attr="disabled"
+                                wire:target="startAnotherStoryDraft"
+                            >
+                                この視点で書いてみる
+                            </flux:button>
                         </li>
                     @endforeach
                 </ul>

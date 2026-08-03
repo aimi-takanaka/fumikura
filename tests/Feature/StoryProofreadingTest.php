@@ -254,3 +254,45 @@ it('rate limits another story suggestions per user', function () {
         ->call('suggestAnotherStories')
         ->assertHasErrors(['body']);
 });
+
+it('applies a suggestion as an idea draft on the create form', function () {
+    fakeSuccessfulAnotherStoryResponse();
+
+    $image = Image::factory()->create();
+
+    Livewire::actingAs(User::factory()->create())
+        ->test('pages::stories.create', ['image' => $image])
+        ->set('body', '彼はホームで傘を差し出した。')
+        ->call('suggestAnotherStories')
+        ->assertSee('この視点で書いてみる')
+        ->call('startAnotherStoryDraft', 0)
+        ->assertSet('title', 'ヒロインの友人の視点')
+        ->assertSet('body', '実はあの日、彼女も迷っていた')
+        ->assertSet('status', 'idea')
+        ->assertSet('anotherStorySuggestions', []);
+});
+
+it('redirects from the edit form to a prefilled idea draft on create', function () {
+    fakeSuccessfulAnotherStoryResponse();
+
+    $user = User::factory()->create();
+    $story = Story::factory()->for($user)->create(['body' => '彼はホームで傘を差し出した。']);
+
+    Livewire::actingAs($user)
+        ->test('pages::stories.edit', ['story' => $story])
+        ->call('suggestAnotherStories')
+        ->call('startAnotherStoryDraft', 0)
+        ->assertRedirect(route('stories.create', $story->image));
+
+    expect(session('another_story_draft'))->toMatchArray([
+        'title' => 'ヒロインの友人の視点',
+        'body' => '実はあの日、彼女も迷っていた',
+        'status' => 'idea',
+    ]);
+
+    Livewire::actingAs($user)
+        ->test('pages::stories.create', ['image' => $story->image])
+        ->assertSet('title', 'ヒロインの友人の視点')
+        ->assertSet('body', '実はあの日、彼女も迷っていた')
+        ->assertSet('status', 'idea');
+});

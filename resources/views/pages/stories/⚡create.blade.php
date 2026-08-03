@@ -28,6 +28,16 @@ new #[Layout('layouts.public')] #[Title('ストーリーを書く')] class exten
     public function mount(Image $image): void
     {
         $this->image = $image;
+
+        $draft = session()->pull('another_story_draft');
+
+        if (! is_array($draft)) {
+            return;
+        }
+
+        $this->title = (string) ($draft['title'] ?? '');
+        $this->body = (string) ($draft['body'] ?? '');
+        $this->status = (string) ($draft['status'] ?? StoryStatus::Idea->value);
     }
 
     /**

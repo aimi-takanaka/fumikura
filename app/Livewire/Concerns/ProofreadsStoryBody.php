@@ -5,6 +5,7 @@ namespace App\Livewire\Concerns;
 use App\Models\Image;
 use App\Models\Story;
 use App\Services\GeminiProofreadingService;
+use App\StoryStatus;
 use Illuminate\Support\Facades\RateLimiter;
 use RuntimeException;
 
@@ -118,18 +119,68 @@ trait ProofreadsStoryBody
     }
 
     /**
+     * Turn a suggestion into an idea draft on the create form.
+     */
+    public function startAnotherStoryDraft(int $index): void
+    {
+        $suggestion = $this->anotherStorySuggestions[$index] ?? null;
+
+        if (! is_array($suggestion)) {
+            return;
+        }
+
+        $draft = [
+            'title' => mb_substr($suggestion['viewpoint'].'の視点', 0, 255),
+            'body' => $suggestion['hook'],
+            'status' => StoryStatus::Idea->value,
+        ];
+
+        if (property_exists($this, 'image') && $this->image instanceof Image) {
+            $this->applyAnotherStoryDraft($draft);
+
+            return;
+        }
+
+        session()->put('another_story_draft', $draft);
+
+        $this->redirectRoute('stories.create', $this->resolveImage(), navigate: true);
+    }
+
+    /**
+     * Apply a prefilled another-story idea draft to the create form.
+     *
+     * @param  array{title: string, body: string, status: string}  $draft
+     */
+    private function applyAnotherStoryDraft(array $draft): void
+    {
+        $this->anotherStorySuggestions = [];
+        $this->proofreadingResult = null;
+        $this->title = $draft['title'];
+        $this->status = $draft['status'];
+        $this->body = $draft['body'];
+    }
+
+    /**
+     * Resolve the topic image from the create or edit page component.
+     */
+    private function resolveImage(): Image
+    {
+        if (property_exists($this, 'image') && $this->image instanceof Image) {
+            return $this->image;
+        }
+
+        if (property_exists($this, 'story') && $this->story instanceof Story) {
+            return $this->story->image;
+        }
+
+        throw new RuntimeException('Unable to resolve the topic image for another story drafts.');
+    }
+
+    /**
      * Resolve the topic title from the create or edit page component.
      */
     private function resolveTopicTitle(): string
     {
-        if (property_exists($this, 'image') && $this->image instanceof Image) {
-            return $this->image->title;
-        }
-
-        if (property_exists($this, 'story') && $this->story instanceof Story) {
-            return $this->story->image->title;
-        }
-
-        return '';
+        return $this->resolveImage()->title;
     }
 }
