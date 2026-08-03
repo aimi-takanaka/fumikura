@@ -27,6 +27,30 @@ new #[Layout('layouts.public')] class extends Component
     }
 
     /**
+     * Toggle the current user's like on a story in this topic list.
+     */
+    public function toggleLike(int $storyId): void
+    {
+        abort_unless(auth()->check(), 403);
+
+        $story = $this->image->stories()
+            ->readableBy(auth()->user())
+            ->findOrFail($storyId);
+
+        $existingLike = $story->likes()
+            ->where('user_id', auth()->id())
+            ->first();
+
+        if ($existingLike) {
+            $existingLike->delete();
+        } else {
+            $story->likes()->create([
+                'user_id' => auth()->id(),
+            ]);
+        }
+    }
+
+    /**
      * Data passed to the view.
      *
      * @return array<string, mixed>
@@ -37,6 +61,12 @@ new #[Layout('layouts.public')] class extends Component
             'stories' => $this->image->stories()
                 ->with('user')
                 ->withCount(['likes', 'comments'])
+                ->when(
+                    auth()->check(),
+                    fn ($query) => $query->withExists([
+                        'likes as is_liked' => fn ($query) => $query->where('user_id', auth()->id()),
+                    ]),
+                )
                 ->readableBy(auth()->user())
                 ->latest()
                 ->get(),
@@ -113,9 +143,21 @@ new #[Layout('layouts.public')] class extends Component
                         </a>
 
                         <div class="mt-4 flex items-center gap-4">
-                            <flux:text size="sm" class="flex items-center gap-1">
-                                <flux:icon.heart variant="micro" /> {{ $story->likes_count }}
-                            </flux:text>
+                            @auth
+                                <flux:button
+                                    wire:click="toggleLike({{ $story->id }})"
+                                    :variant="$story->is_liked ? 'primary' : 'ghost'"
+                                    size="sm"
+                                    icon="heart"
+                                    inset
+                                >
+                                    {{ $story->likes_count }}
+                                </flux:button>
+                            @else
+                                <flux:text size="sm" class="flex items-center gap-1">
+                                    <flux:icon.heart variant="micro" /> {{ $story->likes_count }}
+                                </flux:text>
+                            @endauth
                             <flux:button
                                 wire:click="$dispatch('open-story-comments', { storyId: {{ $story->id }} })"
                                 variant="ghost"

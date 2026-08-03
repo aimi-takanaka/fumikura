@@ -66,3 +66,43 @@ it('forbids guests from liking a story', function () {
 
     expect($story->likes()->count())->toBe(0);
 });
+
+it('lets a logged-in user like a story from the topic detail page', function () {
+    $user = User::factory()->create();
+    $story = Story::factory()->complete()->create();
+
+    Livewire::actingAs($user)
+        ->test('pages::images.show', ['image' => $story->image])
+        ->call('toggleLike', $story->id)
+        ->assertSee('1');
+
+    $this->assertDatabaseHas('likes', [
+        'story_id' => $story->id,
+        'user_id' => $user->id,
+    ]);
+});
+
+it('lets a user remove their like from the topic detail page', function () {
+    $user = User::factory()->create();
+    $story = Story::factory()->complete()->create();
+
+    Livewire::actingAs($user)
+        ->test('pages::images.show', ['image' => $story->image])
+        ->call('toggleLike', $story->id)
+        ->call('toggleLike', $story->id);
+
+    $this->assertDatabaseMissing('likes', [
+        'story_id' => $story->id,
+        'user_id' => $user->id,
+    ]);
+});
+
+it('forbids guests from liking a story from the topic detail page', function () {
+    $story = Story::factory()->complete()->create();
+
+    Livewire::test('pages::images.show', ['image' => $story->image])
+        ->call('toggleLike', $story->id)
+        ->assertStatus(403);
+
+    expect($story->likes()->count())->toBe(0);
+});
