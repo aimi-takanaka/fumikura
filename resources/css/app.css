@@ -64,6 +64,47 @@
     }
 }
 
+@layer components {
+    /*
+     * Simple elongated oval speech bubble pointing toward Fumi.
+     */
+    .fumi-speech {
+        --fumi-fill: #f7fee7;
+        --fumi-stroke: color-mix(in oklab, #bef264 80%, transparent);
+        position: relative;
+        z-index: 0;
+    }
+
+    :where(.dark, .dark *) .fumi-speech {
+        --fumi-fill: color-mix(in oklab, #0a1a05 55%, #14532d);
+        --fumi-stroke: color-mix(in oklab, #3f6212 60%, transparent);
+    }
+
+    .fumi-speech-bubble {
+        margin-inline-end: 0.75rem;
+        border: 1.5px solid var(--fumi-stroke);
+        border-radius: 9999px;
+        background-color: var(--fumi-fill);
+        padding: 1rem 1.75rem;
+    }
+
+    .fumi-speech-tail {
+        position: absolute;
+        top: 50%;
+        right: -0.05rem;
+        z-index: 1;
+        width: 0.9rem;
+        height: 1rem;
+        translate: 0 -50%;
+        background-color: var(--fumi-fill);
+        clip-path: polygon(0 0, 100% 50%, 0 100%);
+        filter:
+            drop-shadow(0.7px 0 0 var(--fumi-stroke))
+            drop-shadow(0 0.5px 0 var(--fumi-stroke))
+            drop-shadow(0 -0.5px 0 var(--fumi-stroke));
+    }
+}
+
 [data-flux-field]:not(ui-radio, ui-checkbox) {
     @apply grid gap-2;
 }
