@@ -56,13 +56,16 @@ new #[Layout('layouts.public')] #[Title('ストーリーを書く')] class exten
             'user_id' => auth()->id(),
         ]);
 
+        $status = StoryStatus::from($validated['status']);
+
         $this->flashFumiEncouragement(
             $this->fetchFumiEncouragement(
                 $gemini,
-                StoryStatus::from($validated['status']),
+                $status,
                 $this->image->title,
                 $validated['body'],
             ),
+            $status,
         );
 
         session()->flash('status', 'ストーリーを投稿しました。');

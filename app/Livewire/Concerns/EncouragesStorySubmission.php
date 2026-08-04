@@ -48,12 +48,16 @@ trait EncouragesStorySubmission
     /**
      * Store Fumi's encouragement message in the session when available.
      */
-    protected function flashFumiEncouragement(?string $message): void
+    protected function flashFumiEncouragement(?string $message, ?StoryStatus $status = null): void
     {
         if ($message === null || trim($message) === '') {
             return;
         }
 
         session()->flash('fumi_message', $message);
+
+        if ($status instanceof StoryStatus) {
+            session()->flash('fumi_status', $status->value);
+        }
     }
 }

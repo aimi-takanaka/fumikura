@@ -48,12 +48,14 @@ it('shows fumi encouragement after creating a completed story', function () {
         ->call('save')
         ->assertHasNoErrors()
         ->assertRedirect(route('images.show', $image))
-        ->assertSessionHas('fumi_message', '灯台の光が印象的だね！完成おめでとう！');
+        ->assertSessionHas('fumi_message', '灯台の光が印象的だね！完成おめでとう！')
+        ->assertSessionHas('fumi_status', 'complete');
 
     $this->get(route('images.show', $image))
         ->assertOk()
         ->assertSee('ふみより')
-        ->assertSee('灯台の光が印象的だね！完成おめでとう！');
+        ->assertSee('灯台の光が印象的だね！完成おめでとう！')
+        ->assertSee(asset('img/welcome/comment-1.PNG'), false);
 });
 
 it('shows fumi encouragement after updating a draft story', function () {
@@ -70,7 +72,13 @@ it('shows fumi encouragement after updating a draft story', function () {
         ->call('update')
         ->assertHasNoErrors()
         ->assertRedirect(route('stories.show', $story))
-        ->assertSessionHas('fumi_message', 'この先どうなるのか、わたしも気になるな！');
+        ->assertSessionHas('fumi_message', 'この先どうなるのか、わたしも気になるな！')
+        ->assertSessionHas('fumi_status', 'draft');
+
+    $this->get(route('stories.show', $story))
+        ->assertOk()
+        ->assertSee('ふみより')
+        ->assertSee(asset('img/welcome/comment-3.PNG'), false);
 });
 
 it('still saves the story when fumi encouragement fails', function () {

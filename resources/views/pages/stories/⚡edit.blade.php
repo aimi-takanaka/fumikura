@@ -50,13 +50,16 @@ new #[Layout('layouts.public')] #[Title('ストーリーを編集')] class exten
 
         $this->story->update($validated);
 
+        $status = StoryStatus::from($validated['status']);
+
         $this->flashFumiEncouragement(
             $this->fetchFumiEncouragement(
                 $gemini,
-                StoryStatus::from($validated['status']),
+                $status,
                 $this->story->image->title,
                 $validated['body'],
             ),
+            $status,
         );
 
         session()->flash('status', 'ストーリーを更新しました。');

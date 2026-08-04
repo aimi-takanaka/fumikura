@@ -44,6 +44,14 @@ it('casts the story status to an enum with a label', function () {
         ->and(StoryStatus::Draft->label())->toBe('下書き');
 });
 
+it('maps each story status to a fumi comment illustration', function (StoryStatus $status, string $path) {
+    expect($status->fumiCommentImage())->toBe($path);
+})->with([
+    [StoryStatus::Complete, 'img/welcome/comment-1.PNG'],
+    [StoryStatus::Idea, 'img/welcome/comment-2.PNG'],
+    [StoryStatus::Draft, 'img/welcome/comment-3.PNG'],
+]);
+
 it('only returns completed stories through the complete scope', function () {
     Story::factory()->complete()->count(2)->create();
     Story::factory()->idea()->count(2)->create();

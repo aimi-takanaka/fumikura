@@ -43,4 +43,16 @@ enum StoryStatus: string
             self::Draft => 'zinc',
         };
     }
+
+    /**
+     * Public path to Fumi's status-specific comment illustration.
+     */
+    public function fumiCommentImage(): string
+    {
+        return match ($this) {
+            self::Complete => 'img/welcome/comment-1.PNG',
+            self::Idea => 'img/welcome/comment-2.PNG',
+            self::Draft => 'img/welcome/comment-3.PNG',
+        };
+    }
 }
