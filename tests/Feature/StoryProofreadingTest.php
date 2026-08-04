@@ -41,7 +41,8 @@ it('shows the typo check button on the create form', function () {
 
     Livewire::actingAs(User::factory()->create())
         ->test('pages::stories.create', ['image' => $image])
-        ->assertSee('誤字チェック');
+        ->assertSee('誤字チェック')
+        ->assertSee(asset('img/welcome/check-1.PNG'), false);
 });
 
 it('shows typo check results on the create form without changing the body', function () {
@@ -172,7 +173,8 @@ it('shows the another story suggestion button on the create form', function () {
 
     Livewire::actingAs(User::factory()->create())
         ->test('pages::stories.create', ['image' => $image])
-        ->assertSee('アナザーストーリーの提案');
+        ->assertSee('アナザーストーリーの提案')
+        ->assertSee(asset('img/welcome/check-2.PNG'), false);
 });
 
 it('shows another story suggestions on the create form', function () {
