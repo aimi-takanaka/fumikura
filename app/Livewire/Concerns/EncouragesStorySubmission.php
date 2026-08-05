@@ -22,7 +22,7 @@ trait EncouragesStorySubmission
             return null;
         }
 
-        if (mb_strlen($body) > config('services.gemini.max_characters', 5000)) {
+        if (mb_strlen($body) > config('services.gemini.max_characters', 30000)) {
             return null;
         }
 

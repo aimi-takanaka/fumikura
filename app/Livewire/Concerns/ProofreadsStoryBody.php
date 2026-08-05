@@ -33,7 +33,7 @@ trait ProofreadsStoryBody
     public function checkTypos(GeminiProofreadingService $proofreadingService): void
     {
         $this->validate([
-            'body' => 'required|string|max:'.config('services.gemini.max_characters', 5000),
+            'body' => 'required|string|max:'.config('services.gemini.max_characters', 30000),
         ]);
 
         $rateLimitKey = 'story-proofreading:'.auth()->id();
@@ -69,7 +69,7 @@ trait ProofreadsStoryBody
     public function suggestAnotherStories(GeminiProofreadingService $proofreadingService): void
     {
         $this->validate([
-            'body' => 'required|string|max:'.config('services.gemini.max_characters', 5000),
+            'body' => 'required|string|max:'.config('services.gemini.max_characters', 30000),
         ]);
 
         $rateLimitKey = 'story-another-suggestions:'.auth()->id();
