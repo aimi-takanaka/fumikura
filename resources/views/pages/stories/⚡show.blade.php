@@ -1,5 +1,6 @@
 <?php
 
+use App\Livewire\Concerns\NotifiesUser;
 use App\Models\Story;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Validate;
@@ -7,6 +8,8 @@ use Livewire\Component;
 
 new #[Layout('layouts.public')] class extends Component
 {
+    use NotifiesUser;
+
     public Story $story;
 
     #[Validate('required|string|max:2000')]
@@ -78,7 +81,7 @@ new #[Layout('layouts.public')] class extends Component
 
         $this->reset('body');
 
-        Flux::toast('コメントを投稿しました。', variant: 'success');
+        $this->notify('コメントを投稿しました。');
     }
 
     /**
@@ -92,7 +95,7 @@ new #[Layout('layouts.public')] class extends Component
 
         $comment->delete();
 
-        Flux::toast('コメントを削除しました。', variant: 'success');
+        $this->notify('コメントを削除しました。');
     }
 
     /**
@@ -133,41 +136,40 @@ new #[Layout('layouts.public')] class extends Component
 }; ?>
 
 <div class="mx-auto max-w-2xl">
-    <flux:button :href="route('images.show', $story->image)" variant="ghost" size="sm" icon="arrow-left" wire:navigate class="mb-4">
+    <a href="{{ route('images.show', $story->image) }}" class="btn btn-ghost btn-sm mb-4" wire:navigate>
         お題「{{ $story->image->title }}」へ戻る
-    </flux:button>
+    </a>
 
     <article>
         <div class="flex items-start justify-between gap-4">
-            <flux:heading size="xl">{{ $story->title }}</flux:heading>
+            <h1 class="text-2xl font-bold">{{ $story->title }}</h1>
 
             <x-story-status-badge :status="$story->status" />
         </div>
 
         <div class="mt-2 flex items-center gap-3">
             <x-user-avatar :user="$story->user" />
-            <flux:text size="sm">{{ $story->user?->name ?? '不明' }}</flux:text>
-            <flux:text size="sm">{{ $story->created_at->format('Y年n月j日') }}</flux:text>
+            <span class="text-sm">{{ $story->user?->name ?? '不明' }}</span>
+            <span class="text-sm text-base-content/60">{{ $story->created_at->format('Y年n月j日') }}</span>
 
             @if ($story->user_id === auth()->id())
                 <div class="ml-auto flex items-center gap-2">
-                    <flux:button :href="route('stories.edit', $story)" variant="ghost" size="sm" icon="pencil-square" wire:navigate>
+                    <a href="{{ route('stories.edit', $story) }}" class="btn btn-ghost btn-sm" wire:navigate>
                         編集
-                    </flux:button>
-                    <flux:button
+                    </a>
+                    <button
+                        type="button"
                         wire:click="deleteStory"
                         wire:confirm="このストーリーを削除しますか？この操作は取り消せません。"
-                        variant="ghost"
-                        size="sm"
-                        icon="trash"
+                        class="btn btn-ghost btn-sm"
                     >
                         削除
-                    </flux:button>
+                    </button>
                 </div>
             @endif
         </div>
 
-        <flux:separator class="my-6" />
+        <div class="divider my-6"></div>
 
         <div class="mb-3 flex justify-end">
             <x-story-body-font-picker />
@@ -177,94 +179,103 @@ new #[Layout('layouts.public')] class extends Component
 
         <div class="mt-8 flex items-center gap-4">
             @auth
-                <flux:button
+                <button
+                    type="button"
                     wire:click="toggleLike"
-                    :variant="$isLiked ? 'primary' : 'ghost'"
-                    size="sm"
-                    icon="heart"
+                    @class([
+                        'btn btn-sm',
+                        'btn-primary' => $isLiked,
+                        'btn-ghost' => ! $isLiked,
+                    ])
                 >
                     {{ $likesCount }}
-                </flux:button>
+                </button>
             @else
-                <flux:text class="flex items-center gap-1">
-                    <flux:icon.heart variant="micro" /> {{ $likesCount }}
-                </flux:text>
+                <span class="text-sm text-base-content/70">{{ $likesCount }}</span>
             @endauth
 
-            <flux:text class="flex items-center gap-1">
-                <flux:icon.chat-bubble-oval-left variant="micro" /> {{ $comments->count() }}
-            </flux:text>
+            <span class="text-sm text-base-content/70">{{ $comments->count() }} コメント</span>
 
             @auth
-                <flux:button
+                <button
+                    type="button"
                     wire:click="toggleBookmark"
-                    :variant="$isBookmarked ? 'primary' : 'ghost'"
-                    size="sm"
-                    icon="bookmark"
-                    class="ml-auto"
+                    @class([
+                        'btn btn-sm ml-auto',
+                        'btn-primary' => $isBookmarked,
+                        'btn-ghost' => ! $isBookmarked,
+                    ])
                 >
                     {{ $isBookmarked ? '保存済み' : '保存' }}
-                </flux:button>
+                </button>
             @endauth
         </div>
     </article>
 
-    <flux:separator class="my-8" />
+    <div class="divider my-8"></div>
 
     <section>
-        <flux:heading size="lg">コメント（{{ $comments->count() }}）</flux:heading>
+        <h2 class="text-xl font-bold">コメント（{{ $comments->count() }}）</h2>
 
         @auth
             <form wire:submit="addComment" class="mt-4">
-                <flux:textarea
+                <textarea
                     wire:model="body"
                     placeholder="このストーリーへの感想を書いてみましょう"
                     rows="3"
-                />
+                    class="textarea textarea-bordered w-full @error('body') textarea-error @enderror"
+                ></textarea>
+                @error('body')
+                    <p class="mt-1 text-sm text-error">{{ $message }}</p>
+                @enderror
                 <div class="mt-2 flex justify-end">
-                    <flux:button type="submit" variant="primary" size="sm" icon="paper-airplane">
+                    <button type="submit" class="btn btn-primary btn-sm">
                         コメントする
-                    </flux:button>
+                    </button>
                 </div>
             </form>
 
             <div class="mt-6 flex flex-col gap-4">
                 @forelse ($comments as $comment)
-                    <flux:card wire:key="comment-{{ $comment->id }}" class="p-4">
-                        <div class="flex items-start justify-between gap-4">
-                            <div class="min-w-0">
-                                <div class="flex items-center gap-2">
-                                    <x-user-avatar :user="$comment->user" />
-                                    <flux:text class="font-medium">{{ $comment->user?->name ?? '不明' }}</flux:text>
-                                    <flux:text size="sm">{{ $comment->created_at->diffForHumans() }}</flux:text>
+                    <div wire:key="comment-{{ $comment->id }}" class="card bg-base-100 shadow">
+                        <div class="card-body p-4">
+                            <div class="flex items-start justify-between gap-4">
+                                <div class="min-w-0">
+                                    <div class="flex items-center gap-2">
+                                        <x-user-avatar :user="$comment->user" />
+                                        <span class="font-medium">{{ $comment->user?->name ?? '不明' }}</span>
+                                        <span class="text-sm text-base-content/60">{{ $comment->created_at->diffForHumans() }}</span>
+                                    </div>
+                                    <p class="mt-2 whitespace-pre-line">{{ $comment->body }}</p>
                                 </div>
-                                <flux:text class="mt-2 whitespace-pre-line">{{ $comment->body }}</flux:text>
-                            </div>
 
-                            @if ($comment->user_id === auth()->id())
-                                <flux:button
-                                    wire:click="deleteComment({{ $comment->id }})"
-                                    wire:confirm="このコメントを削除しますか？"
-                                    variant="ghost"
-                                    size="sm"
-                                    icon="trash"
-                                    inset
-                                />
-                            @endif
+                                @if ($comment->user_id === auth()->id())
+                                    <button
+                                        type="button"
+                                        wire:click="deleteComment({{ $comment->id }})"
+                                        wire:confirm="このコメントを削除しますか？"
+                                        class="btn btn-ghost btn-sm shrink-0"
+                                    >
+                                        削除
+                                    </button>
+                                @endif
+                            </div>
                         </div>
-                    </flux:card>
+                    </div>
                 @empty
-                    <flux:text size="sm">まだコメントはありません。最初のコメントを書いてみましょう。</flux:text>
+                    <p class="text-sm text-base-content/60">まだコメントはありません。最初のコメントを書いてみましょう。</p>
                 @endforelse
             </div>
         @else
-            <flux:callout icon="lock-closed" class="mt-4">
-                <flux:callout.heading>コメントはログインすると読めます</flux:callout.heading>
-                <flux:callout.text>
-                    <flux:link :href="route('login')" wire:navigate>ログイン</flux:link>
-                    すると、コメントの閲覧と投稿ができます。
-                </flux:callout.text>
-            </flux:callout>
+            <div role="alert" class="alert alert-info mt-4">
+                <div>
+                    <h3 class="font-bold">コメントはログインすると読めます</h3>
+                    <p class="text-sm">
+                        <a href="{{ route('login') }}" class="link link-primary" wire:navigate>ログイン</a>
+                        すると、コメントの閲覧と投稿ができます。
+                    </p>
+                </div>
+            </div>
         @endauth
     </section>
 </div>

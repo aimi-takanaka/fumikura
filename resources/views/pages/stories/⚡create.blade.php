@@ -75,53 +75,81 @@ new #[Layout('layouts.public')] #[Title('ストーリーを書く')] class exten
 }; ?>
 
 <div class="mx-auto max-w-2xl">
-    <flux:button :href="route('images.show', $image)" variant="ghost" size="sm" icon="arrow-left" wire:navigate class="mb-4">
+    <a href="{{ route('images.show', $image) }}" class="btn btn-ghost btn-sm mb-4" wire:navigate>
         お題へ戻る
-    </flux:button>
+    </a>
 
     <div class="mb-6">
-        <flux:heading size="xl">ストーリーを書く</flux:heading>
-        <flux:text class="mt-2">お題「{{ $image->title }}」からインスピレーションを受けた物語を綴りましょう。</flux:text>
+        <h1 class="text-2xl font-bold">ストーリーを書く</h1>
+        <p class="mt-2 text-base-content/70">お題「{{ $image->title }}」からインスピレーションを受けた物語を綴りましょう。</p>
     </div>
 
-    <flux:card>
-        <form wire:submit="save" class="flex flex-col gap-6">
-            <flux:input
-                wire:model="title"
-                label="タイトル"
-                placeholder="例: 灯台守の最後の夜"
-                required
-            />
+    <div class="card bg-base-100 shadow">
+        <div class="card-body">
+            <form wire:submit="save" class="flex flex-col gap-6">
+                <div class="fieldset">
+                    <label class="label" for="title">
+                        <span class="label-text">タイトル</span>
+                    </label>
+                    <input
+                        id="title"
+                        type="text"
+                        wire:model="title"
+                        placeholder="例: 灯台守の最後の夜"
+                        class="input input-bordered w-full @error('title') input-error @enderror"
+                        required
+                    />
+                    @error('title')
+                        <p class="mt-1 text-sm text-error">{{ $message }}</p>
+                    @enderror
+                </div>
 
-            <flux:field>
-                <flux:label>本文</flux:label>
+                <div class="fieldset">
+                    <label class="label" for="body">
+                        <span class="label-text">本文</span>
+                    </label>
+                    <textarea
+                        id="body"
+                        wire:model.live="body"
+                        placeholder="物語をここに書いてください..."
+                        rows="12"
+                        class="textarea textarea-bordered w-full @error('body') textarea-error @enderror"
+                        required
+                    ></textarea>
+                    <p class="text-end text-sm text-base-content/60">{{ mb_strlen($body) }} 文字</p>
+                    @error('body')
+                        <p class="mt-1 text-sm text-error">{{ $message }}</p>
+                    @enderror
 
-                <flux:textarea
-                    wire:model.live="body"
-                    placeholder="物語をここに書いてください..."
-                    rows="12"
-                    required
-                />
+                    @include('partials.story-proofreading-panel')
+                </div>
 
-                <flux:description class="text-end">{{ mb_strlen($body) }} 文字</flux:description>
-                <flux:error name="body" />
+                <fieldset class="fieldset">
+                    <legend class="fieldset-legend">ステータス</legend>
+                    @foreach (\App\StoryStatus::cases() as $storyStatus)
+                        <label class="label cursor-pointer justify-start gap-3 py-1">
+                            <input
+                                type="radio"
+                                wire:model="status"
+                                value="{{ $storyStatus->value }}"
+                                class="radio radio-primary"
+                            />
+                            <span class="label-text">{{ $storyStatus->formLabel() }}</span>
+                        </label>
+                    @endforeach
+                    @error('status')
+                        <p class="mt-1 text-sm text-error">{{ $message }}</p>
+                    @enderror
+                </fieldset>
 
-                @include('partials.story-proofreading-panel')
-            </flux:field>
-
-            <flux:radio.group wire:model="status" label="ステータス">
-                @foreach (\App\StoryStatus::cases() as $storyStatus)
-                    <flux:radio value="{{ $storyStatus->value }}" :label="$storyStatus->formLabel()" />
-                @endforeach
-            </flux:radio.group>
-
-            <div class="flex items-center justify-end gap-3">
-                <flux:button :href="route('images.show', $image)" variant="ghost" wire:navigate>キャンセル</flux:button>
-                <flux:button type="submit" variant="primary">
-                    <span wire:loading.remove wire:target="save">投稿する</span>
-                    <span wire:loading wire:target="save">投稿中...</span>
-                </flux:button>
-            </div>
-        </form>
-    </flux:card>
+                <div class="flex items-center justify-end gap-3">
+                    <a href="{{ route('images.show', $image) }}" class="btn btn-ghost" wire:navigate>キャンセル</a>
+                    <button type="submit" class="btn btn-primary">
+                        <span wire:loading.remove wire:target="save">投稿する</span>
+                        <span wire:loading wire:target="save">投稿中...</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>

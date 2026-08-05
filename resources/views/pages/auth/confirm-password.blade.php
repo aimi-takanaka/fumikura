@@ -1,34 +1,41 @@
 <x-layouts::public>
     <section class="mx-auto w-full max-w-lg">
-        <flux:heading size="xl" class="text-sumi">{{ __('Confirm password') }}</flux:heading>
-        <flux:subheading class="mt-1 text-sumi/70">
+        <h1 class="text-2xl font-bold text-base-content">{{ __('Confirm password') }}</h1>
+        <p class="mt-1 text-base-content/70">
             {{ __('This is a secure area of the application. Please confirm your password before continuing.') }}
-        </flux:subheading>
+        </p>
 
-        <flux:separator class="my-6 border-ai/15" />
+        <div class="divider my-6"></div>
 
-        <flux:card class="border-ai/15 bg-washi-light">
-            <div class="flex flex-col gap-6">
-                <x-auth-session-status class="text-center text-shu" :status="session('status')" />
+        <div class="card card-border bg-base-100">
+            <div class="card-body flex flex-col gap-6">
+                <x-auth-session-status class="text-center text-success" :status="session('status')" />
 
                 <form method="POST" action="{{ route('password.confirm.store') }}" class="flex flex-col gap-6">
                     @csrf
 
-                    <flux:input
-                        name="password"
-                        :label="__('Password')"
-                        type="password"
-                        required
-                        autocomplete="current-password"
-                        :placeholder="__('Password')"
-                        viewable
-                    />
+                    <label class="form-control w-full">
+                        <span class="label">
+                            <span class="label-text">{{ __('Password') }}</span>
+                        </span>
+                        <input
+                            name="password"
+                            type="password"
+                            required
+                            autocomplete="current-password"
+                            placeholder="{{ __('Password') }}"
+                            class="input input-bordered w-full @error('password') input-error @enderror"
+                        />
+                        @error('password')
+                            <span class="label-text-alt text-error">{{ $message }}</span>
+                        @enderror
+                    </label>
 
-                    <flux:button variant="primary" type="submit" class="w-full" data-test="confirm-password-button">
+                    <button type="submit" class="btn btn-primary w-full" data-test="confirm-password-button">
                         {{ __('Confirm') }}
-                    </flux:button>
+                    </button>
                 </form>
             </div>
-        </flux:card>
+        </div>
     </section>
 </x-layouts::public>

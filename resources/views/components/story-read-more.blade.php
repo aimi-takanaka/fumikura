@@ -22,6 +22,6 @@
     }
 @endphp
 
-<flux:text {{ $attributes->merge(['class' => 'story-body whitespace-pre-line']) }}>
-    {{ $displayBody }}@if ($truncated)...<span class="font-medium text-shu">　続きを読む</span>@endif
-</flux:text>
+<p {{ $attributes->merge(['class' => 'story-body whitespace-pre-line']) }}>
+    {{ $displayBody }}@if ($truncated)...<span class="font-medium text-secondary">　続きを読む</span>@endif
+</p>

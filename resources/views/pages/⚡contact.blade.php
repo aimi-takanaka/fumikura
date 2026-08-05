@@ -1,8 +1,8 @@
 <?php
 
+use App\Livewire\Concerns\NotifiesUser;
 use App\Mail\ContactInquiryMail;
 use App\Models\ContactInquiry;
-use Flux\Flux;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\RateLimiter;
 use Livewire\Attributes\Layout;
@@ -11,6 +11,8 @@ use Livewire\Component;
 
 new #[Layout('layouts.public')] #[Title('お問い合わせ')] class extends Component
 {
+    use NotifiesUser;
+
     public string $name = '';
 
     public string $email = '';
@@ -89,7 +91,7 @@ new #[Layout('layouts.public')] #[Title('お問い合わせ')] class extends Com
             $this->reset('name', 'email');
         }
 
-        Flux::toast(variant: 'success', text: 'お問い合わせを送信しました。');
+        $this->notify('お問い合わせを送信しました。');
     }
 
     /**
@@ -107,96 +109,130 @@ new #[Layout('layouts.public')] #[Title('お問い合わせ')] class extends Com
 }; ?>
 
 <div class="mx-auto max-w-2xl">
-    <flux:button :href="route('home')" variant="ghost" size="sm" icon="arrow-left" wire:navigate class="mb-6">
-        トップへ戻る
-    </flux:button>
+    <a href="{{ route('home') }}" class="btn btn-ghost btn-sm mb-6" wire:navigate>
+        ← トップへ戻る
+    </a>
 
-    <flux:heading size="xl">お問い合わせ</flux:heading>
-    <flux:text class="mt-2 text-sumi/70">
+    <h1 class="text-2xl font-bold">お問い合わせ</h1>
+    <p class="mt-2 text-base-content/70">
         @if ($previewing)
             内容をご確認のうえ、問題なければ送信してください。
         @else
             ご質問やご意見がございましたら、以下のフォームよりご連絡ください。
         @endif
-    </flux:text>
+    </p>
 
-    <flux:card class="mt-8 border-ai/15 bg-washi-light">
-        @if ($previewing)
-            <div class="flex flex-col gap-6">
-                <flux:heading size="lg">送信内容の確認</flux:heading>
+    <div class="card card-border bg-base-100 mt-8">
+        <div class="card-body">
+            @if ($previewing)
+                <div class="flex flex-col gap-6">
+                    <h2 class="text-lg font-bold">送信内容の確認</h2>
 
-                <div class="space-y-4">
-                    <div>
-                        <flux:text class="text-sm text-ai/70">お名前</flux:text>
-                        <p class="mt-1 whitespace-pre-wrap text-sumi">{{ $name }}</p>
+                    <div class="space-y-4">
+                        <div>
+                            <p class="text-sm text-base-content/60">お名前</p>
+                            <p class="mt-1 whitespace-pre-wrap">{{ $name }}</p>
+                        </div>
+
+                        <div>
+                            <p class="text-sm text-base-content/60">メールアドレス</p>
+                            <p class="mt-1 whitespace-pre-wrap">{{ $email }}</p>
+                        </div>
+
+                        <div>
+                            <p class="text-sm text-base-content/60">件名</p>
+                            <p class="mt-1 whitespace-pre-wrap">{{ $subject }}</p>
+                        </div>
+
+                        <div>
+                            <p class="text-sm text-base-content/60">お問い合わせ内容</p>
+                            <p class="mt-1 whitespace-pre-wrap">{{ $body }}</p>
+                        </div>
                     </div>
 
-                    <div>
-                        <flux:text class="text-sm text-ai/70">メールアドレス</flux:text>
-                        <p class="mt-1 whitespace-pre-wrap text-sumi">{{ $email }}</p>
-                    </div>
-
-                    <div>
-                        <flux:text class="text-sm text-ai/70">件名</flux:text>
-                        <p class="mt-1 whitespace-pre-wrap text-sumi">{{ $subject }}</p>
-                    </div>
-
-                    <div>
-                        <flux:text class="text-sm text-ai/70">お問い合わせ内容</flux:text>
-                        <p class="mt-1 whitespace-pre-wrap text-sumi">{{ $body }}</p>
+                    <div class="flex items-center justify-end gap-3">
+                        <button type="button" class="btn btn-ghost" wire:click="edit" data-test="contact-edit-button">
+                            修正する
+                        </button>
+                        <button type="button" class="btn btn-primary" wire:click="send" data-test="contact-submit-button">
+                            <span wire:loading.remove wire:target="send">送信する</span>
+                            <span wire:loading wire:target="send">送信中...</span>
+                        </button>
                     </div>
                 </div>
+            @else
+                <form wire:submit="preview" class="flex flex-col gap-6">
+                    <label class="form-control w-full">
+                        <span class="label">
+                            <span class="label-text">お名前</span>
+                        </span>
+                        <input
+                            type="text"
+                            wire:model="name"
+                            class="input input-bordered w-full @error('name') input-error @enderror"
+                            required
+                            autocomplete="name"
+                        />
+                        @error('name')
+                            <span class="label-text-alt text-error">{{ $message }}</span>
+                        @enderror
+                    </label>
 
-                <div class="flex items-center justify-end gap-3">
-                    <flux:button type="button" variant="ghost" wire:click="edit" data-test="contact-edit-button">
-                        修正する
-                    </flux:button>
-                    <flux:button type="button" variant="primary" wire:click="send" data-test="contact-submit-button">
-                        <span wire:loading.remove wire:target="send">送信する</span>
-                        <span wire:loading wire:target="send">送信中...</span>
-                    </flux:button>
-                </div>
-            </div>
-        @else
-            <form wire:submit="preview" class="flex flex-col gap-6">
-                <flux:input
-                    wire:model="name"
-                    label="お名前"
-                    type="text"
-                    required
-                    autocomplete="name"
-                />
+                    <label class="form-control w-full">
+                        <span class="label">
+                            <span class="label-text">メールアドレス</span>
+                        </span>
+                        <input
+                            type="email"
+                            wire:model="email"
+                            class="input input-bordered w-full @error('email') input-error @enderror"
+                            required
+                            autocomplete="email"
+                        />
+                        @error('email')
+                            <span class="label-text-alt text-error">{{ $message }}</span>
+                        @enderror
+                    </label>
 
-                <flux:input
-                    wire:model="email"
-                    label="メールアドレス"
-                    type="email"
-                    required
-                    autocomplete="email"
-                />
+                    <label class="form-control w-full">
+                        <span class="label">
+                            <span class="label-text">件名</span>
+                        </span>
+                        <input
+                            type="text"
+                            wire:model="subject"
+                            class="input input-bordered w-full @error('subject') input-error @enderror"
+                            required
+                            autocomplete="off"
+                        />
+                        @error('subject')
+                            <span class="label-text-alt text-error">{{ $message }}</span>
+                        @enderror
+                    </label>
 
-                <flux:input
-                    wire:model="subject"
-                    label="件名"
-                    type="text"
-                    required
-                    autocomplete="off"
-                />
+                    <label class="form-control w-full">
+                        <span class="label">
+                            <span class="label-text">お問い合わせ内容</span>
+                        </span>
+                        <textarea
+                            wire:model="body"
+                            rows="8"
+                            class="textarea textarea-bordered w-full @error('body') textarea-error @enderror"
+                            required
+                        ></textarea>
+                        @error('body')
+                            <span class="label-text-alt text-error">{{ $message }}</span>
+                        @enderror
+                    </label>
 
-                <flux:textarea
-                    wire:model="body"
-                    label="お問い合わせ内容"
-                    rows="8"
-                    required
-                />
-
-                <div class="flex items-center justify-end gap-3">
-                    <flux:button type="submit" variant="primary" data-test="contact-preview-button">
-                        <span wire:loading.remove wire:target="preview">確認画面へ</span>
-                        <span wire:loading wire:target="preview">確認中...</span>
-                    </flux:button>
-                </div>
-            </form>
-        @endif
-    </flux:card>
+                    <div class="flex items-center justify-end gap-3">
+                        <button type="submit" class="btn btn-primary" data-test="contact-preview-button">
+                            <span wire:loading.remove wire:target="preview">確認画面へ</span>
+                            <span wire:loading wire:target="preview">確認中...</span>
+                        </button>
+                    </div>
+                </form>
+            @endif
+        </div>
+    </div>
 </div>

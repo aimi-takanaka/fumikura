@@ -24,7 +24,7 @@ it('shows the current user profile', function () {
         ->assertSee('山田太郎')
         ->assertSee('taro@example.com')
         ->assertSee('自分の投稿')
-        ->assertSee('保存済み')
+        ->assertSee('お気に入り一覧')
         ->assertSee(route('bookmarks'), false)
         ->assertSee('設定')
         ->assertSee(route('profile.edit'), false);
@@ -265,7 +265,7 @@ it('does not show pagination when there are ten or fewer stories', function () {
     $this->actingAs($user)
         ->get(route('mypage'))
         ->assertOk()
-        ->assertDontSee('data-flux-pagination', false);
+        ->assertDontSee('data-pagination', false);
 });
 
 it('resets to the first page when search changes', function () {

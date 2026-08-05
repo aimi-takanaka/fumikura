@@ -40,50 +40,61 @@ new #[Layout('layouts.public')] #[Title('お題画像の投稿')] class extends 
 
 <div class="mx-auto max-w-xl">
     <div class="mb-6">
-        <flux:heading size="xl">お題画像の投稿</flux:heading>
-        <flux:text class="mt-2">ユーザーが創作するためのお題画像をアップロードします。</flux:text>
+        <h1 class="text-2xl font-bold">お題画像の投稿</h1>
+        <p class="mt-2 text-base-content/70">ユーザーが創作するためのお題画像をアップロードします。</p>
     </div>
 
-    <flux:card>
-        <form wire:submit="save" class="flex flex-col gap-6">
-            <flux:input
-                wire:model="title"
-                label="タイトル"
-                placeholder="例: 夕暮れの海辺"
-                required
-            />
+    <div class="card card-border bg-base-100">
+        <form wire:submit="save" class="card-body flex flex-col gap-6">
+            <label class="form-control w-full">
+                <span class="label">
+                    <span class="label-text">タイトル</span>
+                </span>
+                <input
+                    type="text"
+                    wire:model="title"
+                    placeholder="例: 夕暮れの海辺"
+                    class="input input-bordered w-full @error('title') input-error @enderror"
+                    required
+                />
+                @error('title')
+                    <span class="label-text-alt text-error">{{ $message }}</span>
+                @enderror
+            </label>
 
-            <flux:field>
-                <flux:label>お題画像</flux:label>
-
+            <label class="form-control w-full">
+                <span class="label">
+                    <span class="label-text">お題画像</span>
+                </span>
                 <input
                     type="file"
                     wire:model="photo"
                     accept="image/*"
-                    class="block w-full text-sm text-zinc-600 file:mr-4 file:rounded-md file:border-0 file:bg-zinc-100 file:px-4 file:py-2 file:text-sm file:font-medium hover:file:bg-zinc-200 dark:text-zinc-300 dark:file:bg-zinc-700 dark:hover:file:bg-zinc-600"
+                    class="file-input file-input-bordered w-full @error('photo') file-input-error @enderror"
                 />
+                <span class="label-text-alt mt-1">JPEG / PNG などの画像、最大5MBまで。</span>
+                @error('photo')
+                    <span class="label-text-alt text-error">{{ $message }}</span>
+                @enderror
+            </label>
 
-                <flux:description>JPEG / PNG などの画像、最大5MBまで。</flux:description>
-                <flux:error name="photo" />
-            </flux:field>
-
-            <div wire:loading wire:target="photo" class="text-sm text-zinc-500">
+            <div wire:loading wire:target="photo" class="text-sm text-base-content/60">
                 アップロード中...
             </div>
 
             @if ($photo && $photo->isPreviewable())
-                <div class="overflow-hidden rounded-lg border border-zinc-200 dark:border-zinc-700">
+                <div class="overflow-hidden rounded-box border border-base-300">
                     <img src="{{ $photo->temporaryUrl() }}" alt="プレビュー" class="max-h-64 w-full object-contain" />
                 </div>
             @endif
 
             <div class="flex items-center justify-end gap-3">
-                <flux:button :href="route('topics.index')" variant="ghost" wire:navigate>キャンセル</flux:button>
-                <flux:button type="submit" variant="primary">
+                <a href="{{ route('topics.index') }}" class="btn btn-ghost" wire:navigate>キャンセル</a>
+                <button type="submit" class="btn btn-primary">
                     <span wire:loading.remove wire:target="save">投稿する</span>
                     <span wire:loading wire:target="save">投稿中...</span>
-                </flux:button>
+                </button>
             </div>
         </form>
-    </flux:card>
+    </div>
 </div>

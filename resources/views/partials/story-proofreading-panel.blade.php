@@ -5,14 +5,14 @@
             wire:click="checkTypos"
             wire:loading.attr="disabled"
             wire:target="checkTypos"
-            class="flex items-center gap-3 rounded-xl p-1 text-left transition hover:bg-zinc-800/5 disabled:cursor-default disabled:opacity-75 dark:hover:bg-white/10"
+            class="flex items-center gap-3 rounded-xl p-1 text-left transition hover:bg-base-200 disabled:cursor-default disabled:opacity-75"
         >
             <img
                 src="{{ asset('img/welcome/check-1.PNG') }}"
                 alt=""
                 class="h-24 w-auto shrink-0 object-contain sm:h-32"
             />
-            <span class="text-sm font-medium text-zinc-800 dark:text-white">
+            <span class="text-sm font-medium">
                 <span wire:loading.remove wire:target="checkTypos">誤字チェック</span>
                 <span wire:loading wire:target="checkTypos">チェック中...</span>
             </span>
@@ -23,14 +23,14 @@
             wire:click="suggestAnotherStories"
             wire:loading.attr="disabled"
             wire:target="suggestAnotherStories"
-            class="flex items-center gap-3 rounded-xl p-1 text-left transition hover:bg-zinc-800/5 disabled:cursor-default disabled:opacity-75 dark:hover:bg-white/10"
+            class="flex items-center gap-3 rounded-xl p-1 text-left transition hover:bg-base-200 disabled:cursor-default disabled:opacity-75"
         >
             <img
                 src="{{ asset('img/welcome/check-2.PNG') }}"
                 alt=""
                 class="h-24 w-auto shrink-0 object-contain sm:h-32"
             />
-            <span class="text-sm font-medium text-zinc-800 dark:text-white">
+            <span class="text-sm font-medium">
                 <span wire:loading.remove wire:target="suggestAnotherStories">アナザーストーリーの提案</span>
                 <span wire:loading wire:target="suggestAnotherStories">提案中...</span>
             </span>
@@ -38,79 +38,75 @@
     </div>
 
     @if ($proofreadingResult)
-        <flux:callout class="mt-3">
-            <div class="flex items-start gap-4">
+        <div role="alert" class="alert mt-3">
+            <div class="flex w-full items-start gap-4">
                 <img
                     src="{{ asset('img/welcome/check-1.PNG') }}"
                     alt="ふみ"
                     class="h-24 w-auto shrink-0 object-contain sm:h-32"
                 />
                 <div class="min-w-0 flex-1">
-                    <flux:callout.heading>誤字チェック結果</flux:callout.heading>
-                    <flux:callout.text class="whitespace-pre-line">{{ $proofreadingResult }}</flux:callout.text>
+                    <h3 class="font-bold">誤字チェック結果</h3>
+                    <p class="mt-1 whitespace-pre-line text-sm">{{ $proofreadingResult }}</p>
 
                     <div class="mt-3">
-                        <flux:button
+                        <button
                             type="button"
                             wire:click="dismissProofreadingResult"
-                            variant="ghost"
-                            size="sm"
+                            class="btn btn-ghost btn-sm"
                         >
                             閉じる
-                        </flux:button>
+                        </button>
                     </div>
                 </div>
             </div>
-        </flux:callout>
+        </div>
     @endif
 
     @if (count($anotherStorySuggestions) > 0)
-        <flux:callout color="lime" class="mt-3">
-            <div class="flex items-start gap-4">
+        <div role="alert" class="alert alert-success mt-3">
+            <div class="flex w-full items-start gap-4">
                 <img
                     src="{{ asset('img/welcome/check-2.PNG') }}"
                     alt="ふみ"
                     class="h-24 w-auto shrink-0 object-contain sm:h-32"
                 />
                 <div class="min-w-0 flex-1">
-                    <flux:callout.heading>ふみの提案</flux:callout.heading>
-                    <flux:callout.text>
-                        <ul class="mt-2 space-y-5">
+                    <h3 class="font-bold">ふみの提案</h3>
+                    <div class="mt-2">
+                        <ul class="space-y-5">
                             @foreach ($anotherStorySuggestions as $index => $suggestion)
                                 <li class="space-y-2">
-                                    <p class="font-medium text-zinc-800 dark:text-zinc-100">
+                                    <p class="font-medium">
                                         「{{ $suggestion['viewpoint'] }}」視点はいかがでしょうか？
                                     </p>
-                                    <p class="text-zinc-700 dark:text-zinc-200">{{ $suggestion['hook'] }}</p>
-                                    <p class="text-sm text-zinc-600 dark:text-zinc-300">{{ $suggestion['comment'] }}</p>
-                                    <flux:button
+                                    <p class="text-sm">{{ $suggestion['hook'] }}</p>
+                                    <p class="text-sm opacity-80">{{ $suggestion['comment'] }}</p>
+                                    <button
                                         type="button"
                                         wire:click="startAnotherStoryDraft({{ $index }})"
-                                        variant="primary"
-                                        size="sm"
-                                        icon="pencil-square"
+                                        class="btn btn-primary btn-sm"
                                         wire:loading.attr="disabled"
                                         wire:target="startAnotherStoryDraft"
                                     >
                                         この視点で書いてみる
-                                    </flux:button>
+                                    </button>
                                 </li>
                             @endforeach
                         </ul>
-                    </flux:callout.text>
+                    </div>
 
                     <div class="mt-3">
-                        <flux:button
+                        <button
                             type="button"
                             wire:click="dismissAnotherStorySuggestions"
-                            variant="ghost"
-                            size="sm"
+                            class="btn btn-ghost btn-sm"
                         >
                             閉じる
-                        </flux:button>
+                        </button>
                     </div>
                 </div>
             </div>
-        </flux:callout>
+        </div>
     @endif
 </div>

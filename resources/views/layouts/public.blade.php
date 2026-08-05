@@ -1,79 +1,69 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-theme="fumikura">
     <head>
         @include('partials.head')
     </head>
-    <body class="min-h-screen bg-washi font-sans text-sumi antialiased">
-        <header class="border-b border-ai/15 bg-washi-light/90 backdrop-blur">
-            <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4">
-                <a href="{{ route('home') }}" class="flex items-center gap-2 text-sumi transition hover:text-shu" wire:navigate>
+    <body class="min-h-screen bg-base-200 font-sans text-base-content antialiased">
+        <div class="navbar border-b border-base-300 bg-base-100 px-4 shadow-sm lg:px-8">
+            <div class="mx-auto flex w-full max-w-7xl items-center justify-between gap-3">
+                <a href="{{ route('home') }}" class="btn btn-ghost gap-2 px-2 text-lg font-bold" wire:navigate>
                     <x-app-logo-icon class="size-7" />
-                    <span class="text-lg font-semibold">文倉</span>
+                    文倉
                 </a>
 
-                <nav class="flex items-center gap-2">
+                <div class="flex items-center gap-2">
                     @auth
                         @if (auth()->user()->is_admin)
-                            <flux:button :href="route('admin.images.create')" variant="ghost" size="sm" icon="plus" wire:navigate class="text-ai hover:text-shu">
-                                {{ __('お題を投稿') }}
-                            </flux:button>
+                            <a href="{{ route('admin.images.create') }}" class="btn btn-ghost btn-sm" wire:navigate>
+                                お題を投稿
+                            </a>
                         @endif
 
-                        <flux:dropdown position="bottom" align="end">
-                            <flux:profile
-                                :name="auth()->user()->name"
-                                :initials="auth()->user()->initials()"
-                                :avatar="auth()->user()->avatarUrl()"
-                                icon:trailing="chevrons-up-down"
-                            />
-
-                            <flux:menu>
-                                <div class="flex items-center gap-2 px-1 py-1.5 text-start text-sm">
-                                    <flux:avatar
-                                        :name="auth()->user()->name"
-                                        :initials="auth()->user()->initials()"
-                                        :src="auth()->user()->avatarUrl()"
-                                    />
-                                    <div class="grid flex-1 text-start text-sm leading-tight">
-                                        <flux:heading class="truncate">{{ auth()->user()->name }}</flux:heading>
-                                        <flux:text class="truncate">{{ auth()->user()->email }}</flux:text>
+                        <div class="dropdown dropdown-end">
+                            <div tabindex="0" role="button" class="btn btn-ghost gap-2 px-2">
+                                <div class="avatar">
+                                    <div class="w-8 rounded-full bg-primary/15">
+                                        @if (auth()->user()->avatarUrl())
+                                            <img src="{{ auth()->user()->avatarUrl() }}" alt="{{ auth()->user()->name }}" />
+                                        @else
+                                            <span class="flex h-full items-center justify-center text-xs font-semibold text-primary">
+                                                {{ auth()->user()->initials() }}
+                                            </span>
+                                        @endif
                                     </div>
                                 </div>
-                                <flux:menu.separator />
-                                <flux:menu.item :href="route('mypage')" icon="user" wire:navigate>
-                                    {{ __('マイページ') }}
-                                </flux:menu.item>
-                                <form method="POST" action="{{ route('logout') }}" class="w-full">
-                                    @csrf
-                                    <flux:menu.item
-                                        as="button"
-                                        type="submit"
-                                        icon="arrow-right-start-on-rectangle"
-                                        class="w-full cursor-pointer"
-                                        data-test="logout-button"
-                                    >
-                                        {{ __('Log out') }}
-                                    </flux:menu.item>
-                                </form>
-                            </flux:menu>
-                        </flux:dropdown>
+                                <span class="hidden sm:inline">{{ auth()->user()->name }}</span>
+                            </div>
+                            <ul tabindex="0" class="menu dropdown-content z-50 mt-3 w-64 rounded-box border border-base-300 bg-base-100 p-2 shadow-lg">
+                                <li class="menu-title">
+                                    <span class="truncate">{{ auth()->user()->email }}</span>
+                                </li>
+                                <li>
+                                    <a href="{{ route('mypage') }}" wire:navigate>マイページ</a>
+                                </li>
+                                <li>
+                                    <form method="POST" action="{{ route('logout') }}" class="w-full">
+                                        @csrf
+                                        <button type="submit" class="w-full text-left" data-test="logout-button">
+                                            {{ __('Log out') }}
+                                        </button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
                     @else
-                        <flux:button :href="route('login')" variant="ghost" size="sm" wire:navigate class="text-ai hover:text-shu">
-                            {{ __('ログイン') }}
-                        </flux:button>
-                        <flux:button :href="route('register')" variant="primary" size="sm" wire:navigate>
-                            {{ __('新規登録') }}
-                        </flux:button>
+                        <a href="{{ route('login') }}" class="btn btn-ghost btn-sm" wire:navigate>{{ __('ログイン') }}</a>
+                        <a href="{{ route('register') }}" class="btn btn-primary btn-sm" wire:navigate>{{ __('新規登録') }}</a>
                     @endauth
-                </nav>
+                </div>
             </div>
-        </header>
+        </div>
 
         <main class="mx-auto max-w-7xl px-4 py-8">
             @if (session('status'))
-                <flux:callout variant="success" icon="check-circle" class="mb-6" dismissible>
-                    <flux:callout.text>{{ session('status') }}</flux:callout.text>
-                </flux:callout>
+                <div role="alert" class="alert alert-success mb-6">
+                    <span>{{ session('status') }}</span>
+                </div>
             @endif
 
             @include('partials.fumi-encouragement-callout')
@@ -81,12 +71,16 @@
             {{ $slot }}
         </main>
 
-        @persist('toast')
-            <flux:toast.group>
-                <flux:toast />
-            </flux:toast.group>
-        @endpersist
-
-        @fluxScripts
+        <div
+            x-data="toastStack"
+            class="toast toast-end toast-bottom z-[100]"
+            @notify.window="push($event.detail.type ?? 'info', $event.detail.message ?? '')"
+        >
+            <template x-for="toast in toasts" :key="toast.id">
+                <div class="alert shadow-lg" :class="alertClass(toast.type)">
+                    <span x-text="toast.message"></span>
+                </div>
+            </template>
+        </div>
     </body>
 </html>

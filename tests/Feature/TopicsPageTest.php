@@ -66,7 +66,7 @@ it('does not show pagination when there are ten or fewer images', function () {
 
     $this->get(route('topics.index'))
         ->assertOk()
-        ->assertDontSee('data-flux-pagination', false);
+        ->assertDontSee('data-pagination', false);
 });
 
 it('redirects the legacy image index route to the topic list', function () {

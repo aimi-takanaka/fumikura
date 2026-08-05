@@ -1,5 +1,6 @@
 <?php
 
+use App\Livewire\Concerns\NotifiesUser;
 use App\Models\Story;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Livewire\Attributes\Layout;
@@ -9,6 +10,7 @@ use Livewire\WithPagination;
 
 new #[Layout('layouts.public')] #[Title('マイページ')] class extends Component
 {
+    use NotifiesUser;
     use WithPagination;
 
     private const PER_PAGE = 10;
@@ -42,7 +44,7 @@ new #[Layout('layouts.public')] #[Title('マイページ')] class extends Compon
 
         $story->delete();
 
-        Flux::toast('ストーリーを削除しました。', variant: 'success');
+        $this->notify('ストーリーを削除しました。');
     }
 
     /**
@@ -86,131 +88,154 @@ new #[Layout('layouts.public')] #[Title('マイページ')] class extends Compon
 }; ?>
 
 <div>
-    <flux:heading size="xl">マイページ</flux:heading>
-    <flux:text class="mt-1">自分のプロフィールと、投稿したストーリーをまとめて管理できます。</flux:text>
+    <h1 class="text-2xl font-bold">マイページ</h1>
+    <p class="mt-1 text-base-content/70">自分のプロフィールと、投稿したストーリーをまとめて管理できます。</p>
 
-    <flux:separator class="my-6" />
+    <div class="divider my-6"></div>
 
     <section>
         <div class="flex items-center gap-2">
-            <flux:heading size="lg">プロフィール</flux:heading>
-            <flux:button
-                :href="route('profile.edit')"
-                variant="ghost"
-                size="sm"
-                icon="cog"
+            <h2 class="text-xl font-bold">プロフィール</h2>
+            <a
+                href="{{ route('profile.edit') }}"
+                class="btn btn-ghost btn-sm"
                 wire:navigate
                 data-test="mypage-settings-button"
             >
                 {{ __('Settings') }}
-            </flux:button>
+            </a>
         </div>
-        <flux:card class="mt-4">
-            <div class="flex items-center gap-4">
-                <flux:avatar
-                    :name="auth()->user()->name"
-                    :initials="auth()->user()->initials()"
-                    :src="auth()->user()->avatarUrl()"
-                />
+        <div class="card card-border bg-base-100 mt-4">
+            <div class="card-body flex-row items-center gap-4">
+                <div class="avatar">
+                    <div class="w-12 rounded-full bg-primary/15">
+                        @if (auth()->user()->avatarUrl())
+                            <img src="{{ auth()->user()->avatarUrl() }}" alt="{{ auth()->user()->name }}" />
+                        @else
+                            <span class="flex h-full items-center justify-center text-sm font-semibold text-primary">
+                                {{ auth()->user()->initials() }}
+                            </span>
+                        @endif
+                    </div>
+                </div>
                 <div>
-                    <flux:heading>{{ auth()->user()->name }}</flux:heading>
-                    <flux:text size="sm">{{ auth()->user()->email }}</flux:text>
+                    <h3 class="font-bold">{{ auth()->user()->name }}</h3>
+                    <p class="text-sm text-base-content/70">{{ auth()->user()->email }}</p>
                 </div>
             </div>
-        </flux:card>
+        </div>
     </section>
 
-    <flux:separator class="my-8" />
+    <div class="divider my-8"></div>
 
     <section>
-        <flux:heading size="lg">表示フォント</flux:heading>
-        <flux:text class="mt-1">文倉全体の文字の見え方を選べます。選択内容はこの端末に保存されます。</flux:text>
-        <flux:card class="mt-4">
-            <x-story-body-font-picker layout="list" class="w-full" />
-        </flux:card>
+        <h2 class="text-xl font-bold">表示フォント</h2>
+        <p class="mt-1 text-base-content/70">文倉全体の文字の見え方を選べます。選択内容はこの端末に保存されます。</p>
+        <div class="card card-border bg-base-100 mt-4">
+            <div class="card-body">
+                <x-story-body-font-picker layout="list" class="w-full" />
+            </div>
+        </div>
     </section>
 
-    <flux:separator class="my-8" />
+    <div class="divider my-8"></div>
 
     <section>
         @include('partials.mypage-tabs')
 
         @if ($hasStories)
             <div class="mt-4 flex flex-col gap-3 sm:flex-row sm:items-end">
-                <flux:field class="flex-1">
-                    <flux:label>キーワードで検索</flux:label>
-                    <flux:input
+                <label class="form-control flex-1">
+                    <span class="label">
+                        <span class="label-text">キーワードで検索</span>
+                    </span>
+                    <input
+                        type="search"
                         wire:model.live.debounce.300ms="search"
                         placeholder="タイトル・本文・お題で検索"
-                        icon="magnifying-glass"
-                        clearable
+                        class="input input-bordered w-full"
                     />
-                </flux:field>
+                </label>
 
-                <flux:field class="sm:w-48">
-                    <flux:label>ステータス</flux:label>
-                    <flux:select wire:model.live="statusFilter">
-                        <flux:select.option value="all">すべて</flux:select.option>
-                        <flux:select.option value="complete">完成</flux:select.option>
-                        <flux:select.option value="idea">アイデア</flux:select.option>
-                        <flux:select.option value="draft">下書き</flux:select.option>
-                    </flux:select>
-                </flux:field>
+                <label class="form-control sm:w-48">
+                    <span class="label">
+                        <span class="label-text">ステータス</span>
+                    </span>
+                    <select wire:model.live="statusFilter" class="select select-bordered w-full">
+                        <option value="all">すべて</option>
+                        <option value="complete">完成</option>
+                        <option value="idea">アイデア</option>
+                        <option value="draft">下書き</option>
+                    </select>
+                </label>
             </div>
         @endif
 
         @if (! $hasStories)
-            <flux:callout icon="document-text" class="mt-4">
-                <flux:callout.heading>まだ投稿がありません</flux:callout.heading>
-                <flux:callout.text>お題ページからストーリーを書いてみましょう。</flux:callout.text>
-            </flux:callout>
+            <div role="alert" class="alert mt-4">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="size-6 shrink-0 stroke-current">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <div>
+                    <h3 class="font-bold">まだ投稿がありません</h3>
+                    <div class="text-sm">お題ページからストーリーを書いてみましょう。</div>
+                </div>
+            </div>
         @elseif ($stories->isEmpty())
-            <flux:callout icon="funnel" class="mt-4">
-                <flux:callout.heading>条件に合う投稿がありません</flux:callout.heading>
-                <flux:callout.text>検索キーワードやステータスの絞り込みを変えてみてください。</flux:callout.text>
-            </flux:callout>
+            <div role="alert" class="alert mt-4">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="size-6 shrink-0 stroke-current">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                </svg>
+                <div>
+                    <h3 class="font-bold">条件に合う投稿がありません</h3>
+                    <div class="text-sm">検索キーワードやステータスの絞り込みを変えてみてください。</div>
+                </div>
+            </div>
         @else
             <div class="mt-4 flex flex-col gap-4">
                 @foreach ($stories as $story)
-                    <flux:card wire:key="story-{{ $story->id }}">
-                        <div class="flex items-start justify-between gap-4">
-                            <a href="{{ route('stories.show', $story) }}" wire:navigate class="min-w-0 transition hover:opacity-80">
-                                <div class="flex items-center gap-2">
-                                    <x-story-status-badge :status="$story->status" />
-                                    <flux:text size="sm">{{ $story->created_at->format('Y年n月j日') }}</flux:text>
-                                </div>
-                                <flux:heading size="lg" class="mt-2 truncate">{{ $story->title }}</flux:heading>
-                                <flux:text size="sm" class="mt-1">お題「{{ $story->image->title }}」</flux:text>
-                                <x-topic-thumbnail :image="$story->image" />
-                                <x-story-read-more :body="$story->body" :lines="2" class="mt-2" />
-                            </a>
+                    <div class="card card-border bg-base-100" wire:key="story-{{ $story->id }}">
+                        <div class="card-body">
+                            <div class="flex items-start justify-between gap-4">
+                                <a href="{{ route('stories.show', $story) }}" wire:navigate class="min-w-0 transition hover:opacity-80">
+                                    <div class="flex items-center gap-2">
+                                        <x-story-status-badge :status="$story->status" />
+                                        <span class="text-sm text-base-content/70">{{ $story->created_at->format('Y年n月j日') }}</span>
+                                    </div>
+                                    <h3 class="mt-2 truncate text-lg font-bold">{{ $story->title }}</h3>
+                                    <p class="mt-1 text-sm text-base-content/70">お題「{{ $story->image->title }}」</p>
+                                    <x-topic-thumbnail :image="$story->image" />
+                                    <x-story-read-more :body="$story->body" :lines="2" class="mt-2" />
+                                </a>
 
-                            <div class="flex shrink-0 flex-col gap-1">
-                                <flux:button
-                                    :href="route('stories.edit', $story)"
-                                    variant="ghost"
-                                    size="sm"
-                                    icon="pencil-square"
-                                    wire:navigate
-                                    inset
-                                />
-                                <flux:button
-                                    wire:click="deleteStory({{ $story->id }})"
-                                    wire:confirm="このストーリーを削除しますか？この操作は取り消せません。"
-                                    variant="ghost"
-                                    size="sm"
-                                    icon="trash"
-                                    inset
-                                />
+                                <div class="flex shrink-0 flex-col gap-1">
+                                    <a
+                                        href="{{ route('stories.edit', $story) }}"
+                                        class="btn btn-ghost btn-sm btn-square"
+                                        wire:navigate
+                                        title="編集"
+                                    >
+                                        ✎
+                                    </a>
+                                    <button
+                                        type="button"
+                                        wire:click="deleteStory({{ $story->id }})"
+                                        wire:confirm="このストーリーを削除しますか？この操作は取り消せません。"
+                                        class="btn btn-ghost btn-sm btn-square text-error"
+                                        title="削除"
+                                    >
+                                        🗑
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                    </flux:card>
+                    </div>
                 @endforeach
             </div>
 
-            @if ($stories->hasPages())
-                <flux:pagination :paginator="$stories" class="mt-6" />
-            @endif
+            <div class="mt-6">
+                @include('partials.pagination', ['paginator' => $stories])
+            </div>
         @endif
     </section>
 </div>

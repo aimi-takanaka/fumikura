@@ -2,16 +2,9 @@
     'sidebar' => false,
 ])
 
-@if($sidebar)
-    <flux:sidebar.brand name="Laravel Starter Kit" {{ $attributes }}>
-        <x-slot name="logo" class="flex aspect-square size-8 items-center justify-center rounded-md bg-accent-content text-accent-foreground">
-            <x-app-logo-icon class="size-5 fill-current text-white dark:text-black" />
-        </x-slot>
-    </flux:sidebar.brand>
-@else
-    <flux:brand name="Laravel Starter Kit" {{ $attributes }}>
-        <x-slot name="logo" class="flex aspect-square size-8 items-center justify-center rounded-md bg-accent-content text-accent-foreground">
-            <x-app-logo-icon class="size-5 fill-current text-white dark:text-black" />
-        </x-slot>
-    </flux:brand>
-@endif
+<a {{ $attributes->class(['inline-flex items-center gap-2 font-bold', 'text-lg' => ! $sidebar, 'text-base' => $sidebar]) }}>
+    <span class="flex aspect-square size-8 items-center justify-center rounded-md bg-primary text-primary-content">
+        <x-app-logo-icon class="size-5 fill-current" />
+    </span>
+    <span @class(['hidden lg:inline' => $sidebar])>文倉</span>
+</a>

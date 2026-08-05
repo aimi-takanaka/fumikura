@@ -29,40 +29,41 @@
                 <button
                     type="button"
                     role="option"
-                    class="w-full rounded-xl border px-4 py-3 text-left transition"
-                    x-bind:class="font === '{{ $value }}'
-                        ? 'border-shu bg-shu/5 ring-1 ring-shu/30'
-                        : 'border-ai/15 hover:border-ai/30 hover:bg-washi-light/80'"
+                    class="btn btn-outline h-auto min-h-0 w-full justify-start py-3 font-normal"
+                    x-bind:class="font === '{{ $value }}' ? 'btn-primary' : ''"
                     x-bind:aria-selected="font === '{{ $value }}'"
                     x-on:click="setFont('{{ $value }}')"
                     style="{{ $font['style'] }}"
                     data-test="site-font-option-{{ $value }}"
                 >
-                    <span class="block text-sm font-medium text-sumi">{{ $font['label'] }}</span>
-                    <span class="mt-1 block text-sm text-ai/80">{{ $font['sample'] }}</span>
+                    <span class="block text-left">
+                        <span class="block text-sm font-medium">{{ $font['label'] }}</span>
+                        <span class="mt-1 block text-sm opacity-70">{{ $font['sample'] }}</span>
+                    </span>
                 </button>
             @endforeach
         </div>
     @else
-        <flux:dropdown position="bottom" align="end">
-            <flux:button variant="ghost" size="sm" icon="language" data-test="story-body-font-picker">
+        <div class="dropdown dropdown-end">
+            <div tabindex="0" role="button" class="btn btn-ghost btn-sm" data-test="story-body-font-picker">
                 フォント変更
-            </flux:button>
+            </div>
 
-            <flux:menu>
+            <ul tabindex="0" class="menu dropdown-content z-50 mt-2 w-64 rounded-box border border-base-300 bg-base-100 p-2 shadow-lg">
                 @foreach ($fonts as $value => $font)
-                    <flux:menu.item
-                        as="button"
-                        type="button"
-                        class="w-full cursor-pointer"
-                        x-bind:class="font === '{{ $value }}' ? 'font-medium' : ''"
-                        x-on:click="setFont('{{ $value }}')"
-                        style="{{ $font['style'] }}"
-                    >
-                        {{ $font['label'] }}
-                    </flux:menu.item>
+                    <li>
+                        <button
+                            type="button"
+                            class="w-full cursor-pointer"
+                            x-bind:class="font === '{{ $value }}' ? 'font-medium' : ''"
+                            x-on:click="setFont('{{ $value }}')"
+                            style="{{ $font['style'] }}"
+                        >
+                            {{ $font['label'] }}
+                        </button>
+                    </li>
                 @endforeach
-            </flux:menu>
-        </flux:dropdown>
+            </ul>
+        </div>
     @endif
 </div>

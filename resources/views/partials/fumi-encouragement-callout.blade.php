@@ -22,11 +22,11 @@
 
                     <button
                         type="button"
-                        class="shrink-0 rounded-full p-1 text-lime-800/60 transition hover:bg-lime-100/80 hover:text-lime-900 dark:text-lime-200/70 dark:hover:bg-lime-900/40 dark:hover:text-lime-50"
+                        class="btn btn-ghost btn-sm shrink-0"
                         @click="show = false"
                         aria-label="閉じる"
                     >
-                        <flux:icon.x-mark variant="micro" />
+                        閉じる
                     </button>
                 </div>
             </div>

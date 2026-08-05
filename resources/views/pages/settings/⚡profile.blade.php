@@ -1,8 +1,8 @@
 <?php
 
 use App\Concerns\ProfileValidationRules;
+use App\Livewire\Concerns\NotifiesUser;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Flux\Flux;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
@@ -13,10 +13,12 @@ use Livewire\Component;
 use Livewire\WithFileUploads;
 
 new #[Layout('layouts.public')] #[Title('Profile settings')] class extends Component {
-    use ProfileValidationRules, WithFileUploads;
+    use NotifiesUser, ProfileValidationRules, WithFileUploads;
 
     public string $name = '';
+
     public string $email = '';
+
     public $avatar = null;
 
     /**
@@ -58,7 +60,7 @@ new #[Layout('layouts.public')] #[Title('Profile settings')] class extends Compo
 
         $this->reset('avatar');
 
-        Flux::toast(variant: 'success', text: __('Profile updated.'));
+        $this->notify(__('Profile updated.'));
     }
 
     /**
@@ -78,7 +80,7 @@ new #[Layout('layouts.public')] #[Title('Profile settings')] class extends Compo
 
         $this->reset('avatar');
 
-        Flux::toast(variant: 'success', text: __('Avatar removed.'));
+        $this->notify(__('Avatar removed.'));
     }
 
     /**
@@ -116,76 +118,109 @@ new #[Layout('layouts.public')] #[Title('Profile settings')] class extends Compo
 <section class="w-full">
     @include('partials.settings-heading')
 
-    <flux:heading class="sr-only">{{ __('Profile settings') }}</flux:heading>
+    <h2 class="sr-only">{{ __('Profile settings') }}</h2>
 
     <x-pages::settings.layout :heading="__('Profile')" :subheading="__('Update your name, email address, and avatar')">
         <form wire:submit="updateProfileInformation" class="my-6 w-full space-y-6">
             <div class="flex items-center gap-4">
-                <flux:avatar
-                    :name="auth()->user()->name"
-                    :initials="auth()->user()->initials()"
-                    :src="$avatar && $avatar->isPreviewable() ? $avatar->temporaryUrl() : auth()->user()->avatarUrl()"
-                    size="lg"
-                />
+                <div class="avatar">
+                    <div class="w-16 rounded-full bg-primary/15">
+                        @if ($avatar && $avatar->isPreviewable())
+                            <img src="{{ $avatar->temporaryUrl() }}" alt="{{ auth()->user()->name }}" />
+                        @elseif (auth()->user()->avatarUrl())
+                            <img src="{{ auth()->user()->avatarUrl() }}" alt="{{ auth()->user()->name }}" />
+                        @else
+                            <span class="flex h-full items-center justify-center text-lg font-semibold text-primary">
+                                {{ auth()->user()->initials() }}
+                            </span>
+                        @endif
+                    </div>
+                </div>
 
                 <div class="flex flex-col gap-2">
-                    <flux:field>
-                        <flux:label>{{ __('Avatar') }}</flux:label>
-
+                    <fieldset class="fieldset">
+                        <legend class="fieldset-legend">{{ __('Avatar') }}</legend>
                         <input
                             type="file"
                             wire:model="avatar"
                             accept="image/*"
-                            class="block w-full text-sm text-sumi/70 file:mr-4 file:rounded-md file:border-0 file:bg-washi file:px-4 file:py-2 file:text-sm file:font-medium file:text-ai hover:file:bg-washi-light"
+                            class="file-input file-input-bordered w-full max-w-xs"
                         />
-
-                        <flux:description>JPEG / PNG などの画像、最大2MBまで。</flux:description>
-                        <flux:error name="avatar" />
-                    </flux:field>
+                        <p class="label text-sm text-base-content/60">JPEG / PNG などの画像、最大2MBまで。</p>
+                        @error('avatar')
+                            <p class="text-sm text-error">{{ $message }}</p>
+                        @enderror
+                    </fieldset>
 
                     @if (auth()->user()->avatar_path)
-                        <flux:button type="button" variant="ghost" size="sm" wire:click="removeAvatar" wire:confirm="アバター画像を削除しますか？">
+                        <button
+                            type="button"
+                            class="btn btn-ghost btn-sm self-start"
+                            wire:click="removeAvatar"
+                            wire:confirm="アバター画像を削除しますか？"
+                        >
                             {{ __('Remove avatar') }}
-                        </flux:button>
+                        </button>
                     @endif
                 </div>
             </div>
 
-            <div wire:loading wire:target="avatar" class="text-sm text-ai/70">
+            <div wire:loading wire:target="avatar" class="text-sm text-base-content/60">
                 アップロード中...
             </div>
 
-            <flux:input wire:model="name" :label="__('Name')" type="text" required autofocus autocomplete="name" />
+            <fieldset class="fieldset">
+                <legend class="fieldset-legend">{{ __('Name') }}</legend>
+                <input
+                    wire:model="name"
+                    type="text"
+                    required
+                    autofocus
+                    autocomplete="name"
+                    class="input input-bordered w-full"
+                />
+                @error('name')
+                    <p class="text-sm text-error">{{ $message }}</p>
+                @enderror
+            </fieldset>
 
             <div>
-                <flux:input wire:model="email" :label="__('Email')" type="email" required autocomplete="email" />
+                <fieldset class="fieldset">
+                    <legend class="fieldset-legend">{{ __('Email') }}</legend>
+                    <input
+                        wire:model="email"
+                        type="email"
+                        required
+                        autocomplete="email"
+                        class="input input-bordered w-full"
+                    />
+                    @error('email')
+                        <p class="text-sm text-error">{{ $message }}</p>
+                    @enderror
+                </fieldset>
 
                 @if ($this->hasUnverifiedEmail)
                     <div>
-                        <flux:text class="mt-4">
+                        <p class="mt-4 text-sm text-base-content/80">
                             {{ __('Your email address is unverified.') }}
-
-                            <flux:link class="text-sm cursor-pointer" wire:click.prevent="resendVerificationNotification">
+                            <button type="button" class="link link-primary text-sm" wire:click.prevent="resendVerificationNotification">
                                 {{ __('Click here to re-send the verification email.') }}
-                            </flux:link>
-                        </flux:text>
+                            </button>
+                        </p>
 
                         @if (session('status') === 'verification-link-sent')
-                            <flux:text class="mt-2 font-medium text-shu">
+                            <p class="mt-2 text-sm font-medium text-secondary">
                                 {{ __('A new verification link has been sent to your email address.') }}
-                            </flux:text>
+                            </p>
                         @endif
                     </div>
                 @endif
             </div>
 
             <div class="flex items-center gap-4">
-                <div class="flex items-center justify-end">
-                    <flux:button variant="primary" type="submit" class="w-full" data-test="update-profile-button">
-                        {{ __('Save') }}
-                    </flux:button>
-                </div>
-
+                <button type="submit" class="btn btn-primary w-full" data-test="update-profile-button">
+                    {{ __('Save') }}
+                </button>
             </div>
         </form>
 

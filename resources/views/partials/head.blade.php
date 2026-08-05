@@ -1,7 +1,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<title>文倉</title>
+<title>{{ $title ?? '文倉' }}</title>
 
 <link rel="icon" href="{{ asset('img/logo/favicon.ico') }}" sizes="any">
 <link rel="apple-touch-icon" href="{{ asset('img/logo/icon-180.png') }}">
@@ -17,10 +17,13 @@
         if (font === 'zen-maru' || font === 'kaisei-tokumin') {
             document.documentElement.dataset.storyBodyFont = font;
         }
+
+        var appearance = localStorage.getItem('appearance') || 'system';
+        var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        var isDark = appearance === 'dark' || (appearance === 'system' && prefersDark);
+
+        document.documentElement.classList.toggle('dark', isDark);
     })();
 </script>
 
-@fonts
-
 @vite(['resources/css/app.css', 'resources/js/app.js'])
-@fluxAppearance

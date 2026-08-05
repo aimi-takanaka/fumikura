@@ -1,72 +1,99 @@
 <x-layouts::public>
     <section class="mx-auto w-full max-w-lg">
-        <flux:heading size="xl" class="text-sumi">{{ __('Register') }}</flux:heading>
-        <flux:subheading class="mt-1 text-sumi/70">
+        <h1 class="text-2xl font-bold text-base-content">{{ __('Register') }}</h1>
+        <p class="mt-1 text-base-content/70">
             {{ __('Enter your details below to create your account') }}
-        </flux:subheading>
+        </p>
 
-        <flux:separator class="my-6 border-ai/15" />
+        <div class="divider my-6"></div>
 
-        <flux:card class="border-ai/15 bg-washi-light">
-            <div class="flex flex-col gap-6">
-                <x-auth-session-status class="text-center text-shu" :status="session('status')" />
+        <div class="card card-border bg-base-100">
+            <div class="card-body flex flex-col gap-6">
+                <x-auth-session-status class="text-center text-success" :status="session('status')" />
 
                 <form method="POST" action="{{ route('register.store') }}" class="flex flex-col gap-6">
                     @csrf
 
-                    <flux:input
-                        name="name"
-                        :label="__('Name')"
-                        :value="old('name')"
-                        type="text"
-                        required
-                        autofocus
-                        autocomplete="name"
-                        :placeholder="__('Username')"
-                    />
+                    <label class="form-control w-full">
+                        <span class="label">
+                            <span class="label-text">{{ __('Name') }}</span>
+                        </span>
+                        <input
+                            name="name"
+                            type="text"
+                            value="{{ old('name') }}"
+                            required
+                            autofocus
+                            autocomplete="name"
+                            placeholder="{{ __('Username') }}"
+                            class="input input-bordered w-full @error('name') input-error @enderror"
+                        />
+                        @error('name')
+                            <span class="label-text-alt text-error">{{ $message }}</span>
+                        @enderror
+                    </label>
 
-                    <flux:input
-                        name="email"
-                        :label="__('Email address')"
-                        :value="old('email')"
-                        type="email"
-                        required
-                        autocomplete="email"
-                        placeholder="email@example.com"
-                    />
+                    <label class="form-control w-full">
+                        <span class="label">
+                            <span class="label-text">{{ __('Email address') }}</span>
+                        </span>
+                        <input
+                            name="email"
+                            type="email"
+                            value="{{ old('email') }}"
+                            required
+                            autocomplete="email"
+                            placeholder="email@example.com"
+                            class="input input-bordered w-full @error('email') input-error @enderror"
+                        />
+                        @error('email')
+                            <span class="label-text-alt text-error">{{ $message }}</span>
+                        @enderror
+                    </label>
 
-                    <flux:input
-                        name="password"
-                        :label="__('Password')"
-                        type="password"
-                        required
-                        autocomplete="new-password"
-                        :placeholder="__('Password')"
-                        passwordrules="{{ \Illuminate\Validation\Rules\Password::defaults()->toPasswordRulesString() }}"
-                        viewable
-                    />
+                    <label class="form-control w-full">
+                        <span class="label">
+                            <span class="label-text">{{ __('Password') }}</span>
+                        </span>
+                        <input
+                            name="password"
+                            type="password"
+                            required
+                            autocomplete="new-password"
+                            placeholder="{{ __('Password') }}"
+                            passwordrules="{{ \Illuminate\Validation\Rules\Password::defaults()->toPasswordRulesString() }}"
+                            class="input input-bordered w-full @error('password') input-error @enderror"
+                        />
+                        @error('password')
+                            <span class="label-text-alt text-error">{{ $message }}</span>
+                        @enderror
+                    </label>
 
-                    <flux:input
-                        name="password_confirmation"
-                        :label="__('Confirm password')"
-                        type="password"
-                        required
-                        autocomplete="new-password"
-                        :placeholder="__('Confirm password')"
-                        passwordrules="{{ \Illuminate\Validation\Rules\Password::defaults()->toPasswordRulesString() }}"
-                        viewable
-                    />
+                    <label class="form-control w-full">
+                        <span class="label">
+                            <span class="label-text">{{ __('Confirm password') }}</span>
+                        </span>
+                        <input
+                            name="password_confirmation"
+                            type="password"
+                            required
+                            autocomplete="new-password"
+                            placeholder="{{ __('Confirm password') }}"
+                            passwordrules="{{ \Illuminate\Validation\Rules\Password::defaults()->toPasswordRulesString() }}"
+                            class="input input-bordered w-full"
+                        />
+                    </label>
 
-                    <flux:button type="submit" variant="primary" class="w-full" data-test="register-user-button">
+                    <button type="submit" class="btn btn-primary w-full" data-test="register-user-button">
                         {{ __('Create account') }}
-                    </flux:button>
+                    </button>
                 </form>
 
-                <div class="space-x-1 text-center text-sm text-sumi/70 rtl:space-x-reverse">
+                <div class="space-x-1 text-center text-sm text-base-content/70 rtl:space-x-reverse">
                     <span>{{ __('Already have an account?') }}</span>
-                    <flux:link :href="route('login')" wire:navigate>{{ __('Log in') }}</flux:link>
+                    <a href="{{ route('login') }}" class="link link-primary" wire:navigate>{{ __('Log in') }}</a>
                 </div>
             </div>
-        </flux:card>
+        </div>
     </section>
 </x-layouts::public>
