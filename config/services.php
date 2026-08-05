@@ -38,7 +38,7 @@ return [
     'gemini' => [
         'key' => env('GEMINI_API_KEY'),
         'model' => env('GEMINI_MODEL', 'gemini-flash-latest'),
-        'max_characters' => (int) env('GEMINI_MAX_CHARACTERS', 5000),
+        'max_characters' => (int) env('GEMINI_MAX_CHARACTERS', 10000),
     ],
 
     'http' => [

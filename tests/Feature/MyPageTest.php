@@ -30,6 +30,21 @@ it('shows the current user profile', function () {
         ->assertSee(route('profile.edit'), false);
 });
 
+it('shows a site-wide font picker on the my page', function () {
+    $user = User::factory()->create();
+
+    $this->actingAs($user)
+        ->get(route('mypage'))
+        ->assertOk()
+        ->assertSee('表示フォント')
+        ->assertSee('文倉全体の文字の見え方を選べます')
+        ->assertSee('Noto Sans JP（標準）')
+        ->assertSee('Zen Maru Gothic（丸ゴシック）')
+        ->assertSee('Kaisei Tokumin（明朝）')
+        ->assertSee('site-font-option-noto', false)
+        ->assertSee('story-body-font', false);
+});
+
 it('shows only the current user\'s stories', function () {
     $user = User::factory()->create();
     $other = User::factory()->create();

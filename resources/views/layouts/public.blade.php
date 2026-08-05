@@ -3,7 +3,7 @@
     <head>
         @include('partials.head')
     </head>
-    <body class="min-h-screen bg-washi text-sumi antialiased">
+    <body class="min-h-screen bg-washi font-sans text-sumi antialiased">
         <header class="border-b border-ai/15 bg-washi-light/90 backdrop-blur">
             <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4">
                 <a href="{{ route('home') }}" class="flex items-center gap-2 text-sumi transition hover:text-shu" wire:navigate>

@@ -9,7 +9,7 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-    --font-sans: 'Instrument Sans', 'Noto Sans JP', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans: 'Noto Sans JP', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 
     --color-washi: #F3EEE0;
     --color-washi-light: #FFFCF5;
@@ -51,16 +51,16 @@
         border-color: color-mix(in srgb, var(--color-ai) 15%, transparent);
     }
 
-    .story-body {
-        font-family: 'Noto Sans JP', sans-serif;
+    html {
+        font-family: var(--font-sans);
     }
 
-    html[data-story-body-font='zen-maru'] .story-body {
-        font-family: 'Zen Maru Gothic', sans-serif;
+    html[data-story-body-font='zen-maru'] {
+        --font-sans: 'Zen Maru Gothic', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
     }
 
-    html[data-story-body-font='kaisei-tokumin'] .story-body {
-        font-family: 'Kaisei Tokumin', serif;
+    html[data-story-body-font='kaisei-tokumin'] {
+        --font-sans: 'Kaisei Tokumin', ui-serif, Georgia, 'Times New Roman', serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
     }
 }
 

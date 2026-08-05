@@ -123,6 +123,16 @@ new #[Layout('layouts.public')] #[Title('マイページ')] class extends Compon
     <flux:separator class="my-8" />
 
     <section>
+        <flux:heading size="lg">表示フォント</flux:heading>
+        <flux:text class="mt-1">文倉全体の文字の見え方を選べます。選択内容はこの端末に保存されます。</flux:text>
+        <flux:card class="mt-4">
+            <x-story-body-font-picker layout="list" class="w-full" />
+        </flux:card>
+    </section>
+
+    <flux:separator class="my-8" />
+
+    <section>
         @include('partials.mypage-tabs')
 
         @if ($hasStories)
