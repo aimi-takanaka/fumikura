@@ -1,4 +1,18 @@
 document.addEventListener('alpine:init', () => {
+    const resolveThemeName = (appearance) => {
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const isDark = appearance === 'dark' || (appearance === 'system' && prefersDark);
+
+        return isDark ? 'fumikura-dark' : 'fumikura';
+    };
+
+    const applyAppearance = (appearance) => {
+        const themeName = resolveThemeName(appearance);
+
+        document.documentElement.setAttribute('data-theme', themeName);
+        document.documentElement.classList.toggle('dark', themeName === 'fumikura-dark');
+    };
+
     window.Alpine.data('storyBodyFont', () => ({
         font: 'noto',
 
@@ -28,6 +42,18 @@ document.addEventListener('alpine:init', () => {
         init() {
             this.theme = localStorage.getItem('appearance') || 'system';
             this.apply();
+
+            this.mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+            this.onMediaChange = () => {
+                if (this.theme === 'system') {
+                    this.apply();
+                }
+            };
+            this.mediaQuery.addEventListener('change', this.onMediaChange);
+        },
+
+        destroy() {
+            this.mediaQuery?.removeEventListener('change', this.onMediaChange);
         },
 
         setTheme(theme) {
@@ -37,10 +63,32 @@ document.addEventListener('alpine:init', () => {
         },
 
         apply() {
-            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            const isDark = this.theme === 'dark' || (this.theme === 'system' && prefersDark);
+            applyAppearance(this.theme);
+        },
+    }));
 
-            document.documentElement.classList.toggle('dark', isDark);
+    window.Alpine.data('themeToggle', () => ({
+        theme: 'system',
+
+        init() {
+            this.theme = localStorage.getItem('appearance') || 'system';
+        },
+
+        cycle() {
+            const order = ['light', 'dark', 'system'];
+            const next = order[(order.indexOf(this.theme) + 1) % order.length];
+
+            this.theme = next;
+            localStorage.setItem('appearance', next);
+            applyAppearance(next);
+        },
+
+        label() {
+            return {
+                light: 'ライト',
+                dark: 'ダーク',
+                system: 'システム',
+            }[this.theme] ?? 'テーマ';
         },
     }));
 

@@ -1,6 +1,6 @@
 @import 'tailwindcss';
 @plugin "daisyui" {
-    themes: fumikura --default;
+    themes: fumikura --default, fumikura-dark --prefersdark;
 }
 
 @plugin "daisyui/theme" {
@@ -37,11 +37,46 @@
     --noise: 0;
 }
 
+@plugin "daisyui/theme" {
+    name: "fumikura-dark";
+    prefersdark: true;
+    color-scheme: dark;
+    /* Soft dark: brighter surfaces for easier reading */
+    --color-base-100: oklch(34% 0.02 250);
+    --color-base-200: oklch(28% 0.02 250);
+    --color-base-300: oklch(42% 0.025 250);
+    --color-base-content: oklch(97% 0.008 95);
+    --color-primary: oklch(78% 0.1 195);
+    --color-primary-content: oklch(22% 0.03 195);
+    --color-secondary: oklch(78% 0.11 35);
+    --color-secondary-content: oklch(22% 0.04 35);
+    --color-accent: oklch(80% 0.1 150);
+    --color-accent-content: oklch(22% 0.04 150);
+    --color-neutral: oklch(90% 0.015 95);
+    --color-neutral-content: oklch(28% 0.02 250);
+    --color-info: oklch(78% 0.09 230);
+    --color-info-content: oklch(22% 0.04 230);
+    --color-success: oklch(78% 0.1 145);
+    --color-success-content: oklch(22% 0.03 145);
+    --color-warning: oklch(84% 0.11 85);
+    --color-warning-content: oklch(28% 0.05 85);
+    --color-error: oklch(72% 0.16 25);
+    --color-error-content: oklch(98% 0.01 25);
+    --radius-selector: 0.75rem;
+    --radius-field: 0.85rem;
+    --radius-box: 1.1rem;
+    --size-selector: 0.25rem;
+    --size-field: 0.25rem;
+    --border: 1px;
+    --depth: 0;
+    --noise: 0;
+}
+
 @source '../views';
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../vendor/livewire/livewire/dist/**/*.js';
 
-@custom-variant dark (&:where(.dark, .dark *));
+@custom-variant dark (&:where([data-theme='fumikura-dark'], [data-theme='fumikura-dark'] *));
 
 @theme {
     --font-sans: 'Noto Sans JP', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
@@ -67,6 +102,11 @@
         --fumi-stroke: oklch(70% 0.1 150);
         position: relative;
         z-index: 0;
+    }
+
+    [data-theme='fumikura-dark'] .fumi-speech {
+        --fumi-fill: oklch(40% 0.045 150);
+        --fumi-stroke: oklch(65% 0.09 150);
     }
 
     .fumi-speech-bubble {

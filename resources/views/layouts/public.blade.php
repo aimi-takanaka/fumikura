@@ -12,6 +12,16 @@
                 </a>
 
                 <div class="flex items-center gap-2">
+                    <button
+                        type="button"
+                        class="btn btn-ghost btn-sm"
+                        x-data="themeToggle"
+                        x-on:click="cycle"
+                        x-text="label()"
+                        data-test="theme-toggle"
+                        aria-label="テーマを切り替え"
+                    ></button>
+
                     @auth
                         @if (auth()->user()->is_admin)
                             <a href="{{ route('admin.images.create') }}" class="btn btn-ghost btn-sm" wire:navigate>

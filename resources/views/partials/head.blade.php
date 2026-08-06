@@ -21,7 +21,9 @@
         var appearance = localStorage.getItem('appearance') || 'system';
         var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
         var isDark = appearance === 'dark' || (appearance === 'system' && prefersDark);
+        var themeName = isDark ? 'fumikura-dark' : 'fumikura';
 
+        document.documentElement.setAttribute('data-theme', themeName);
         document.documentElement.classList.toggle('dark', isDark);
     })();
 </script>
