@@ -52,17 +52,17 @@ it('hides the image index link in the header from guests', function () {
         ->assertDontSee(route('topics.index'), false);
 });
 
-it('paginates images when there are more than ten', function () {
-    Image::factory()->count(11)->create();
+it('paginates images when there are more than nine', function () {
+    Image::factory()->count(10)->create();
 
     Livewire::test('pages::topics')
-        ->assertSee('Showing 1 to 10 of 11 results', false)
+        ->assertSee('Showing 1 to 9 of 10 results', false)
         ->call('nextPage')
-        ->assertSee('Showing 11 to 11 of 11 results', false);
+        ->assertSee('Showing 10 to 10 of 10 results', false);
 });
 
-it('does not show pagination when there are ten or fewer images', function () {
-    Image::factory()->count(10)->create();
+it('does not show pagination when there are nine or fewer images', function () {
+    Image::factory()->count(9)->create();
 
     $this->get(route('topics.index'))
         ->assertOk()

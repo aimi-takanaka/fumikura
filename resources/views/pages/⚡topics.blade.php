@@ -13,7 +13,7 @@ new #[Layout('layouts.public')] class extends Component
      */
     public function with(): array
     {
-        return $this->topicListData();
+        return $this->topicListData(9);
     }
 }; ?>
 

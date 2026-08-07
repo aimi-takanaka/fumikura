@@ -11,8 +11,6 @@ trait ListsTopics
 {
     use WithPagination;
 
-    private const TOPICS_PER_PAGE = 10;
-
     public string $sort = 'latest';
 
     /**
@@ -48,10 +46,10 @@ trait ListsTopics
     /**
      * @return array<string, mixed>
      */
-    protected function topicListData(): array
+    protected function topicListData(int $perPage): array
     {
         return [
-            'images' => $this->imagesQuery()->paginate(self::TOPICS_PER_PAGE),
+            'images' => $this->imagesQuery()->paginate($perPage),
         ];
     }
 }

@@ -77,11 +77,21 @@ it('shows how it works illustrations on the welcome page', function () {
         ->assertSee('img/welcome/How-3.PNG', false);
 });
 
-it('redirects authenticated users to the topic list', function () {
-    $this->actingAs(User::factory()->create());
+it('paginates images when there are more than six on the welcome page', function () {
+    Image::factory()->count(7)->create();
+
+    Livewire::test('pages::welcome')
+        ->assertSee('Showing 1 to 6 of 7 results', false)
+        ->call('nextPage')
+        ->assertSee('Showing 7 to 7 of 7 results', false);
+});
+
+it('does not show pagination when there are six or fewer images on the welcome page', function () {
+    Image::factory()->count(6)->create();
 
     $this->get(route('home'))
-        ->assertRedirect(route('topics.index'));
+        ->assertOk()
+        ->assertDontSee('data-pagination', false);
 });
 
 it('redirects unverified authenticated users to the verification notice', function () {
