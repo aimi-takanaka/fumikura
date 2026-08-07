@@ -1,4 +1,4 @@
-document.addEventListener('alpine:init', () => {
+(() => {
     const resolveThemeName = (appearance) => {
         const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
         const isDark = appearance === 'dark' || (appearance === 'system' && prefersDark);
@@ -6,121 +6,142 @@ document.addEventListener('alpine:init', () => {
         return isDark ? 'fumikura-dark' : 'fumikura';
     };
 
-    const applyAppearance = (appearance) => {
-        const themeName = resolveThemeName(appearance);
+    const applyAppearance = (appearance = null) => {
+        const value = appearance ?? localStorage.getItem('appearance') ?? 'system';
+        const themeName = resolveThemeName(value);
 
         document.documentElement.setAttribute('data-theme', themeName);
         document.documentElement.classList.toggle('dark', themeName === 'fumikura-dark');
+
+        return value;
     };
 
-    window.Alpine.data('storyBodyFont', () => ({
-        font: 'noto',
+    window.FumikuraTheme = {
+        resolve: resolveThemeName,
+        apply: applyAppearance,
+    };
 
-        init() {
-            this.font = localStorage.getItem('story-body-font') || 'noto';
-            this.apply();
-        },
+    // Re-apply after Livewire wire:navigate replaces page markup.
+    document.addEventListener('livewire:navigated', () => {
+        applyAppearance();
 
-        setFont(font) {
-            this.font = font;
-            localStorage.setItem('story-body-font', font);
-            this.apply();
-        },
+        const font = localStorage.getItem('story-body-font');
 
-        apply() {
-            if (this.font === 'zen-maru' || this.font === 'kaisei-tokumin') {
-                document.documentElement.dataset.storyBodyFont = this.font;
-            } else {
-                delete document.documentElement.dataset.storyBodyFont;
-            }
-        },
-    }));
+        if (font === 'zen-maru' || font === 'kaisei-tokumin') {
+            document.documentElement.dataset.storyBodyFont = font;
+        } else {
+            delete document.documentElement.dataset.storyBodyFont;
+        }
+    });
 
-    window.Alpine.data('appearanceTheme', () => ({
-        theme: 'system',
+    // Also apply as soon as this script loads (full page load / Vite HMR).
+    applyAppearance();
 
-        init() {
-            this.theme = localStorage.getItem('appearance') || 'system';
-            this.apply();
+    document.addEventListener('alpine:init', () => {
+        window.Alpine.data('storyBodyFont', () => ({
+            font: 'noto',
 
-            this.mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-            this.onMediaChange = () => {
-                if (this.theme === 'system') {
-                    this.apply();
+            init() {
+                this.font = localStorage.getItem('story-body-font') || 'noto';
+                this.apply();
+            },
+
+            setFont(font) {
+                this.font = font;
+                localStorage.setItem('story-body-font', font);
+                this.apply();
+            },
+
+            apply() {
+                if (this.font === 'zen-maru' || this.font === 'kaisei-tokumin') {
+                    document.documentElement.dataset.storyBodyFont = this.font;
+                } else {
+                    delete document.documentElement.dataset.storyBodyFont;
                 }
-            };
-            this.mediaQuery.addEventListener('change', this.onMediaChange);
-        },
+            },
+        }));
 
-        destroy() {
-            this.mediaQuery?.removeEventListener('change', this.onMediaChange);
-        },
+        window.Alpine.data('appearanceTheme', () => ({
+            theme: 'system',
 
-        setTheme(theme) {
-            this.theme = theme;
-            localStorage.setItem('appearance', theme);
-            this.apply();
-        },
+            init() {
+                this.theme = applyAppearance();
 
-        apply() {
-            applyAppearance(this.theme);
-        },
-    }));
+                this.mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+                this.onMediaChange = () => {
+                    if (this.theme === 'system') {
+                        applyAppearance(this.theme);
+                    }
+                };
+                this.mediaQuery.addEventListener('change', this.onMediaChange);
+            },
 
-    window.Alpine.data('themeToggle', () => ({
-        theme: 'system',
+            destroy() {
+                this.mediaQuery?.removeEventListener('change', this.onMediaChange);
+            },
 
-        init() {
-            this.theme = localStorage.getItem('appearance') || 'system';
-        },
+            setTheme(theme) {
+                this.theme = theme;
+                localStorage.setItem('appearance', theme);
+                applyAppearance(theme);
+            },
+        }));
 
-        cycle() {
-            const order = ['light', 'dark', 'system'];
-            const next = order[(order.indexOf(this.theme) + 1) % order.length];
+        window.Alpine.data('themeToggle', () => ({
+            theme: 'system',
 
-            this.theme = next;
-            localStorage.setItem('appearance', next);
-            applyAppearance(next);
-        },
+            init() {
+                this.theme = applyAppearance();
+            },
 
-        label() {
-            return {
-                light: 'ライト',
-                dark: 'ダーク',
-                system: 'システム',
-            }[this.theme] ?? 'テーマ';
-        },
-    }));
+            cycle() {
+                const order = ['light', 'dark', 'system'];
+                const next = order[(order.indexOf(this.theme) + 1) % order.length];
 
-    window.Alpine.data('toastStack', () => ({
-        toasts: [],
+                this.theme = next;
+                localStorage.setItem('appearance', next);
+                applyAppearance(next);
+            },
 
-        init() {
-            window.addEventListener('notify', (event) => {
-                this.push(event.detail?.type ?? 'info', event.detail?.message ?? '');
-            });
-        },
+            label() {
+                return {
+                    light: 'ライト',
+                    dark: 'ダーク',
+                    system: 'システム',
+                }[this.theme] ?? 'テーマ';
+            },
+        }));
 
-        push(type, message) {
-            if (! message) {
-                return;
-            }
+        window.Alpine.data('toastStack', () => ({
+            toasts: [],
 
-            const id = Date.now() + Math.random();
-            this.toasts.push({ id, type, message });
+            init() {
+                window.addEventListener('notify', (event) => {
+                    this.push(event.detail?.type ?? 'info', event.detail?.message ?? '');
+                });
+            },
 
-            setTimeout(() => {
-                this.toasts = this.toasts.filter((toast) => toast.id !== id);
-            }, 3500);
-        },
+            push(type, message) {
+                if (! message) {
+                    return;
+                }
 
-        alertClass(type) {
-            return {
-                success: 'alert-success',
-                error: 'alert-error',
-                warning: 'alert-warning',
-                info: 'alert-info',
-            }[type] ?? 'alert-info';
-        },
-    }));
-});
+                const id = Date.now() + Math.random();
+                this.toasts.push({ id, type, message });
+
+                setTimeout(() => {
+                    this.toasts = this.toasts.filter((toast) => toast.id !== id);
+                }, 3500);
+            },
+
+            alertClass(type) {
+                return {
+                    success: 'alert-success',
+                    error: 'alert-error',
+                    warning: 'alert-warning',
+                    info: 'alert-info',
+                }[type] ?? 'alert-info';
+            },
+        }));
+    });
+})();

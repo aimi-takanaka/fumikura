@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-theme="fumikura">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
         @include('partials.head')
     </head>
@@ -8,7 +8,7 @@
             <div class="mx-auto flex w-full max-w-7xl items-center justify-between gap-3">
                 <a href="{{ route('home') }}" class="btn btn-ghost gap-2 px-2 text-lg font-bold" wire:navigate>
                     <x-app-logo-icon class="size-7" />
-                    文倉
+                    {{ config('app.name', 'Fumikura') }}
                 </a>
 
                 <div class="flex items-center gap-2">
@@ -19,13 +19,13 @@
                         x-on:click="cycle"
                         x-text="label()"
                         data-test="theme-toggle"
-                        aria-label="テーマを切り替え"
+                        aria-label="Toggle theme"
                     ></button>
 
                     @auth
                         @if (auth()->user()->is_admin)
                             <a href="{{ route('admin.images.create') }}" class="btn btn-ghost btn-sm" wire:navigate>
-                                お題を投稿
+                                {{ __('Post a topic') }}
                             </a>
                         @endif
 
@@ -49,7 +49,7 @@
                                     <span class="truncate">{{ auth()->user()->email }}</span>
                                 </li>
                                 <li>
-                                    <a href="{{ route('mypage') }}" wire:navigate>マイページ</a>
+                                    <a href="{{ route('mypage') }}" wire:navigate>{{ __('My Page') }}</a>
                                 </li>
                                 <li>
                                     <form method="POST" action="{{ route('logout') }}" class="w-full">
@@ -62,8 +62,8 @@
                             </ul>
                         </div>
                     @else
-                        <a href="{{ route('login') }}" class="btn btn-ghost btn-sm" wire:navigate>{{ __('ログイン') }}</a>
-                        <a href="{{ route('register') }}" class="btn btn-primary btn-sm" wire:navigate>{{ __('新規登録') }}</a>
+                        <a href="{{ route('login') }}" class="btn btn-ghost btn-sm" wire:navigate>{{ __('Log in') }}</a>
+                        <a href="{{ route('register') }}" class="btn btn-primary btn-sm" wire:navigate>{{ __('Register') }}</a>
                     @endauth
                 </div>
             </div>
