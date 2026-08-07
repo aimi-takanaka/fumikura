@@ -56,9 +56,9 @@ it('paginates images when there are more than nine', function () {
     Image::factory()->count(10)->create();
 
     Livewire::test('pages::topics')
-        ->assertSee('Showing 1 to 9 of 10 results', false)
+        ->assertSee('10件中 1〜9件を表示', false)
         ->call('nextPage')
-        ->assertSee('Showing 10 to 10 of 10 results', false);
+        ->assertSee('10件中 10〜10件を表示', false);
 });
 
 it('does not show pagination when there are nine or fewer images', function () {

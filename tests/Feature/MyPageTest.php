@@ -252,9 +252,9 @@ it('paginates stories when there are more than ten', function () {
 
     Livewire::actingAs($user)
         ->test('pages::mypage')
-        ->assertSee('Showing 1 to 10 of 11 results', false)
+        ->assertSee('11件中 1〜10件を表示', false)
         ->call('nextPage')
-        ->assertSee('Showing 11 to 11 of 11 results', false);
+        ->assertSee('11件中 11〜11件を表示', false);
 });
 
 it('does not show pagination when there are ten or fewer stories', function () {

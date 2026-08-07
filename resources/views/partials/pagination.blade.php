@@ -1,10 +1,14 @@
 @props(['paginator'])
 
 @if ($paginator->hasPages())
-    <div {{ $attributes->class('flex flex-col gap-3 border-t border-base-300 pt-4 sm:flex-row sm:items-center sm:justify-between') }} data-pagination>
+    <div {{ $attributes->class('flex flex-col items-center gap-3 border-t border-base-300 pt-4') }} data-pagination>
         @if ($paginator->total() > 0)
             <p class="text-sm text-base-content/60">
-                {!! __('Showing') !!} {{ $paginator->firstItem() }} {!! __('to') !!} {{ $paginator->lastItem() }} {!! __('of') !!} {{ $paginator->total() }} {!! __('results') !!}
+                {{ __('Showing :from to :to of :total results', [
+                    'from' => $paginator->firstItem(),
+                    'to' => $paginator->lastItem(),
+                    'total' => $paginator->total(),
+                ]) }}
             </p>
         @else
             <div></div>

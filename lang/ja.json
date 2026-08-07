@@ -74,5 +74,6 @@
     "Or, return to": "または",
     "log in": "ログイン",
     "Reset password": "パスワードを再設定",
-    "Please enter your new password below": "新しいパスワードを入力してください"
+    "Please enter your new password below": "新しいパスワードを入力してください",
+    "Showing :from to :to of :total results": ":total件中 :from〜:to件を表示"
 }

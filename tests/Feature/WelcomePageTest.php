@@ -81,9 +81,9 @@ it('paginates images when there are more than six on the welcome page', function
     Image::factory()->count(7)->create();
 
     Livewire::test('pages::welcome')
-        ->assertSee('Showing 1 to 6 of 7 results', false)
+        ->assertSee('7件中 1〜6件を表示', false)
         ->call('nextPage')
-        ->assertSee('Showing 7 to 7 of 7 results', false);
+        ->assertSee('7件中 7〜7件を表示', false);
 });
 
 it('does not show pagination when there are six or fewer images on the welcome page', function () {
