@@ -6,10 +6,7 @@
     <body class="min-h-screen bg-base-200 font-sans text-base-content antialiased">
         <div class="navbar border-b border-base-300 bg-base-100 px-4 shadow-sm lg:px-8">
             <div class="mx-auto flex w-full max-w-7xl items-center justify-between gap-3">
-                <a href="{{ route('home') }}" class="btn btn-ghost gap-2 px-2 text-lg font-bold" wire:navigate>
-                    <x-app-logo-icon class="size-7" />
-                    {{ config('app.name', 'Fumikura') }}
-                </a>
+                <x-app-logo href="{{ route('home') }}" class="btn btn-ghost gap-2 px-2" wire:navigate />
 
                 <div class="flex items-center gap-2">
                     <button
@@ -19,7 +16,7 @@
                         x-on:click="cycle"
                         x-text="label()"
                         data-test="theme-toggle"
-                        aria-label="Toggle theme"
+                        aria-label="{{ __('Toggle theme') }}"
                     ></button>
 
                     @auth
