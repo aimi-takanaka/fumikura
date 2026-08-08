@@ -11,6 +11,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Kaisei+Tokumin:wght@400;500&family=Noto+Sans+JP:wght@400;500;700&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
 
 <script>
+    window.FumikuraThemeConfig = { canChange: @json(auth()->check()) };
+
     (function () {
         var font = localStorage.getItem('story-body-font');
 
@@ -18,11 +20,18 @@
             document.documentElement.dataset.storyBodyFont = font;
         }
 
-        var appearance = localStorage.getItem('appearance');
-        if (appearance !== 'light' && appearance !== 'dark') {
-            appearance = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-            localStorage.setItem('appearance', appearance);
+        var canChange = window.FumikuraThemeConfig.canChange;
+        var appearance = 'light';
+
+        if (canChange) {
+            appearance = localStorage.getItem('appearance');
+
+            if (appearance !== 'light' && appearance !== 'dark') {
+                appearance = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                localStorage.setItem('appearance', appearance);
+            }
         }
+
         var isDark = appearance === 'dark';
         var themeName = isDark ? 'fumikura-dark' : 'fumikura';
 

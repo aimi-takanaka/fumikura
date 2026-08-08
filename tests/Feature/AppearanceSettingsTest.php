@@ -16,8 +16,18 @@ it('shows the appearance theme picker to authenticated users', function () {
         ->assertSee('fumikura-dark', false);
 });
 
-it('shows a theme toggle in the public layout', function () {
+it('hides the theme toggle from guests and locks the home page to light mode', function () {
     $this->get(route('home'))
         ->assertOk()
-        ->assertSee('theme-toggle', false);
+        ->assertDontSee('data-test="theme-toggle"', false)
+        ->assertSee('canChange: false', false)
+        ->assertSee('data-theme', false);
+});
+
+it('shows a theme toggle to authenticated users', function () {
+    $this->actingAs(User::factory()->create())
+        ->get(route('topics.index'))
+        ->assertOk()
+        ->assertSee('data-test="theme-toggle"', false)
+        ->assertSee('canChange: true', false);
 });

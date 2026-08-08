@@ -14,7 +14,17 @@
         return normalizeAppearance(appearance) === 'dark' ? 'fumikura-dark' : 'fumikura';
     };
 
+    const canChangeTheme = () => window.FumikuraThemeConfig?.canChange === true;
+
     const applyAppearance = (appearance = null) => {
+        // Guests always see light mode; keep any saved preference for after login.
+        if (! canChangeTheme()) {
+            document.documentElement.setAttribute('data-theme', 'fumikura');
+            document.documentElement.classList.remove('dark');
+
+            return 'light';
+        }
+
         const value = normalizeAppearance(appearance ?? localStorage.getItem('appearance') ?? 'light');
 
         if (localStorage.getItem('appearance') !== value) {
