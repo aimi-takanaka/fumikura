@@ -133,3 +133,7 @@
             drop-shadow(0 -0.5px 0 var(--fumi-stroke));
     }
 }
+
+[x-cloak] {
+    display: none !important;
+}

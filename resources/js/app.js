@@ -102,13 +102,6 @@
                 localStorage.setItem('appearance', next);
                 applyAppearance(next);
             },
-
-            label() {
-                return {
-                    light: 'ライト',
-                    dark: 'ダーク',
-                }[this.theme] ?? 'テーマ';
-            },
         }));
 
         window.Alpine.data('toastStack', () => ({
