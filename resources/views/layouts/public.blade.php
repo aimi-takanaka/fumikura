@@ -5,7 +5,7 @@
     </head>
     <body class="min-h-screen bg-base-200 font-sans text-base-content antialiased">
         <div class="navbar border-b border-base-300 bg-base-100 px-4 shadow-sm lg:px-8">
-            <div class="mx-auto flex w-full max-w-7xl items-center justify-between gap-3">
+            <div class="mx-auto flex w-full items-center justify-between gap-3">
                 <x-app-logo href="{{ route('home') }}" class="btn btn-ghost gap-2 px-2" wire:navigate />
 
                 <div class="flex items-center gap-2">
@@ -92,7 +92,7 @@
             </div>
         </div>
 
-        <main class="mx-auto max-w-7xl px-4 py-8">
+        <main class="mx-auto w-full px-4 py-8 sm:px-6 lg:px-35">
             @if (session('status'))
                 <div role="alert" class="alert alert-success mb-6">
                     <span>{{ session('status') }}</span>
