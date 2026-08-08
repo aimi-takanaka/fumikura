@@ -10,7 +10,8 @@ it('shows the appearance theme picker to authenticated users', function () {
         ->assertOk()
         ->assertSee('ライト')
         ->assertSee('ダーク')
-        ->assertSee('システム')
+        ->assertDontSee('システム')
+        ->assertDontSee('appearance-theme-system', false)
         ->assertSee('appearance-theme-picker', false)
         ->assertSee('fumikura-dark', false);
 });

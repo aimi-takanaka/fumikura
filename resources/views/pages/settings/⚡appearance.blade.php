@@ -20,7 +20,7 @@ new #[Layout('layouts.public')] #[Title('Appearance settings')] class extends Co
                 <p class="mt-1 text-sm text-base-content/70">{{ __('Choose how the interface looks on this device.') }}</p>
 
                 <div class="mt-4" x-data="appearanceTheme()" data-test="appearance-theme-picker">
-                    <div class="join grid w-full grid-cols-3">
+                    <div class="join grid w-full grid-cols-2">
                         <button
                             type="button"
                             class="btn join-item"
@@ -38,15 +38,6 @@ new #[Layout('layouts.public')] #[Title('Appearance settings')] class extends Co
                             data-test="appearance-theme-dark"
                         >
                             ダーク
-                        </button>
-                        <button
-                            type="button"
-                            class="btn join-item"
-                            x-bind:class="theme === 'system' ? 'btn-primary' : 'btn-outline'"
-                            x-on:click="setTheme('system')"
-                            data-test="appearance-theme-system"
-                        >
-                            システム
                         </button>
                     </div>
                 </div>

@@ -18,9 +18,12 @@
             document.documentElement.dataset.storyBodyFont = font;
         }
 
-        var appearance = localStorage.getItem('appearance') || 'system';
-        var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        var isDark = appearance === 'dark' || (appearance === 'system' && prefersDark);
+        var appearance = localStorage.getItem('appearance');
+        if (appearance !== 'light' && appearance !== 'dark') {
+            appearance = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            localStorage.setItem('appearance', appearance);
+        }
+        var isDark = appearance === 'dark';
         var themeName = isDark ? 'fumikura-dark' : 'fumikura';
 
         document.documentElement.setAttribute('data-theme', themeName);

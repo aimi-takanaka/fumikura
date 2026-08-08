@@ -1,13 +1,26 @@
 (() => {
-    const resolveThemeName = (appearance) => {
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        const isDark = appearance === 'dark' || (appearance === 'system' && prefersDark);
+    const normalizeAppearance = (appearance) => {
+        if (appearance === 'dark' || appearance === 'light') {
+            return appearance;
+        }
 
-        return isDark ? 'fumikura-dark' : 'fumikura';
+        // Migrate legacy "system" (and unknown values) to an explicit preference.
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+        return prefersDark ? 'dark' : 'light';
+    };
+
+    const resolveThemeName = (appearance) => {
+        return normalizeAppearance(appearance) === 'dark' ? 'fumikura-dark' : 'fumikura';
     };
 
     const applyAppearance = (appearance = null) => {
-        const value = appearance ?? localStorage.getItem('appearance') ?? 'system';
+        const value = normalizeAppearance(appearance ?? localStorage.getItem('appearance') ?? 'light');
+
+        if (localStorage.getItem('appearance') !== value) {
+            localStorage.setItem('appearance', value);
+        }
+
         const themeName = resolveThemeName(value);
 
         document.documentElement.setAttribute('data-theme', themeName);
@@ -62,41 +75,28 @@
         }));
 
         window.Alpine.data('appearanceTheme', () => ({
-            theme: 'system',
+            theme: 'light',
 
             init() {
                 this.theme = applyAppearance();
-
-                this.mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-                this.onMediaChange = () => {
-                    if (this.theme === 'system') {
-                        applyAppearance(this.theme);
-                    }
-                };
-                this.mediaQuery.addEventListener('change', this.onMediaChange);
-            },
-
-            destroy() {
-                this.mediaQuery?.removeEventListener('change', this.onMediaChange);
             },
 
             setTheme(theme) {
-                this.theme = theme;
-                localStorage.setItem('appearance', theme);
-                applyAppearance(theme);
+                this.theme = normalizeAppearance(theme);
+                localStorage.setItem('appearance', this.theme);
+                applyAppearance(this.theme);
             },
         }));
 
         window.Alpine.data('themeToggle', () => ({
-            theme: 'system',
+            theme: 'light',
 
             init() {
                 this.theme = applyAppearance();
             },
 
             cycle() {
-                const order = ['light', 'dark', 'system'];
-                const next = order[(order.indexOf(this.theme) + 1) % order.length];
+                const next = this.theme === 'dark' ? 'light' : 'dark';
 
                 this.theme = next;
                 localStorage.setItem('appearance', next);
@@ -107,7 +107,6 @@
                 return {
                     light: 'ライト',
                     dark: 'ダーク',
-                    system: 'システム',
                 }[this.theme] ?? 'テーマ';
             },
         }));
