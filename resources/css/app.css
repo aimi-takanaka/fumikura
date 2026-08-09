@@ -111,10 +111,14 @@
 
     .fumi-speech-bubble {
         margin-inline-end: 0.75rem;
+        min-height: 6.5rem;
         border: 1.5px solid var(--fumi-stroke);
         border-radius: 9999px;
         background-color: var(--fumi-fill);
-        padding: 1rem 1.75rem;
+        /* Extra left padding so lines start inside the oval, shifted right. */
+        padding: 1.75rem 3rem 1.75rem 3.75rem;
+        overflow-wrap: anywhere;
+        word-break: break-word;
     }
 
     .fumi-speech-tail {

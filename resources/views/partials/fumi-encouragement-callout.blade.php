@@ -12,10 +12,10 @@
     >
         <div class="fumi-speech min-w-0 flex-1">
             <div class="fumi-speech-bubble">
-                <div class="flex items-start justify-between gap-3">
-                    <div class="min-w-0 px-1">
+                <div class="flex min-h-16 items-center justify-between gap-4 sm:gap-6">
+                    <div class="min-w-0 flex-1 ps-2 sm:ps-4">
                         <p class="text-sm font-semibold text-lime-900 dark:text-lime-100">ふみより</p>
-                        <p class="mt-1 whitespace-pre-line text-sm leading-relaxed text-lime-950/85 dark:text-lime-50/90">
+                        <p class="mt-1 whitespace-pre-line break-words text-sm leading-relaxed text-lime-950/85 dark:text-lime-50/90 sm:text-base">
                             {{ session('fumi_message') }}
                         </p>
                     </div>
