@@ -110,6 +110,8 @@
     }
 
     .fumi-speech-bubble {
+        position: relative;
+        z-index: 1;
         margin-inline-end: 0.75rem;
         min-height: 6.5rem;
         border: 1.5px solid var(--fumi-stroke);
@@ -124,17 +126,33 @@
     .fumi-speech-tail {
         position: absolute;
         top: 50%;
-        right: -0.05rem;
-        z-index: 1;
-        width: 0.9rem;
-        height: 1rem;
+        right: 0.05rem;
+        z-index: 2;
+        width: 1rem;
+        height: 1.15rem;
         translate: 0 -50%;
+        pointer-events: none;
+    }
+
+    /* Outer triangle: dark green outline */
+    .fumi-speech-tail::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background-color: var(--fumi-stroke);
+        clip-path: polygon(0 0, 100% 50%, 0 100%);
+    }
+
+    /* Inner triangle: fill, inset so the outline remains on the tip edges */
+    .fumi-speech-tail::after {
+        content: '';
+        position: absolute;
+        top: 1.5px;
+        right: 1.5px;
+        bottom: 1.5px;
+        left: -2px;
         background-color: var(--fumi-fill);
         clip-path: polygon(0 0, 100% 50%, 0 100%);
-        filter:
-            drop-shadow(0.7px 0 0 var(--fumi-stroke))
-            drop-shadow(0 0.5px 0 var(--fumi-stroke))
-            drop-shadow(0 -0.5px 0 var(--fumi-stroke));
     }
 }
 
