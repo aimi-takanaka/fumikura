@@ -90,9 +90,12 @@ new #[Layout('layouts.public')] #[Title('お題画像の投稿')] class extends 
 
             <div class="flex items-center justify-end gap-3">
                 <a href="{{ route('topics.index') }}" class="btn btn-ghost" wire:navigate>キャンセル</a>
-                <button type="submit" class="btn btn-primary">
+                <button type="submit" class="btn btn-primary" wire:loading.attr="disabled" wire:target="save">
                     <span wire:loading.remove wire:target="save">投稿する</span>
-                    <span wire:loading wire:target="save">投稿中...</span>
+                    <span wire:loading wire:target="save" class="inline-flex items-center gap-2">
+                        <x-loading-spinner size="sm" class="text-primary-content" />
+                        投稿中...
+                    </span>
                 </button>
             </div>
         </form>

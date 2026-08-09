@@ -154,9 +154,19 @@ new #[Layout('layouts.public')] #[Title('お問い合わせ')] class extends Com
                         <button type="button" class="btn btn-ghost" wire:click="edit" data-test="contact-edit-button">
                             修正する
                         </button>
-                        <button type="button" class="btn btn-primary" wire:click="send" data-test="contact-submit-button">
+                        <button
+                            type="button"
+                            class="btn btn-primary"
+                            wire:click="send"
+                            wire:loading.attr="disabled"
+                            wire:target="send"
+                            data-test="contact-submit-button"
+                        >
                             <span wire:loading.remove wire:target="send">送信する</span>
-                            <span wire:loading wire:target="send">送信中...</span>
+                            <span wire:loading wire:target="send" class="inline-flex items-center gap-2">
+                                <x-loading-spinner size="sm" class="text-primary-content" />
+                                送信中...
+                            </span>
                         </button>
                     </div>
                 </div>
@@ -226,9 +236,18 @@ new #[Layout('layouts.public')] #[Title('お問い合わせ')] class extends Com
                     </label>
 
                     <div class="flex items-center justify-end gap-3">
-                        <button type="submit" class="btn btn-primary" data-test="contact-preview-button">
+                        <button
+                            type="submit"
+                            class="btn btn-primary"
+                            wire:loading.attr="disabled"
+                            wire:target="preview"
+                            data-test="contact-preview-button"
+                        >
                             <span wire:loading.remove wire:target="preview">確認画面へ</span>
-                            <span wire:loading wire:target="preview">確認中...</span>
+                            <span wire:loading wire:target="preview" class="inline-flex items-center gap-2">
+                                <x-loading-spinner size="sm" class="text-primary-content" />
+                                確認中...
+                            </span>
                         </button>
                     </div>
                 </form>

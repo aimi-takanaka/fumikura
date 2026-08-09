@@ -12,9 +12,12 @@
                 alt=""
                 class="h-24 w-auto shrink-0 object-contain sm:h-32"
             />
-            <span class="text-sm font-medium">
+            <span class="inline-flex items-center gap-2 text-sm font-medium">
                 <span wire:loading.remove wire:target="checkTypos">誤字チェック</span>
-                <span wire:loading wire:target="checkTypos">チェック中...</span>
+                <span wire:loading wire:target="checkTypos" class="inline-flex items-center gap-2">
+                    <x-loading-spinner size="sm" />
+                    チェック中...
+                </span>
             </span>
         </button>
 
@@ -30,9 +33,12 @@
                 alt=""
                 class="h-24 w-auto shrink-0 object-contain sm:h-32"
             />
-            <span class="text-sm font-medium">
+            <span class="inline-flex items-center gap-2 text-sm font-medium">
                 <span wire:loading.remove wire:target="suggestAnotherStories">アナザーストーリーの提案</span>
-                <span wire:loading wire:target="suggestAnotherStories">提案中...</span>
+                <span wire:loading wire:target="suggestAnotherStories" class="inline-flex items-center gap-2">
+                    <x-loading-spinner size="sm" />
+                    提案中...
+                </span>
             </span>
         </button>
     </div>
@@ -87,9 +93,15 @@
                                         wire:click="startAnotherStoryDraft({{ $index }})"
                                         class="btn btn-primary btn-sm"
                                         wire:loading.attr="disabled"
-                                        wire:target="startAnotherStoryDraft"
+                                        wire:target="startAnotherStoryDraft({{ $index }})"
                                     >
-                                        この視点で書いてみる
+                                        <span wire:loading.remove wire:target="startAnotherStoryDraft({{ $index }})">
+                                            この視点で書いてみる
+                                        </span>
+                                        <span wire:loading wire:target="startAnotherStoryDraft({{ $index }})" class="inline-flex items-center gap-2">
+                                            <x-loading-spinner size="xs" />
+                                            準備中...
+                                        </span>
                                     </button>
                                 </li>
                             @endforeach

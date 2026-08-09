@@ -42,6 +42,8 @@ it('shows the typo check button on the create form', function () {
     Livewire::actingAs(User::factory()->create())
         ->test('pages::stories.create', ['image' => $image])
         ->assertSee('誤字チェック')
+        ->assertSee('loading-spinner', false)
+        ->assertSee('処理中です', false)
         ->assertSee(asset('img/welcome/check-1.PNG'), false);
 });
 
