@@ -4,8 +4,11 @@
 ])
 
 @php
+    use App\Support\Furigana;
+
     $lineLimit = (int) $lines;
-    $bodyLines = preg_split('/\r\n|\r|\n/', $body);
+    $plainBody = Furigana::toPlain($body);
+    $bodyLines = preg_split('/\r\n|\r|\n/', $plainBody) ?: [];
     $charLimit = $lineLimit === 2 ? 72 : 108;
     $truncated = false;
 
@@ -13,7 +16,7 @@
         $displayBody = implode("\n", array_slice($bodyLines, 0, $lineLimit));
         $truncated = true;
     } else {
-        $displayBody = $body;
+        $displayBody = $plainBody;
     }
 
     if (mb_strlen($displayBody) > $charLimit) {

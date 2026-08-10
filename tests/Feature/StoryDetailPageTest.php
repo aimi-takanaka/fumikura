@@ -86,6 +86,6 @@ it('shows a story body font picker and story body class on the story detail page
         ->assertSee('Noto Sans JP（標準）')
         ->assertSee('Zen Maru Gothic（丸ゴシック）')
         ->assertSee('Kaisei Tokumin（明朝）')
-        ->assertSee('class="story-body leading-relaxed whitespace-pre-line"', false)
+        ->assertSee('class="story-body whitespace-pre-line leading-relaxed"', false)
         ->assertSee('story-body-font', false);
 });

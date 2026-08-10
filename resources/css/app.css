@@ -154,6 +154,15 @@
         background-color: var(--fumi-fill);
         clip-path: polygon(0 0, 100% 50%, 0 100%);
     }
+
+    .story-body ruby {
+        ruby-align: center;
+    }
+
+    .story-body rt {
+        font-size: 0.55em;
+        line-height: 1.1;
+    }
 }
 
 [x-cloak] {

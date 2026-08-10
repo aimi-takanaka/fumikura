@@ -175,7 +175,7 @@ new #[Layout('layouts.public')] class extends Component
             <x-story-body-font-picker />
         </div>
 
-        <div class="story-body leading-relaxed whitespace-pre-line">{{ $story->body }}</div>
+        <x-story-body :body="$story->body" class="leading-relaxed" />
 
         <div class="mt-8 flex items-center gap-4">
             @auth

@@ -116,6 +116,9 @@ new #[Layout('layouts.public')] #[Title('ストーリーを書く')] class exten
                         class="textarea textarea-bordered w-full @error('body') textarea-error @enderror"
                         required
                     ></textarea>
+                    <p class="mt-1 text-sm text-base-content/60">
+                        フリガナの例: 漢字《かんじ》 ／ ｜言葉《ことば》
+                    </p>
                     <p class="text-end text-sm text-base-content/60">{{ mb_strlen($body) }} 文字</p>
                     @error('body')
                         <p class="mt-1 text-sm text-error">{{ $message }}</p>
