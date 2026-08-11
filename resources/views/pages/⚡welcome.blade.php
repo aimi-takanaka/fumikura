@@ -154,13 +154,13 @@ new #[Layout('layouts.public')] class extends Component
             アイデア → 下書き → 完成と、少しずつ育てていけます。
         </p>
 
-        <div class="flex items-start justify-center">
-            <div class="w-[140px] text-center">
-                <div class="mx-auto mb-3 flex h-36 items-end justify-center">
+        <div class="grid grid-cols-3 gap-4 sm:gap-6">
+            <div class="min-w-0 text-center">
+                <div class="mb-3 flex h-36 items-end justify-center sm:h-44">
                     <img
                         src="{{ asset('img/welcome/MyPage-1.PNG') }}"
                         alt="アイデア"
-                        class="max-h-36 w-auto object-contain"
+                        class="max-h-full w-full object-contain"
                     />
                 </div>
                 <div class="badge badge-primary badge-lg mx-auto mb-2">1</div>
@@ -171,14 +171,12 @@ new #[Layout('layouts.public')] class extends Component
                 </p>
             </div>
 
-            <div class="px-3 text-lg text-base-content/30"></div>
-
-            <div class="w-[140px] text-center">
-                <div class="mx-auto mb-3 flex h-36 items-end justify-center">
+            <div class="min-w-0 text-center">
+                <div class="mb-3 flex h-36 items-end justify-center sm:h-44">
                     <img
                         src="{{ asset('img/welcome/MyPage-2.PNG') }}"
                         alt="下書き"
-                        class="max-h-36 w-auto object-contain"
+                        class="max-h-full w-full object-contain"
                     />
                 </div>
                 <div class="badge badge-neutral badge-lg mx-auto mb-2">2</div>
@@ -188,14 +186,12 @@ new #[Layout('layouts.public')] class extends Component
                 </p>
             </div>
 
-            <div class="px-3 text-lg text-base-content/30"></div>
-
-            <div class="w-[140px] text-center">
-                <div class="mx-auto mb-3 flex h-36 items-end justify-center">
+            <div class="min-w-0 text-center">
+                <div class="mb-3 flex h-36 items-end justify-center sm:h-44">
                     <img
                         src="{{ asset('img/welcome/MyPage-3.PNG') }}"
                         alt="完成"
-                        class="max-h-36 w-auto object-contain"
+                        class="max-h-full w-full object-contain"
                     />
                 </div>
                 <div class="badge badge-secondary badge-lg mx-auto mb-2">3</div>
@@ -221,36 +217,21 @@ new #[Layout('layouts.public')] class extends Component
             ];
         @endphp
 
-        <div class="mx-auto grid max-w-xl grid-cols-[1fr_auto_1fr_auto_1fr] items-end gap-x-3">
+        <div class="grid grid-cols-3 gap-4 sm:gap-6">
             @foreach ($howSteps as $index => $step)
-                @if ($index > 0)
-                    <div class="pb-2 text-center text-lg text-base-content/30">›</div>
-                @endif
-                <div class="flex h-36 items-end justify-center">
-                    <img
-                        src="{{ asset('img/welcome/'.$step[1]) }}"
-                        alt="{{ $step[0] }}"
-                        class="max-h-36 w-auto max-w-full object-contain object-bottom"
-                    />
-                </div>
-            @endforeach
-
-            @foreach ($howSteps as $index => $step)
-                @if ($index > 0)
-                    <div></div>
-                @endif
-                <div class="mt-3 flex justify-center">
-                    <div class="badge badge-primary badge-lg">
+                <div class="min-w-0 text-center">
+                    <div class="mb-3 flex h-36 items-end justify-center sm:h-44">
+                        <img
+                            src="{{ asset('img/welcome/'.$step[1]) }}"
+                            alt="{{ $step[0] }}"
+                            class="max-h-full w-full object-contain object-bottom"
+                        />
+                    </div>
+                    <div class="badge badge-primary badge-lg mx-auto mb-2">
                         {{ $index + 1 }}
                     </div>
+                    <p class="m-0 text-center text-base text-base-content/70">{{ $step[0] }}</p>
                 </div>
-            @endforeach
-
-            @foreach ($howSteps as $index => $step)
-                @if ($index > 0)
-                    <div></div>
-                @endif
-                <p class="mt-2 text-center text-base text-base-content/70">{{ $step[0] }}</p>
             @endforeach
         </div>
     </section>
