@@ -111,7 +111,7 @@ new #[Layout('layouts.public')] #[Title('ストーリーを編集')] class exten
                         required
                     ></textarea>
                     <p class="mt-1 text-sm text-base-content/60">
-                        フリガナの例: 漢字《かんじ》 ／ ｜言葉《ことば》
+                        フリガナの例: 漢字《かんじ》 ／ ｜東京塔《とうきょうタワー》
                     </p>
                     <p class="text-end text-sm text-base-content/60">{{ mb_strlen($body) }} 文字</p>
                     @error('body')
