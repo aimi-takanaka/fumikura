@@ -33,7 +33,10 @@ test('users can not authenticate with invalid password', function () {
         'password' => 'wrong-password',
     ]);
 
-    $response->assertSessionHasErrorsIn('email');
+    $response->assertSessionHasErrorsIn('email')
+        ->assertSessionHasErrors([
+            'email' => 'メールアドレスまたはパスワードが正しくありません。',
+        ]);
 
     $this->assertGuest();
 });

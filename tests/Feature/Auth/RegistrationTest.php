@@ -39,3 +39,26 @@ test('new users can register', function () {
 
     Notification::assertSentTo($user, VerifyEmail::class);
 });
+
+test('registration validation errors are shown in Japanese', function () {
+    User::factory()->create(['email' => 'taken@example.com']);
+
+    $this->from(route('register'))
+        ->post(route('register.store'), [
+            'name' => '',
+            'email' => 'taken@example.com',
+            'password' => 'short',
+            'password_confirmation' => 'different',
+        ])
+        ->assertSessionHasErrors([
+            'name' => '名前は必須です。',
+            'email' => '指定のメールアドレスは既に使用されています。',
+            'password',
+        ]);
+
+    $passwordErrors = session('errors')->get('password');
+
+    expect(implode(' ', $passwordErrors))
+        ->toContain('パスワード')
+        ->not->toContain('The password');
+});
