@@ -3,44 +3,12 @@
 use App\Concerns\PasswordValidationRules;
 use App\Livewire\Actions\Logout;
 use Illuminate\Support\Facades\Auth;
-use Livewire\Attributes\On;
 use Livewire\Component;
 
 new class extends Component {
     use PasswordValidationRules;
 
-    public bool $showModal = false;
-
     public string $password = '';
-
-    /**
-     * Mount the component.
-     */
-    public function mount(): void
-    {
-        if ($this->getErrorBag()->isNotEmpty()) {
-            $this->showModal = true;
-        }
-    }
-
-    /**
-     * Open the delete account confirmation modal.
-     */
-    #[On('open-delete-user-modal')]
-    public function open(): void
-    {
-        $this->showModal = true;
-    }
-
-    /**
-     * Close the delete account confirmation modal.
-     */
-    public function close(): void
-    {
-        $this->showModal = false;
-        $this->reset('password');
-        $this->resetValidation();
-    }
 
     /**
      * Delete the currently authenticated user.
@@ -57,44 +25,26 @@ new class extends Component {
     }
 }; ?>
 
-<div>
-    @if ($showModal)
-        <dialog class="modal modal-open" open>
-            <div class="modal-box max-w-lg">
-                <form method="POST" wire:submit="deleteUser" class="space-y-6">
-                    <div>
-                        <h3 class="text-lg font-bold">{{ __('Are you sure you want to delete your account?') }}</h3>
-                        <p class="mt-2 text-sm text-base-content/70">
-                            {{ __('Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.') }}
-                        </p>
-                    </div>
+<flux:modal name="confirm-user-deletion" :show="$errors->isNotEmpty()" focusable class="max-w-lg">
+    <form method="POST" wire:submit="deleteUser" class="space-y-6">
+        <div>
+            <flux:heading size="lg">{{ __('Are you sure you want to delete your account?') }}</flux:heading>
 
-                    <fieldset class="fieldset">
-                        <legend class="fieldset-legend">{{ __('Password') }}</legend>
-                        <input
-                            wire:model="password"
-                            type="password"
-                            class="input input-bordered w-full"
-                            autofocus
-                        />
-                        @error('password')
-                            <p class="text-sm text-error">{{ $message }}</p>
-                        @enderror
-                    </fieldset>
+            <flux:subheading>
+                {{ __('Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.') }}
+            </flux:subheading>
+        </div>
 
-                    <div class="modal-action">
-                        <button type="button" class="btn" wire:click="close">
-                            {{ __('Cancel') }}
-                        </button>
-                        <button type="submit" class="btn btn-error" data-test="confirm-delete-user-button">
-                            {{ __('Delete account') }}
-                        </button>
-                    </div>
-                </form>
-            </div>
-            <form method="dialog" class="modal-backdrop">
-                <button type="button" wire:click="close">close</button>
-            </form>
-        </dialog>
-    @endif
-</div>
+        <flux:input wire:model="password" :label="__('Password')" type="password" viewable />
+
+        <div class="flex justify-end space-x-2 rtl:space-x-reverse">
+            <flux:modal.close>
+                <flux:button variant="filled">{{ __('Cancel') }}</flux:button>
+            </flux:modal.close>
+
+            <flux:button variant="danger" type="submit" data-test="confirm-delete-user-button">
+                {{ __('Delete account') }}
+            </flux:button>
+        </div>
+    </form>
+</flux:modal>

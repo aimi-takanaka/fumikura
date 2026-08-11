@@ -97,7 +97,7 @@ new #[Layout('layouts.public')] class extends Component
             <div class="card card-border bg-base-100 px-4 py-5 text-center">
                 <div class="mx-auto mb-3 flex h-64 items-end justify-center">
                     <img
-                        src="{{ asset('img/welcome/features-1.png') }}"
+                        src="{{ asset('img/welcome/features-1.PNG') }}"
                         alt="言葉より想像しやすい"
                         class="max-h-64 w-auto object-contain"
                     />
@@ -109,7 +109,7 @@ new #[Layout('layouts.public')] class extends Component
             <div class="card card-border bg-base-100 px-4 py-5 text-center">
                 <div class="mx-auto mb-3 flex h-64 items-end justify-center">
                     <img
-                        src="{{ asset('img/welcome/features-2.png') }}"
+                        src="{{ asset('img/welcome/features-2.PNG') }}"
                         alt="書き出しに迷わない"
                         class="max-h-64 w-auto object-contain"
                     />
@@ -121,7 +121,7 @@ new #[Layout('layouts.public')] class extends Component
             <div class="card card-border bg-base-100 px-4 py-5 text-center">
                 <div class="mx-auto mb-3 flex h-64 items-end justify-center">
                     <img
-                        src="{{ asset('img/welcome/features-3.png') }}"
+                        src="{{ asset('img/welcome/features-3.PNG') }}"
                         alt="物語は書く人の数だけ広がる"
                         class="max-h-64 w-auto object-contain"
                     />
@@ -133,7 +133,7 @@ new #[Layout('layouts.public')] class extends Component
             <div class="card card-border bg-base-100 px-4 py-5 text-center">
                 <div class="mx-auto mb-3 flex h-64 items-end justify-center">
                     <img
-                        src="{{ asset('img/welcome/features-4.png') }}"
+                        src="{{ asset('img/welcome/features-4.PNG') }}"
                         alt="物語にしなくても参加できる"
                         class="max-h-60 w-auto object-contain"
                     />

@@ -55,10 +55,10 @@ it('shows the my page and how it works sections', function () {
 it('shows feature illustrations on the welcome page', function () {
     $this->get(route('home'))
         ->assertOk()
-        ->assertSee('img/welcome/features-1.png', false)
-        ->assertSee('img/welcome/features-2.png', false)
-        ->assertSee('img/welcome/features-3.png', false)
-        ->assertSee('img/welcome/features-4.png', false);
+        ->assertSee('img/welcome/features-1.PNG', false)
+        ->assertSee('img/welcome/features-2.PNG', false)
+        ->assertSee('img/welcome/features-3.PNG', false)
+        ->assertSee('img/welcome/features-4.PNG', false);
 });
 
 it('shows my page illustrations on the welcome page', function () {
