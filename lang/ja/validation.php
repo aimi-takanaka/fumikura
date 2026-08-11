@@ -157,8 +157,8 @@ return [
     'uuid' => ':attributeは、有効なUUIDである必要があります。',
 
     'custom' => [
-        'attribute-name' => [
-            'rule-name' => 'custom-message',
+        'password' => [
+            'regex' => 'パスワードは半角英数字のみで入力してください。',
         ],
     ],
 

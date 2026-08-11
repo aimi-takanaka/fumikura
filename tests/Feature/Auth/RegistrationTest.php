@@ -23,8 +23,8 @@ test('new users can register', function () {
     $response = $this->post(route('register.store'), [
         'name' => 'John Doe',
         'email' => 'test@example.com',
-        'password' => 'password',
-        'password_confirmation' => 'password',
+        'password' => 'Password1',
+        'password_confirmation' => 'Password1',
     ]);
 
     $response->assertSessionHasNoErrors()
@@ -61,4 +61,31 @@ test('registration validation errors are shown in Japanese', function () {
     expect(implode(' ', $passwordErrors))
         ->toContain('パスワード')
         ->not->toContain('The password');
+});
+
+test('registration requires mixed-case alphanumeric password of at least 8 characters', function () {
+    $this->from(route('register'))
+        ->post(route('register.store'), [
+            'name' => 'John Doe',
+            'email' => 'rules@example.com',
+            'password' => 'password',
+            'password_confirmation' => 'password',
+        ])
+        ->assertSessionHasErrors('password');
+
+    $this->from(route('register'))
+        ->post(route('register.store'), [
+            'name' => 'John Doe',
+            'email' => 'rules@example.com',
+            'password' => 'Password1!',
+            'password_confirmation' => 'Password1!',
+        ])
+        ->assertSessionHasErrors('password');
+
+    $this->post(route('register.store'), [
+        'name' => 'John Doe',
+        'email' => 'rules@example.com',
+        'password' => 'Password1',
+        'password_confirmation' => 'Password1',
+    ])->assertSessionHasNoErrors();
 });

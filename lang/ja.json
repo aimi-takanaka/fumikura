@@ -40,6 +40,7 @@
     "Confirm password": "パスワード確認",
     "This is a secure area of the application. Please confirm your password before continuing.": "安全な操作のため、続行する前にパスワードを確認してください。",
     "Password": "パスワード",
+    "At least 8 half-width alphanumeric characters, including uppercase and lowercase letters": "半角英数字8文字以上（大文字・小文字を含む）",
     "Confirm": "確認",
     "Manage your profile and account settings": "プロフィールとアカウント設定を管理します",
     "Close": "閉じる",

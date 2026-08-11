@@ -64,6 +64,9 @@
                             passwordrules="{{ \Illuminate\Validation\Rules\Password::defaults()->toPasswordRulesString() }}"
                             class="input input-bordered w-full @error('password') input-error @enderror"
                         />
+                        <span class="label-text-alt text-base-content/60">
+                            {{ __('At least 8 half-width alphanumeric characters, including uppercase and lowercase letters') }}
+                        </span>
                         @error('password')
                             <span class="label-text-alt text-error">{{ $message }}</span>
                         @enderror

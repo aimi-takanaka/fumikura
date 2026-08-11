@@ -17,8 +17,8 @@ it('sends a verification email when a user registers', function () {
     $this->post(route('register.store'), [
         'name' => 'John Doe',
         'email' => 'test@example.com',
-        'password' => 'password',
-        'password_confirmation' => 'password',
+        'password' => 'Password1',
+        'password_confirmation' => 'Password1',
     ])->assertRedirect(route('verification.notice'));
 
     $user = User::query()->where('email', 'test@example.com')->first();
