@@ -1,5 +1,6 @@
 <?php
 
+use App\Livewire\Concerns\NotifiesUser;
 use App\Models\Comment;
 use App\Models\Story;
 use Illuminate\Database\Eloquent\Collection;
@@ -9,6 +10,8 @@ use Livewire\Component;
 
 new class extends Component
 {
+    use NotifiesUser;
+
     public bool $showModal = false;
 
     public ?Story $story = null;
@@ -62,7 +65,7 @@ new class extends Component
 
         $this->dispatch('comments-updated');
 
-        Flux::toast('コメントを投稿しました。', variant: 'success');
+        $this->notify('コメントを投稿しました。');
     }
 
     /**
@@ -80,7 +83,7 @@ new class extends Component
 
         $this->dispatch('comments-updated');
 
-        Flux::toast('コメントを削除しました。', variant: 'success');
+        $this->notify('コメントを削除しました。');
     }
 
     /**
@@ -102,69 +105,89 @@ new class extends Component
 }; ?>
 
 <div>
-    <flux:modal wire:model="showModal" @close="close" class="max-w-lg">
-        @if ($story)
-            <div class="flex max-h-[min(32rem,calc(100vh-8rem))] flex-col">
+    <div class="modal" role="dialog" aria-modal="true" @class(['modal-open' => $showModal])>
+        <div class="modal-box flex max-h-[min(32rem,calc(100vh-8rem))] flex-col">
+            @if ($story)
                 <div class="shrink-0">
-                    <flux:heading size="lg">コメント（{{ $comments->count() }}）</flux:heading>
-                    <flux:text class="mt-1 truncate">{{ $story->title }}</flux:text>
+                    <h3 class="text-lg font-bold">コメント（{{ $comments->count() }}）</h3>
+                    <p class="mt-1 truncate text-sm text-base-content/70">{{ $story->title }}</p>
                 </div>
 
                 @auth
                     <div class="mt-4 min-h-0 flex-1 overflow-y-auto">
                         <div class="flex flex-col gap-4">
                             @forelse ($comments as $comment)
-                                <flux:card wire:key="modal-comment-{{ $comment->id }}" class="p-4">
-                                    <div class="flex items-start justify-between gap-4">
-                                        <div class="min-w-0">
-                                            <div class="flex items-center gap-2">
-                                                <x-user-avatar :user="$comment->user" />
-                                                <flux:text class="font-medium">{{ $comment->user?->name ?? '不明' }}</flux:text>
-                                                <flux:text size="sm">{{ $comment->created_at->diffForHumans() }}</flux:text>
+                                <div wire:key="modal-comment-{{ $comment->id }}" class="card bg-base-200 shadow-sm">
+                                    <div class="card-body p-4">
+                                        <div class="flex items-start justify-between gap-4">
+                                            <div class="min-w-0">
+                                                <div class="flex items-center gap-2">
+                                                    <x-user-avatar :user="$comment->user" />
+                                                    <span class="font-medium">{{ $comment->user?->name ?? '不明' }}</span>
+                                                    <span class="text-sm text-base-content/60">{{ $comment->created_at->diffForHumans() }}</span>
+                                                </div>
+                                                <p class="mt-2 whitespace-pre-line">{{ $comment->body }}</p>
                                             </div>
-                                            <flux:text class="mt-2 whitespace-pre-line">{{ $comment->body }}</flux:text>
-                                        </div>
 
-                                        @if ($comment->user_id === auth()->id())
-                                            <flux:button
-                                                wire:click="deleteComment({{ $comment->id }})"
-                                                wire:confirm="このコメントを削除しますか？"
-                                                variant="ghost"
-                                                size="sm"
-                                                icon="trash"
-                                                inset
-                                            />
-                                        @endif
+                                            @if ($comment->user_id === auth()->id())
+                                                <button
+                                                    type="button"
+                                                    wire:click="deleteComment({{ $comment->id }})"
+                                                    wire:confirm="このコメントを削除しますか？"
+                                                    class="btn btn-ghost btn-sm shrink-0"
+                                                >
+                                                    削除
+                                                </button>
+                                            @endif
+                                        </div>
                                     </div>
-                                </flux:card>
+                                </div>
                             @empty
-                                <flux:text size="sm">まだコメントはありません。最初のコメントを書いてみましょう。</flux:text>
+                                <p class="text-sm text-base-content/60">まだコメントはありません。最初のコメントを書いてみましょう。</p>
                             @endforelse
                         </div>
                     </div>
 
-                    <form wire:submit="addComment" class="mt-4 shrink-0 border-t border-zinc-200 pt-4 dark:border-zinc-700">
-                        <flux:textarea
+                    <form wire:submit="addComment" class="mt-4 shrink-0 border-t border-base-300 pt-4">
+                        <textarea
                             wire:model="body"
                             placeholder="このストーリーへの感想を書いてみましょう"
                             rows="2"
-                        />
-                        <div class="mt-2 flex justify-end">
-                            <flux:button type="submit" variant="primary" size="sm" icon="paper-airplane">
+                            class="textarea textarea-bordered w-full @error('body') textarea-error @enderror"
+                        ></textarea>
+                        @error('body')
+                            <p class="mt-1 text-sm text-error">{{ $message }}</p>
+                        @enderror
+                        <div class="mt-2 flex justify-end gap-2">
+                            <button type="button" wire:click="close" class="btn btn-ghost btn-sm">
+                                閉じる
+                            </button>
+                            <button type="submit" class="btn btn-primary btn-sm">
                                 コメントする
-                            </flux:button>
+                            </button>
                         </div>
                     </form>
                 @else
-                    <flux:callout icon="lock-closed" class="mt-4">
-                        <flux:callout.heading>コメントはログインすると読めます</flux:callout.heading>
-                        <flux:callout.text>
-                            <flux:link :href="route('login')" wire:navigate>ログイン</flux:link>
-                            すると、コメントの閲覧と投稿ができます。
-                        </flux:callout.text>
-                    </flux:callout>
+                    <div role="alert" class="alert alert-info mt-4">
+                        <div>
+                            <h4 class="font-bold">コメントはログインすると読めます</h4>
+                            <p class="text-sm">
+                                <a href="{{ route('login') }}" class="link link-primary" wire:navigate>ログイン</a>
+                                すると、コメントの閲覧と投稿ができます。
+                            </p>
+                        </div>
+                    </div>
+                    <div class="modal-action">
+                        <button type="button" wire:click="close" class="btn btn-ghost btn-sm">
+                            閉じる
+                        </button>
+                    </div>
                 @endauth
-            </div>
-        @endif
-    </flux:modal>
+            @endif
+        </div>
+
+        <form method="dialog" class="modal-backdrop" wire:click.prevent="close">
+            <button type="submit" tabindex="-1">close</button>
+        </form>
+    </div>
 </div>
