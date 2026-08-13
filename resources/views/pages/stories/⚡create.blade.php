@@ -22,6 +22,8 @@ new #[Layout('layouts.public')] #[Title('ストーリーを書く')] class exten
 
     public string $status = 'draft';
 
+    public bool $skipBrowserDraftRestore = false;
+
     /**
      * Bind the image the story will belong to.
      */
@@ -38,6 +40,15 @@ new #[Layout('layouts.public')] #[Title('ストーリーを書く')] class exten
         $this->title = (string) ($draft['title'] ?? '');
         $this->body = (string) ($draft['body'] ?? '');
         $this->status = (string) ($draft['status'] ?? StoryStatus::Idea->value);
+        $this->skipBrowserDraftRestore = true;
+    }
+
+    /**
+     * localStorage key for this topic's unsaved create form.
+     */
+    public function browserDraftKey(): string
+    {
+        return 'fumikura.story-create.'.$this->image->id.'.u'.auth()->id();
     }
 
     /**
@@ -68,13 +79,21 @@ new #[Layout('layouts.public')] #[Title('ストーリーを書く')] class exten
             $status,
         );
 
+        $this->js('localStorage.removeItem('.json_encode($this->browserDraftKey()).')');
+
         session()->flash('status', 'ストーリーを投稿しました。');
 
         $this->redirectRoute('images.show', $this->image, navigate: true);
     }
 }; ?>
 
-<div class="mx-auto max-w-2xl">
+<div
+    class="mx-auto max-w-2xl"
+    x-data="storyComposerDraft({
+        key: @js($this->browserDraftKey()),
+        skipRestore: @js($skipBrowserDraftRestore),
+    })"
+>
     <a href="{{ route('images.show', $image) }}" class="btn btn-ghost btn-sm mb-4" wire:navigate>
         お題へ戻る
     </a>
@@ -82,6 +101,7 @@ new #[Layout('layouts.public')] #[Title('ストーリーを書く')] class exten
     <div class="mb-6">
         <h1 class="text-2xl font-bold">ストーリーを書く</h1>
         <p class="mt-2 text-base-content/70">お題「{{ $image->title }}」からインスピレーションを受けた物語を綴りましょう。</p>
+        <p class="mt-1 text-sm text-base-content/60">入力内容はこのブラウザに自動で一時保存されます（リロードしても復元できます）。</p>
     </div>
 
     <div class="card bg-base-100 shadow">
@@ -94,7 +114,7 @@ new #[Layout('layouts.public')] #[Title('ストーリーを書く')] class exten
                     <input
                         id="title"
                         type="text"
-                        wire:model="title"
+                        wire:model.live.debounce.500ms="title"
                         placeholder="例: 灯台守の最後の夜"
                         class="input input-bordered w-full @error('title') input-error @enderror"
                         required

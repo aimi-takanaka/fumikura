@@ -36,6 +36,14 @@ new #[Layout('layouts.public')] #[Title('ストーリーを編集')] class exten
     }
 
     /**
+     * localStorage key for this story's unsaved edit form.
+     */
+    public function browserDraftKey(): string
+    {
+        return 'fumikura.story-edit.'.$this->story->id.'.u'.auth()->id();
+    }
+
+    /**
      * Validate the input and update the story.
      */
     public function update(GeminiProofreadingService $gemini): void
@@ -62,13 +70,20 @@ new #[Layout('layouts.public')] #[Title('ストーリーを編集')] class exten
             $status,
         );
 
+        $this->js('localStorage.removeItem('.json_encode($this->browserDraftKey()).')');
+
         session()->flash('status', 'ストーリーを更新しました。');
 
         $this->redirectRoute('stories.show', $this->story, navigate: true);
     }
 }; ?>
 
-<div class="mx-auto max-w-2xl">
+<div
+    class="mx-auto max-w-2xl"
+    x-data="storyComposerDraft({
+        key: @js($this->browserDraftKey()),
+    })"
+>
     <a href="{{ route('stories.show', $story) }}" class="btn btn-ghost btn-sm mb-4" wire:navigate>
         ストーリーへ戻る
     </a>
@@ -76,6 +91,7 @@ new #[Layout('layouts.public')] #[Title('ストーリーを編集')] class exten
     <div class="mb-6">
         <h1 class="text-2xl font-bold">ストーリーを編集</h1>
         <p class="mt-2 text-base-content/70">お題「{{ $story->image->title }}」への投稿を編集します。</p>
+        <p class="mt-1 text-sm text-base-content/60">入力内容はこのブラウザに自動で一時保存されます（リロードしても復元できます）。</p>
     </div>
 
     <div class="card bg-base-100 shadow">
@@ -88,7 +104,7 @@ new #[Layout('layouts.public')] #[Title('ストーリーを編集')] class exten
                     <input
                         id="title"
                         type="text"
-                        wire:model="title"
+                        wire:model.live.debounce.500ms="title"
                         placeholder="例: 灯台守の最後の夜"
                         class="input input-bordered w-full @error('title') input-error @enderror"
                         required

@@ -15,11 +15,14 @@ it('redirects guests to login', function () {
 
 it('lets logged-in users view the create form', function () {
     $image = Image::factory()->create();
-    $this->actingAs(User::factory()->create());
+    $user = User::factory()->create();
+    $this->actingAs($user);
 
     $this->get(route('stories.create', $image))
         ->assertOk()
-        ->assertSee('ストーリーを書く');
+        ->assertSee('ストーリーを書く')
+        ->assertSee('自動で一時保存')
+        ->assertSee('fumikura.story-create.'.$image->id.'.u'.$user->id, false);
 });
 
 it('shows the body character count on the create form', function () {

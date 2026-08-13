@@ -145,5 +145,78 @@
                 }[type] ?? 'alert-info';
             },
         }));
+
+        /**
+         * Persist story create/edit fields to localStorage so a reload keeps the draft.
+         */
+        window.Alpine.data('storyComposerDraft', (config = {}) => ({
+            key: config.key,
+            skipRestore: Boolean(config.skipRestore),
+            timer: null,
+
+            init() {
+                if (! this.key) {
+                    return;
+                }
+
+                if (! this.skipRestore) {
+                    this.restore();
+                }
+
+                this.$wire.$watch('title', () => this.scheduleSave());
+                this.$wire.$watch('body', () => this.scheduleSave());
+                this.$wire.$watch('status', () => this.scheduleSave());
+            },
+
+            scheduleSave() {
+                clearTimeout(this.timer);
+                this.timer = setTimeout(() => this.persist(), 400);
+            },
+
+            persist() {
+                const title = this.$wire.title ?? '';
+                const body = this.$wire.body ?? '';
+                const status = this.$wire.status ?? '';
+
+                if (title === '' && body === '') {
+                    localStorage.removeItem(this.key);
+
+                    return;
+                }
+
+                localStorage.setItem(this.key, JSON.stringify({
+                    title,
+                    body,
+                    status,
+                    savedAt: Date.now(),
+                }));
+            },
+
+            restore() {
+                const raw = localStorage.getItem(this.key);
+
+                if (! raw) {
+                    return;
+                }
+
+                try {
+                    const data = JSON.parse(raw);
+
+                    if (typeof data.title === 'string') {
+                        this.$wire.title = data.title;
+                    }
+
+                    if (typeof data.body === 'string') {
+                        this.$wire.body = data.body;
+                    }
+
+                    if (typeof data.status === 'string' && data.status !== '') {
+                        this.$wire.status = data.status;
+                    }
+                } catch {
+                    localStorage.removeItem(this.key);
+                }
+            },
+        }));
     });
 })();

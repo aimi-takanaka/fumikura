@@ -35,7 +35,9 @@ it('pre-fills the form with the current story values', function () {
         ->assertSet('title', '元のタイトル')
         ->assertSet('body', '元の本文')
         ->assertSet('status', 'draft')
-        ->assertSee('4 文字');
+        ->assertSee('4 文字')
+        ->assertSee('自動で一時保存')
+        ->assertSee('fumikura.story-edit.'.$story->id.'.u'.$user->id, false);
 });
 
 it('lets the author update the story including its status', function () {
