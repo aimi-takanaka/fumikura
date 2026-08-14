@@ -37,7 +37,15 @@ test('new users can register', function () {
     expect($user)->not->toBeNull()
         ->and($user->hasVerifiedEmail())->toBeFalse();
 
-    Notification::assertSentTo($user, VerifyEmail::class);
+    Notification::assertSentTo($user, VerifyEmail::class, function (VerifyEmail $notification) use ($user) {
+        $mail = $notification->toMail($user);
+
+        expect($mail->subject)->toBe('【文倉】メールアドレスの確認')
+            ->and($mail->actionText)->toBe('メールアドレスを確認する')
+            ->and(implode(' ', $mail->introLines))->toContain('文倉へのご登録ありがとうございます');
+
+        return true;
+    });
 });
 
 test('registration validation errors are shown in Japanese', function () {
