@@ -155,17 +155,20 @@ new #[Layout('layouts.public')] class extends Component
                                     <button
                                         type="button"
                                         wire:click="toggleLike({{ $story->id }})"
+                                        aria-label="いいね"
                                         @class([
                                             'btn btn-sm gap-1',
                                             'btn-primary' => $story->is_liked,
                                             'btn-ghost' => ! $story->is_liked,
                                         ])
                                     >
-                                        ♥ {{ $story->likes_count }}
+                                        <span aria-hidden="true">{{ $story->is_liked ? '♥' : '♡' }}</span>
+                                        <span>{{ $story->likes_count }}</span>
                                     </button>
                                 @else
-                                    <span class="flex items-center gap-1 text-sm text-base-content/70">
-                                        ♥ {{ $story->likes_count }}
+                                    <span class="inline-flex items-center gap-1 text-sm text-base-content/70" aria-label="いいね {{ $story->likes_count }}件">
+                                        <span aria-hidden="true">♡</span>
+                                        <span>{{ $story->likes_count }}</span>
                                     </span>
                                 @endauth
                                 <button

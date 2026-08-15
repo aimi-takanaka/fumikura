@@ -182,16 +182,21 @@ new #[Layout('layouts.public')] class extends Component
                 <button
                     type="button"
                     wire:click="toggleLike"
+                    aria-label="いいね"
                     @class([
-                        'btn btn-sm',
+                        'btn btn-sm gap-1',
                         'btn-primary' => $isLiked,
                         'btn-ghost' => ! $isLiked,
                     ])
                 >
-                    {{ $likesCount }}
+                    <span aria-hidden="true">{{ $isLiked ? '♥' : '♡' }}</span>
+                    <span>{{ $likesCount }}</span>
                 </button>
             @else
-                <span class="text-sm text-base-content/70">{{ $likesCount }}</span>
+                <span class="inline-flex items-center gap-1 text-sm text-base-content/70" aria-label="いいね {{ $likesCount }}件">
+                    <span aria-hidden="true">♡</span>
+                    <span>{{ $likesCount }}</span>
+                </span>
             @endauth
 
             <span class="text-sm text-base-content/70">{{ $comments->count() }} コメント</span>

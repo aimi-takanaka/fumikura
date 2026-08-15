@@ -48,13 +48,18 @@ it('does not create duplicate likes for the same user', function () {
 
 it('reflects the like count and state in the view', function () {
     $user = User::factory()->create();
+    $other = User::factory()->create();
     $story = Story::factory()->complete()->create();
+
+    $story->likes()->create(['user_id' => $other->id]);
 
     Livewire::actingAs($user)
         ->test('pages::stories.show', ['story' => $story])
-        ->assertSet('story.id', $story->id)
+        ->assertSee('♡', false)
+        ->assertSee('1')
         ->call('toggleLike')
-        ->assertSee('1');
+        ->assertSee('♥', false)
+        ->assertSee('2');
 });
 
 it('forbids guests from liking a story', function () {
