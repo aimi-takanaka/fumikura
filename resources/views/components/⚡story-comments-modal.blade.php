@@ -33,6 +33,14 @@ new class extends Component
         $this->reset('body');
         $this->resetValidation();
         $this->showModal = true;
+
+        if (auth()->check()) {
+            $this->js(<<<'JS'
+                requestAnimationFrame(() => {
+                    document.getElementById('modal-comment-body')?.focus({ preventScroll: true });
+                });
+            JS);
+        }
     }
 
     /**
@@ -150,6 +158,7 @@ new class extends Component
 
                     <form wire:submit="addComment" class="mt-4 shrink-0 border-t border-base-300 pt-4">
                         <textarea
+                            id="modal-comment-body"
                             wire:model="body"
                             placeholder="このストーリーへの感想を書いてみましょう"
                             rows="2"

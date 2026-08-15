@@ -21,6 +21,7 @@ it('lets a logged-in user post a comment', function () {
 
     Livewire::actingAs($user)
         ->test('pages::stories.show', ['story' => $story])
+        ->assertSee('id="comment-body"', false)
         ->set('body', 'とても良いストーリーでした')
         ->call('addComment')
         ->assertHasNoErrors();

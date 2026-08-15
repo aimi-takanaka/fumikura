@@ -16,6 +16,17 @@ it('opens the comments modal for a readable story', function () {
         ->assertSee('コメント（0）');
 });
 
+it('focuses the comment textarea when the modal opens for a logged-in user', function () {
+    $user = User::factory()->create();
+    $story = Story::factory()->complete()->create();
+
+    Livewire::actingAs($user)
+        ->test('story-comments-modal')
+        ->dispatch('open-story-comments', storyId: $story->id)
+        ->assertSet('showModal', true)
+        ->assertSee('id="modal-comment-body"', false);
+});
+
 it('shows a login callout to guests in the comments modal', function () {
     $story = Story::factory()->complete()->create();
     Comment::factory()->for($story)->create(['body' => '秘密のコメント本文']);

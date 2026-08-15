@@ -199,10 +199,30 @@ new #[Layout('layouts.public')] class extends Component
                 </span>
             @endauth
 
-            <span class="inline-flex items-center gap-1 text-sm text-base-content/70" aria-label="コメント {{ $comments->count() }}件">
-                <span aria-hidden="true">💬</span>
-                <span>{{ $comments->count() }}</span>
-            </span>
+            @auth
+                <button
+                    type="button"
+                    class="btn btn-ghost btn-sm gap-1"
+                    aria-label="コメント {{ $comments->count() }}件"
+                    x-on:click="
+                        const el = document.getElementById('comment-body');
+                        el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        el?.focus({ preventScroll: true });
+                    "
+                >
+                    <span aria-hidden="true">💬</span>
+                    <span>{{ $comments->count() }}</span>
+                </button>
+            @else
+                <a
+                    href="#comments"
+                    class="inline-flex items-center gap-1 text-sm text-base-content/70"
+                    aria-label="コメント {{ $comments->count() }}件"
+                >
+                    <span aria-hidden="true">💬</span>
+                    <span>{{ $comments->count() }}</span>
+                </a>
+            @endauth
 
             @auth
                 <button
@@ -222,12 +242,13 @@ new #[Layout('layouts.public')] class extends Component
 
     <div class="divider my-8"></div>
 
-    <section>
+    <section id="comments">
         <h2 class="text-xl font-bold">コメント（{{ $comments->count() }}）</h2>
 
         @auth
             <form wire:submit="addComment" class="mt-4">
                 <textarea
+                    id="comment-body"
                     wire:model="body"
                     placeholder="このストーリーへの感想を書いてみましょう"
                     rows="3"
