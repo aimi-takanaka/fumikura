@@ -112,56 +112,70 @@ new class extends Component
     }
 }; ?>
 
-<div>
-    <div class="modal" role="dialog" aria-modal="true" @class(['modal-open' => $showModal])>
-        <div class="modal-box flex max-h-[min(32rem,calc(100vh-8rem))] flex-col">
+<div
+    x-data
+    x-effect="
+        if ($wire.showModal) {
+            $refs.commentsDialog?.showModal();
+        } else if ($refs.commentsDialog?.open) {
+            $refs.commentsDialog.close();
+        }
+    "
+>
+    <dialog
+        x-ref="commentsDialog"
+        class="modal"
+        wire:ignore.self
+        @close="$wire.close()"
+    >
+        <div class="modal-box flex max-h-[min(36rem,calc(100vh-4rem))] w-full max-w-lg flex-col gap-4">
             @if ($story)
                 <div class="shrink-0">
-                    <h3 class="text-lg font-bold">コメント（{{ $comments->count() }}）</h3>
+                    <h3 class="text-lg font-bold">💬 コメント（{{ $comments->count() }}）</h3>
                     <p class="mt-1 truncate text-sm text-base-content/70">{{ $story->title }}</p>
                 </div>
 
-                @auth
-                    <div class="mt-4 min-h-0 flex-1 overflow-y-auto">
-                        <div class="flex flex-col gap-4">
-                            @forelse ($comments as $comment)
-                                <div wire:key="modal-comment-{{ $comment->id }}" class="card bg-base-200 shadow-sm">
-                                    <div class="card-body p-4">
-                                        <div class="flex items-start justify-between gap-4">
-                                            <div class="min-w-0">
-                                                <div class="flex items-center gap-2">
-                                                    <x-user-avatar :user="$comment->user" />
-                                                    <span class="font-medium">{{ $comment->user?->name ?? '不明' }}</span>
-                                                    <span class="text-sm text-base-content/60">{{ $comment->created_at->diffForHumans() }}</span>
-                                                </div>
-                                                <p class="mt-2 whitespace-pre-line">{{ $comment->body }}</p>
+                <div class="min-h-0 flex-1 overflow-y-auto">
+                    <div class="flex flex-col gap-4">
+                        @forelse ($comments as $comment)
+                            <div wire:key="modal-comment-{{ $comment->id }}" class="card bg-base-200 shadow-sm">
+                                <div class="card-body p-4">
+                                    <div class="flex items-start justify-between gap-4">
+                                        <div class="min-w-0">
+                                            <div class="flex items-center gap-2">
+                                                <x-user-avatar :user="$comment->user" />
+                                                <span class="font-medium">{{ $comment->user?->name ?? '不明' }}</span>
+                                                <span class="text-sm text-base-content/60">{{ $comment->created_at->diffForHumans() }}</span>
                                             </div>
-
-                                            @if ($comment->user_id === auth()->id())
-                                                <button
-                                                    type="button"
-                                                    wire:click="deleteComment({{ $comment->id }})"
-                                                    wire:confirm="このコメントを削除しますか？"
-                                                    class="btn btn-ghost btn-sm shrink-0"
-                                                >
-                                                    削除
-                                                </button>
-                                            @endif
+                                            <p class="mt-2 whitespace-pre-line">{{ $comment->body }}</p>
                                         </div>
+
+                                        @if (auth()->check() && $comment->user_id === auth()->id())
+                                            <button
+                                                type="button"
+                                                wire:click="deleteComment({{ $comment->id }})"
+                                                wire:confirm="このコメントを削除しますか？"
+                                                class="btn btn-ghost btn-sm shrink-0"
+                                            >
+                                                削除
+                                            </button>
+                                        @endif
                                     </div>
                                 </div>
-                            @empty
-                                <p class="text-sm text-base-content/60">まだコメントはありません。最初のコメントを書いてみましょう。</p>
-                            @endforelse
-                        </div>
+                            </div>
+                        @empty
+                            <p class="text-sm text-base-content/60">まだコメントはありません。最初のコメントを書いてみましょう。</p>
+                        @endforelse
                     </div>
+                </div>
 
-                    <form wire:submit="addComment" class="mt-4 shrink-0 border-t border-base-300 pt-4">
+                @auth
+                    <form wire:submit="addComment" class="shrink-0 border-t border-base-300 pt-4">
                         <textarea
                             id="modal-comment-body"
                             wire:model="body"
                             placeholder="このストーリーへの感想を書いてみましょう"
-                            rows="2"
+                            rows="3"
                             class="textarea textarea-bordered w-full @error('body') textarea-error @enderror"
                         ></textarea>
                         @error('body')
@@ -177,16 +191,16 @@ new class extends Component
                         </div>
                     </form>
                 @else
-                    <div role="alert" class="alert alert-info mt-4">
+                    <div role="alert" class="alert alert-info shrink-0">
                         <div>
-                            <h4 class="font-bold">コメントはログインすると読めます</h4>
+                            <h4 class="font-bold">コメントするにはログインが必要です</h4>
                             <p class="text-sm">
                                 <a href="{{ route('login') }}" class="link link-primary" wire:navigate>ログイン</a>
-                                すると、コメントの閲覧と投稿ができます。
+                                すると、コメントを投稿できます。
                             </p>
                         </div>
                     </div>
-                    <div class="modal-action">
+                    <div class="flex justify-end">
                         <button type="button" wire:click="close" class="btn btn-ghost btn-sm">
                             閉じる
                         </button>
@@ -195,8 +209,8 @@ new class extends Component
             @endif
         </div>
 
-        <form method="dialog" class="modal-backdrop" wire:click.prevent="close">
+        <form method="dialog" class="modal-backdrop">
             <button type="submit" tabindex="-1">close</button>
         </form>
-    </div>
+    </dialog>
 </div>

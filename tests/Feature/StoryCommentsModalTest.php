@@ -29,13 +29,14 @@ it('focuses the comment textarea when the modal opens for a logged-in user', fun
 
 it('shows a login callout to guests in the comments modal', function () {
     $story = Story::factory()->complete()->create();
-    Comment::factory()->for($story)->create(['body' => '秘密のコメント本文']);
+    Comment::factory()->for($story)->create(['body' => '公開コメント本文']);
 
     Livewire::test('story-comments-modal')
         ->dispatch('open-story-comments', storyId: $story->id)
         ->assertSet('showModal', true)
-        ->assertSee('コメントはログインすると読めます')
-        ->assertDontSee('秘密のコメント本文');
+        ->assertSee('公開コメント本文')
+        ->assertSee('コメントするにはログインが必要です')
+        ->assertDontSee('id="modal-comment-body"', false);
 });
 
 it('shows comments to logged-in users in the modal', function () {
@@ -46,7 +47,8 @@ it('shows comments to logged-in users in the modal', function () {
     Livewire::actingAs($user)
         ->test('story-comments-modal')
         ->dispatch('open-story-comments', storyId: $story->id)
-        ->assertSee('公開コメント本文');
+        ->assertSee('公開コメント本文')
+        ->assertSee('id="modal-comment-body"', false);
 });
 
 it('lets a logged-in user post a comment from the modal', function () {
@@ -74,7 +76,19 @@ it('shows a comment button on the image detail page', function () {
 
     $this->get(route('images.show', $image))
         ->assertOk()
-        ->assertSee('open-story-comments', false);
+        ->assertSee('openComments', false);
+});
+
+it('opens comments from the image detail page', function () {
+    $user = User::factory()->create();
+    $image = Image::factory()->create();
+    $story = Story::factory()->for($image)->complete()->create();
+    Comment::factory()->for($story)->create(['body' => 'お題ページからのコメント']);
+
+    Livewire::actingAs($user)
+        ->test('pages::images.show', ['image' => $image])
+        ->call('openComments', $story->id)
+        ->assertDispatched('open-story-comments', storyId: $story->id);
 });
 
 it('refreshes comment counts on the image detail page after posting', function () {

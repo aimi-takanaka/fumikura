@@ -27,6 +27,18 @@ new #[Layout('layouts.public')] class extends Component
     }
 
     /**
+     * Open the comments modal for a story on this topic.
+     */
+    public function openComments(int $storyId): void
+    {
+        $story = $this->image->stories()
+            ->readableBy(auth()->user())
+            ->findOrFail($storyId);
+
+        $this->dispatch('open-story-comments', storyId: $story->id);
+    }
+
+    /**
      * Toggle the current user's like on a story in this topic list.
      */
     public function toggleLike(int $storyId): void
@@ -173,7 +185,7 @@ new #[Layout('layouts.public')] class extends Component
                                 @endauth
                                 <button
                                     type="button"
-                                    wire:click="$dispatch('open-story-comments', { storyId: {{ $story->id }} })"
+                                    wire:click="openComments({{ $story->id }})"
                                     class="btn btn-ghost btn-sm gap-1"
                                     aria-label="コメント {{ $story->comments_count }}件"
                                 >
