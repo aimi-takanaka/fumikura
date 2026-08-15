@@ -199,7 +199,10 @@ new #[Layout('layouts.public')] class extends Component
                 </span>
             @endauth
 
-            <span class="text-sm text-base-content/70">{{ $comments->count() }} コメント</span>
+            <span class="inline-flex items-center gap-1 text-sm text-base-content/70" aria-label="コメント {{ $comments->count() }}件">
+                <span aria-hidden="true">💬</span>
+                <span>{{ $comments->count() }}</span>
+            </span>
 
             @auth
                 <button

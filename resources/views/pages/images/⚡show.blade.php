@@ -175,8 +175,10 @@ new #[Layout('layouts.public')] class extends Component
                                     type="button"
                                     wire:click="$dispatch('open-story-comments', { storyId: {{ $story->id }} })"
                                     class="btn btn-ghost btn-sm gap-1"
+                                    aria-label="コメント {{ $story->comments_count }}件"
                                 >
-                                    💬 {{ $story->comments_count }}
+                                    <span aria-hidden="true">💬</span>
+                                    <span>{{ $story->comments_count }}</span>
                                 </button>
                             </div>
                         </div>

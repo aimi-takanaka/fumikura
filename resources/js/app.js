@@ -117,12 +117,6 @@
         window.Alpine.data('toastStack', () => ({
             toasts: [],
 
-            init() {
-                window.addEventListener('notify', (event) => {
-                    this.push(event.detail?.type ?? 'info', event.detail?.message ?? '');
-                });
-            },
-
             push(type, message) {
                 if (! message) {
                     return;
