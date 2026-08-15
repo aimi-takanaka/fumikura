@@ -10,7 +10,9 @@ it('lets a logged-in user bookmark a story', function () {
 
     Livewire::actingAs($user)
         ->test('pages::stories.show', ['story' => $story])
-        ->call('toggleBookmark');
+        ->assertSee('お気に入りに追加')
+        ->call('toggleBookmark')
+        ->assertSee('お気に入り済み');
 
     $this->assertDatabaseHas('bookmarks', [
         'story_id' => $story->id,

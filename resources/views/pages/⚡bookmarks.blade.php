@@ -37,7 +37,7 @@ new #[Layout('layouts.public')] #[Title('マイページ')] class extends Compon
 
 <div>
     <flux:heading size="xl">マイページ</flux:heading>
-    <flux:text class="mt-1">保存したストーリーをここから読み返せます。</flux:text>
+    <flux:text class="mt-1">お気に入りしたストーリーをここから読み返せます。</flux:text>
 
     <flux:separator class="my-6" />
 
@@ -47,7 +47,7 @@ new #[Layout('layouts.public')] #[Title('マイページ')] class extends Compon
     @if ($bookmarks->isEmpty())
         <flux:callout icon="bookmark">
             <flux:callout.heading>まだお気に入りがありません</flux:callout.heading>
-            <flux:callout.text>ストーリー詳細ページの「保存」ボタンから追加できます。</flux:callout.text>
+            <flux:callout.text>ストーリー詳細ページの「お気に入りに追加」ボタンから追加できます。</flux:callout.text>
         </flux:callout>
     @else
         <div class="flex flex-col gap-4">

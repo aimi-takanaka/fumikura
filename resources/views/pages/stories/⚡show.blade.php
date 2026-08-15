@@ -206,7 +206,7 @@ new #[Layout('layouts.public')] class extends Component
                         'btn-ghost' => ! $isBookmarked,
                     ])
                 >
-                    {{ $isBookmarked ? '保存済み' : '保存' }}
+                    {{ $isBookmarked ? 'お気に入り済み' : 'お気に入りに追加' }}
                 </button>
             @endauth
         </div>

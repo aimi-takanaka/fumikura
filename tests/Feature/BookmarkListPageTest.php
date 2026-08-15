@@ -59,7 +59,8 @@ it('shows an empty state when there are no bookmarks', function () {
     $this->actingAs(User::factory()->create())
         ->get(route('bookmarks'))
         ->assertOk()
-        ->assertSee('まだお気に入りがありません');
+        ->assertSee('まだお気に入りがありません')
+        ->assertSee('お気に入りに追加');
 });
 
 it('lets a user remove a bookmark from the list', function () {
