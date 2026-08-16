@@ -77,12 +77,12 @@ new #[Layout('layouts.public')] class extends Component
                 ['三題噺のような単語のお題だと、うまく物語に落とし込めない', 'experience-2.jpg'],
                 ['真っ白なページを前にすると、逆に手が止まってしまう', 'experience-3.jpg'],
             ] as $problem)
-                <div class="card card-border bg-base-100 px-4 py-5 text-center">
-                    <div class="mx-auto mb-3 flex h-48 items-end justify-center sm:h-56">
+                <div class="card card-border h-full bg-base-100 px-4 py-5 text-center">
+                    <div class="mx-auto mb-3 flex h-64 w-full items-center justify-center overflow-hidden">
                         <img
                             src="{{ asset('img/welcome/'.$problem[1]) }}"
                             alt="{{ $problem[0] }}"
-                            class="max-h-full w-auto object-contain"
+                            class="max-h-64 max-w-full object-contain"
                         />
                     </div>
                     <p class="m-0 text-base leading-relaxed text-base-content/80">{{ $problem[0] }}</p>

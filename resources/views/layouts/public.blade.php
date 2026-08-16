@@ -92,7 +92,7 @@
             </div>
         </div>
 
-        <main class="mx-auto w-full px-4 py-8 sm:px-6 lg:px-35">
+        <main class="mx-auto w-full px-4 py-8 sm:px-6 lg:px-8">
             @if (session('status'))
                 <div role="alert" class="alert alert-success mb-6">
                     <span>{{ session('status') }}</span>
