@@ -71,17 +71,24 @@ new #[Layout('layouts.public')] class extends Component
 
         <h2 class="mb-4 text-lg font-bold text-base-content">こんな経験、ありませんか？</h2>
 
-        <ul class="grid gap-3">
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
             @foreach ([
-                '書きたい気持ちはあるのに、何を書けばいいかわからない',
-                '三題噺のような単語のお題だと、うまく物語に落とし込めない',
-                '真っ白なページを前にすると、逆に手が止まってしまう',
+                ['書きたい気持ちはあるのに、何を書けばいいかわからない', 'experience-1.jpg'],
+                ['三題噺のような単語のお題だと、うまく物語に落とし込めない', 'experience-2.jpg'],
+                ['真っ白なページを前にすると、逆に手が止まってしまう', 'experience-3.jpg'],
             ] as $problem)
-                <li class="card card-border bg-base-100 px-4 py-3 text-base text-base-content/80">
-                    {{ $problem }}
-                </li>
+                <div class="card card-border bg-base-100 px-4 py-5 text-center">
+                    <div class="mx-auto mb-3 flex h-48 items-end justify-center sm:h-56">
+                        <img
+                            src="{{ asset('img/welcome/'.$problem[1]) }}"
+                            alt="{{ $problem[0] }}"
+                            class="max-h-full w-auto object-contain"
+                        />
+                    </div>
+                    <p class="m-0 text-base leading-relaxed text-base-content/80">{{ $problem[0] }}</p>
+                </div>
             @endforeach
-        </ul>
+        </div>
 
         <p class="mt-12 mb-8 text-center text-xl font-bold text-base-content">
             ↓ だから、文倉は "絵"からはじめる

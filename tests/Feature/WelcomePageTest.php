@@ -52,6 +52,15 @@ it('shows the my page and how it works sections', function () {
         ->assertSee('物語にしなくても参加できる');
 });
 
+it('shows experience illustrations on the welcome page', function () {
+    $this->get(route('home'))
+        ->assertOk()
+        ->assertSee('こんな経験、ありませんか？')
+        ->assertSee('img/welcome/experience-1.jpg', false)
+        ->assertSee('img/welcome/experience-2.jpg', false)
+        ->assertSee('img/welcome/experience-3.jpg', false);
+});
+
 it('shows feature illustrations on the welcome page', function () {
     $this->get(route('home'))
         ->assertOk()
