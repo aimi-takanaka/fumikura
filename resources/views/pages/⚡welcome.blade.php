@@ -71,21 +71,21 @@ new #[Layout('layouts.public')] class extends Component
 
         <h2 class="mb-4 text-lg font-bold text-base-content">こんな経験、ありませんか？</h2>
 
-        <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <div class="grid grid-cols-3 gap-4 sm:gap-6">
             @foreach ([
                 ['書きたい気持ちはあるのに、何を書けばいいかわからない', 'experience-1.jpg'],
                 ['三題噺のような単語のお題だと、うまく物語に落とし込めない', 'experience-2.jpg'],
                 ['真っ白なページを前にすると、逆に手が止まってしまう', 'experience-3.jpg'],
             ] as $problem)
-                <div class="card card-border h-full bg-base-100 px-4 py-5 text-center">
-                    <div class="mx-auto mb-3 flex h-64 w-full items-center justify-center overflow-hidden">
+                <div class="card card-border h-full min-w-0 bg-base-100 px-2 py-4 text-center sm:px-4 sm:py-5">
+                    <div class="mx-auto mb-3 flex h-36 w-full items-center justify-center overflow-hidden sm:h-56">
                         <img
                             src="{{ asset('img/welcome/'.$problem[1]) }}"
                             alt="{{ $problem[0] }}"
-                            class="max-h-64 max-w-full object-contain"
+                            class="max-h-full max-w-full object-contain"
                         />
                     </div>
-                    <p class="m-0 text-base leading-relaxed text-base-content/80">{{ $problem[0] }}</p>
+                    <p class="m-0 text-sm leading-relaxed text-base-content/80 sm:text-base">{{ $problem[0] }}</p>
                 </div>
             @endforeach
         </div>
