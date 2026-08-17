@@ -1,0 +1,78 @@
+name: deploy
+
+on:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - name: Setup Node
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Install Node Dependencies
+        run: npm ci
+
+      - name: Build Assets
+        run: npm run build
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.2.2
+        with:
+          host: ${{ secrets.XSERVER_HOST }}
+          username: ${{ secrets.XSERVER_USER }}
+          key: ${{ secrets.XSERVER_SSH_KEY }}
+          port: ${{ secrets.XSERVER_PORT }}
+          script_stop: true
+          script: |
+            set -e
+            cd ~/xs383211.xsrv.jp/fumikura
+            git pull --ff-only origin main
+            php8.4 artisan view:clear
+            php8.4 artisan config:clear
+            php8.4 artisan route:clear
+            php8.4 artisan migrate --force --no-interaction
+
+      - name: Upload built assets
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.XSERVER_HOST }}
+          username: ${{ secrets.XSERVER_USER }}
+          key: ${{ secrets.XSERVER_SSH_KEY }}
+          port: ${{ secrets.XSERVER_PORT }}
+          source: 'public/build/*'
+          target: ~/xs383211.xsrv.jp/fumikura/public/build
+          strip_components: 2
+          overwrite: true
+          rm: true
+
+      - name: Fix asset permissions
+        uses: appleboy/ssh-action@v1.2.2
+        with:
+          host: ${{ secrets.XSERVER_HOST }}
+          username: ${{ secrets.XSERVER_USER }}
+          key: ${{ secrets.XSERVER_SSH_KEY }}
+          port: ${{ secrets.XSERVER_PORT }}
+          script_stop: true
+          script: |
+            set -e
+            cd ~/xs383211.xsrv.jp/fumikura
+            find public/build -type d -exec chmod 755 {} \;
+            find public/build -type f -exec chmod 644 {} \;
