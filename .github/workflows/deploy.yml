@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 concurrency:
   group: deploy-production
@@ -40,7 +41,6 @@ jobs:
           username: ${{ secrets.XSERVER_USER }}
           key: ${{ secrets.XSERVER_SSH_KEY }}
           port: ${{ secrets.XSERVER_PORT }}
-          script_stop: true
           script: |
             set -e
             cd ~/xs383211.xsrv.jp/fumikura
@@ -58,7 +58,7 @@ jobs:
           key: ${{ secrets.XSERVER_SSH_KEY }}
           port: ${{ secrets.XSERVER_PORT }}
           source: 'public/build/*'
-          target: ~/xs383211.xsrv.jp/fumikura/public/build
+          target: /home/xs383211/xs383211.xsrv.jp/fumikura/public/build
           strip_components: 2
           overwrite: true
           rm: true
@@ -70,7 +70,6 @@ jobs:
           username: ${{ secrets.XSERVER_USER }}
           key: ${{ secrets.XSERVER_SSH_KEY }}
           port: ${{ secrets.XSERVER_PORT }}
-          script_stop: true
           script: |
             set -e
             cd ~/xs383211.xsrv.jp/fumikura
