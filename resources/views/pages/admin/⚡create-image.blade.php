@@ -20,6 +20,8 @@ new #[Layout('layouts.public')] #[Title('お題画像の投稿')] class extends 
 
     public string $creditService = '';
 
+    public string $creditServiceUrl = '';
+
     public $photo = null;
 
     /**
@@ -36,6 +38,7 @@ new #[Layout('layouts.public')] #[Title('お題画像の投稿')] class extends 
             'creditType' => ['nullable', Rule::enum(ImageCreditType::class)],
             'creditAuthor' => ['required_with:creditType', 'nullable', 'string', 'max:255'],
             'creditService' => ['required_with:creditType', 'nullable', 'string', 'max:255'],
+            'creditServiceUrl' => ['required_with:creditType', 'nullable', 'url', 'max:2048'],
             'photo' => ['required', 'image', 'max:5120'],
         ]);
 
@@ -50,6 +53,7 @@ new #[Layout('layouts.public')] #[Title('お題画像の投稿')] class extends 
             'credit_type' => $creditType,
             'credit_author' => $creditType ? $validated['creditAuthor'] : null,
             'credit_service' => $creditType ? $validated['creditService'] : null,
+            'credit_service_url' => $creditType ? $validated['creditServiceUrl'] : null,
             'file_path' => $path,
             'user_id' => auth()->id(),
         ]);
@@ -129,6 +133,21 @@ new #[Layout('layouts.public')] #[Title('お題画像の投稿')] class extends 
                         class="input input-bordered w-full @error('creditService') input-error @enderror"
                     />
                     @error('creditService')
+                        <span class="label-text-alt text-error">{{ $message }}</span>
+                    @enderror
+                </label>
+
+                <label class="form-control w-full">
+                    <span class="label">
+                        <span class="label-text">サービスURL</span>
+                    </span>
+                    <input
+                        type="url"
+                        wire:model="creditServiceUrl"
+                        placeholder="例: https://unsplash.com/@example"
+                        class="input input-bordered w-full @error('creditServiceUrl') input-error @enderror"
+                    />
+                    @error('creditServiceUrl')
                         <span class="label-text-alt text-error">{{ $message }}</span>
                     @enderror
                 </label>

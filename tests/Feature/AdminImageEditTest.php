@@ -36,7 +36,8 @@ it('lets admins view the edit form with existing values', function () {
         ->assertSet('title', '港の朝')
         ->assertSet('creditType', 'photo')
         ->assertSet('creditAuthor', 'Sato Hanako')
-        ->assertSet('creditService', 'Unsplash');
+        ->assertSet('creditService', 'Unsplash')
+        ->assertSet('creditServiceUrl', 'https://unsplash.com');
 });
 
 it('updates credit attribution on an existing image', function () {
@@ -49,6 +50,7 @@ it('updates credit attribution on an existing image', function () {
         ->set('creditType', 'illustration')
         ->set('creditAuthor', 'Yamada Taro')
         ->set('creditService', 'Example Art')
+        ->set('creditServiceUrl', 'https://example.com/art')
         ->call('save')
         ->assertHasNoErrors()
         ->assertRedirect(route('images.show', $image));
@@ -59,6 +61,7 @@ it('updates credit attribution on an existing image', function () {
         ->and($image->credit_type)->toBe(ImageCreditType::Illustration)
         ->and($image->credit_author)->toBe('Yamada Taro')
         ->and($image->credit_service)->toBe('Example Art')
+        ->and($image->credit_service_url)->toBe('https://example.com/art')
         ->and($image->creditLine())->toBe('illustration by Yamada Taro　Example Art');
 });
 
@@ -71,6 +74,7 @@ it('clears credit when type is unset', function () {
         ->set('creditType', null)
         ->set('creditAuthor', '')
         ->set('creditService', '')
+        ->set('creditServiceUrl', '')
         ->call('save')
         ->assertHasNoErrors();
 
@@ -79,6 +83,7 @@ it('clears credit when type is unset', function () {
     expect($image->credit_type)->toBeNull()
         ->and($image->credit_author)->toBeNull()
         ->and($image->credit_service)->toBeNull()
+        ->and($image->credit_service_url)->toBeNull()
         ->and($image->creditLine())->toBeNull();
 });
 

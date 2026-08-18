@@ -108,8 +108,20 @@ new #[Layout('layouts.public')] class extends Component
             <div class="flex items-start justify-between gap-4">
                 <div class="min-w-0">
                     <h1 class="text-2xl font-bold">{{ $image->title }}</h1>
-                    @if ($image->creditLine())
-                        <p class="mt-1 text-sm text-base-content/60">{{ $image->creditLine() }}</p>
+                    @if ($image->hasCredit())
+                        <p class="mt-1 text-sm text-base-content/60">
+                            {{ $image->credit_type->creditPrefix() }} {{ $image->credit_author }}　
+                            @if ($image->creditServiceUrl())
+                                <a
+                                    href="{{ $image->creditServiceUrl() }}"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="link link-hover"
+                                >{{ $image->credit_service }}</a>
+                            @else
+                                {{ $image->credit_service }}
+                            @endif
+                        </p>
                     @endif
                     <p class="mt-1 text-base-content/70">投稿者: {{ $image->user?->name ?? '不明' }}</p>
                 </div>

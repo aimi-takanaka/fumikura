@@ -59,6 +59,7 @@ it('stores photo credit when provided', function () {
         ->set('creditType', 'photo')
         ->set('creditAuthor', 'Sato Hanako')
         ->set('creditService', 'Unsplash')
+        ->set('creditServiceUrl', 'https://unsplash.com/@sato')
         ->set('photo', UploadedFile::fake()->create('harbor.jpg', 100, 'image/jpeg'))
         ->call('save')
         ->assertHasNoErrors()
@@ -70,6 +71,7 @@ it('stores photo credit when provided', function () {
         ->and($image->credit_type)->toBe(ImageCreditType::Photo)
         ->and($image->credit_author)->toBe('Sato Hanako')
         ->and($image->credit_service)->toBe('Unsplash')
+        ->and($image->credit_service_url)->toBe('https://unsplash.com/@sato')
         ->and($image->creditLine())->toBe('photo by Sato Hanako　Unsplash');
 });
 
@@ -82,9 +84,10 @@ it('requires author and service when a credit type is selected', function () {
         ->set('creditType', 'illustration')
         ->set('creditAuthor', '')
         ->set('creditService', '')
+        ->set('creditServiceUrl', '')
         ->set('photo', UploadedFile::fake()->create('art.jpg', 100, 'image/jpeg'))
         ->call('save')
-        ->assertHasErrors(['creditAuthor', 'creditService']);
+        ->assertHasErrors(['creditAuthor', 'creditService', 'creditServiceUrl']);
 });
 
 it('requires a title and an image file', function () {

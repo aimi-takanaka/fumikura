@@ -13,15 +13,38 @@ it('shows the image detail page to guests', function () {
 });
 
 it('shows credit under the title when attribution is set', function () {
-    $image = Image::factory()->photoCredit('Sato Hanako', 'Unsplash')->create([
+    $image = Image::factory()->photoCredit('Sato Hanako', 'Unsplash', 'https://unsplash.com/@sato')->create([
         'title' => '港の朝',
     ]);
 
     $this->get(route('images.show', $image))
         ->assertOk()
         ->assertSee('港の朝')
-        ->assertSee('photo by Sato Hanako　Unsplash')
+        ->assertSee('photo by Sato Hanako')
+        ->assertSee('Unsplash')
+        ->assertSee('https://unsplash.com/@sato', false)
         ->assertSee('投稿者:');
+});
+
+it('links the credit service name when a URL is set', function () {
+    $image = Image::factory()->illustrationCredit('Yamada Taro', 'Example Art', 'https://example.com/art')->create();
+
+    $this->get(route('images.show', $image))
+        ->assertOk()
+        ->assertSee('illustration by Yamada Taro')
+        ->assertSee('Example Art')
+        ->assertSee('href="https://example.com/art"', false)
+        ->assertSee('target="_blank"', false);
+});
+
+it('shows plain service text when no URL is set', function () {
+    $image = Image::factory()->photoCredit('Sato Hanako', 'Unsplash', null)->create();
+
+    $this->get(route('images.show', $image))
+        ->assertOk()
+        ->assertSee('photo by Sato Hanako')
+        ->assertSee('Unsplash')
+        ->assertDontSee('>Unsplash</a>', false);
 });
 
 it('hides credit when attribution is not selected', function () {
