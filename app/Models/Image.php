@@ -84,7 +84,7 @@ class Image extends Model
             return null;
         }
 
-        return $this->credit_type->creditPrefix().' '.$author.'　'.$service;
+        return $this->credit_type->creditPrefix().$author.'　'.$service;
     }
 
     /**

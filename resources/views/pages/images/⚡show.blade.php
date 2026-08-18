@@ -110,14 +110,20 @@ new #[Layout('layouts.public')] class extends Component
                     <h1 class="text-2xl font-bold">{{ $image->title }}</h1>
                     @if ($image->hasCredit())
                         <p class="mt-1 text-sm text-base-content/60">
-                            {{ $image->credit_type->creditPrefix() }} {{ $image->credit_author }}　
+                            {{ $image->credit_type->creditPrefix() }}{{ $image->credit_author }}　
                             @if ($image->creditServiceUrl())
                                 <a
                                     href="{{ $image->creditServiceUrl() }}"
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    class="link link-hover"
-                                >{{ $image->credit_service }}</a>
+                                    class="inline-flex items-center gap-1 font-medium text-primary underline underline-offset-2 hover:opacity-80"
+                                >
+                                    <span>{{ $image->credit_service }}</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-3.5 shrink-0" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+                                    </svg>
+                                    <span class="sr-only">（外部サイトへ）</span>
+                                </a>
                             @else
                                 {{ $image->credit_service }}
                             @endif

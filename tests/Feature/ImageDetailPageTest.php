@@ -20,7 +20,7 @@ it('shows credit under the title when attribution is set', function () {
     $this->get(route('images.show', $image))
         ->assertOk()
         ->assertSee('港の朝')
-        ->assertSee('photo by Sato Hanako')
+        ->assertSee('写真：Sato Hanako')
         ->assertSee('Unsplash')
         ->assertSee('https://unsplash.com/@sato', false)
         ->assertSee('投稿者:');
@@ -31,10 +31,11 @@ it('links the credit service name when a URL is set', function () {
 
     $this->get(route('images.show', $image))
         ->assertOk()
-        ->assertSee('illustration by Yamada Taro')
+        ->assertSee('イラスト：Yamada Taro')
         ->assertSee('Example Art')
         ->assertSee('href="https://example.com/art"', false)
-        ->assertSee('target="_blank"', false);
+        ->assertSee('target="_blank"', false)
+        ->assertSee('外部サイトへ');
 });
 
 it('shows plain service text when no URL is set', function () {
@@ -42,7 +43,7 @@ it('shows plain service text when no URL is set', function () {
 
     $this->get(route('images.show', $image))
         ->assertOk()
-        ->assertSee('photo by Sato Hanako')
+        ->assertSee('写真：Sato Hanako')
         ->assertSee('Unsplash')
         ->assertDontSee('>Unsplash</a>', false);
 });
@@ -53,8 +54,8 @@ it('hides credit when attribution is not selected', function () {
     $this->get(route('images.show', $image))
         ->assertOk()
         ->assertSee('クレジットなし')
-        ->assertDontSee('illustration by')
-        ->assertDontSee('photo by');
+        ->assertDontSee('イラスト：')
+        ->assertDontSee('写真：');
 });
 
 it('shows completed stories but hides idea and draft stories from guests', function () {

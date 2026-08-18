@@ -8,13 +8,13 @@ enum ImageCreditType: string
     case Photo = 'photo';
 
     /**
-     * Prefix used in public credit lines (e.g. "illustration by").
+     * Prefix used in public credit lines (e.g. "イラスト：").
      */
     public function creditPrefix(): string
     {
         return match ($this) {
-            self::Illustration => 'illustration by',
-            self::Photo => 'photo by',
+            self::Illustration => 'イラスト：',
+            self::Photo => '写真：',
         };
     }
 
@@ -24,8 +24,8 @@ enum ImageCreditType: string
     public function label(): string
     {
         return match ($this) {
-            self::Illustration => '絵（illustration）',
-            self::Photo => '写真（photo）',
+            self::Illustration => 'イラスト',
+            self::Photo => '写真',
         };
     }
 }

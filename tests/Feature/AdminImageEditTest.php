@@ -62,7 +62,7 @@ it('updates credit attribution on an existing image', function () {
         ->and($image->credit_author)->toBe('Yamada Taro')
         ->and($image->credit_service)->toBe('Example Art')
         ->and($image->credit_service_url)->toBe('https://example.com/art')
-        ->and($image->creditLine())->toBe('illustration by Yamada Taro　Example Art');
+        ->and($image->creditLine())->toBe('イラスト：Yamada Taro　Example Art');
 });
 
 it('clears credit when type is unset', function () {

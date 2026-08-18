@@ -72,7 +72,7 @@ it('stores photo credit when provided', function () {
         ->and($image->credit_author)->toBe('Sato Hanako')
         ->and($image->credit_service)->toBe('Unsplash')
         ->and($image->credit_service_url)->toBe('https://unsplash.com/@sato')
-        ->and($image->creditLine())->toBe('photo by Sato Hanako　Unsplash');
+        ->and($image->creditLine())->toBe('写真：Sato Hanako　Unsplash');
 });
 
 it('requires author and service when a credit type is selected', function () {
