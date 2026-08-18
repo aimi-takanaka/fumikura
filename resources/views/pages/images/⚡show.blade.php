@@ -106,6 +106,9 @@ new #[Layout('layouts.public')] class extends Component
 
         <div class="card-body p-5">
             <h1 class="text-2xl font-bold">{{ $image->title }}</h1>
+            @if ($image->creditLine())
+                <p class="mt-1 text-sm text-base-content/60">{{ $image->creditLine() }}</p>
+            @endif
             <p class="mt-1 text-base-content/70">投稿者: {{ $image->user?->name ?? '不明' }}</p>
         </div>
     </div>

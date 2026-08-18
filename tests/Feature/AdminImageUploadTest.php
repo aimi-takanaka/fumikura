@@ -1,5 +1,6 @@
 <?php
 
+use App\ImageCreditType;
 use App\Models\Image;
 use App\Models\User;
 use Illuminate\Http\UploadedFile;
@@ -42,9 +43,48 @@ it('stores an uploaded image and creates the record', function () {
 
     expect($image)->not->toBeNull()
         ->and($image->title)->toBe('夕暮れの海辺')
+        ->and($image->credit_type)->toBeNull()
         ->and($image->user_id)->toBe($admin->id);
 
     Storage::disk('public')->assertExists($image->file_path);
+});
+
+it('stores photo credit when provided', function () {
+    Storage::fake('public');
+    $admin = User::factory()->admin()->create();
+
+    Livewire::actingAs($admin)
+        ->test('pages::admin.create-image')
+        ->set('title', '港の写真')
+        ->set('creditType', 'photo')
+        ->set('creditAuthor', 'Sato Hanako')
+        ->set('creditService', 'Unsplash')
+        ->set('photo', UploadedFile::fake()->create('harbor.jpg', 100, 'image/jpeg'))
+        ->call('save')
+        ->assertHasNoErrors()
+        ->assertRedirect(route('topics.index'));
+
+    $image = Image::first();
+
+    expect($image)->not->toBeNull()
+        ->and($image->credit_type)->toBe(ImageCreditType::Photo)
+        ->and($image->credit_author)->toBe('Sato Hanako')
+        ->and($image->credit_service)->toBe('Unsplash')
+        ->and($image->creditLine())->toBe('photo by Sato Hanako　Unsplash');
+});
+
+it('requires author and service when a credit type is selected', function () {
+    Storage::fake('public');
+    $this->actingAs(User::factory()->admin()->create());
+
+    Livewire::test('pages::admin.create-image')
+        ->set('title', 'テスト')
+        ->set('creditType', 'illustration')
+        ->set('creditAuthor', '')
+        ->set('creditService', '')
+        ->set('photo', UploadedFile::fake()->create('art.jpg', 100, 'image/jpeg'))
+        ->call('save')
+        ->assertHasErrors(['creditAuthor', 'creditService']);
 });
 
 it('requires a title and an image file', function () {

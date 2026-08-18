@@ -12,6 +12,28 @@ it('shows the image detail page to guests', function () {
         ->assertSee('霧の森');
 });
 
+it('shows credit under the title when attribution is set', function () {
+    $image = Image::factory()->photoCredit('Sato Hanako', 'Unsplash')->create([
+        'title' => '港の朝',
+    ]);
+
+    $this->get(route('images.show', $image))
+        ->assertOk()
+        ->assertSee('港の朝')
+        ->assertSee('photo by Sato Hanako　Unsplash')
+        ->assertSee('投稿者:');
+});
+
+it('hides credit when attribution is not selected', function () {
+    $image = Image::factory()->create(['title' => 'クレジットなし']);
+
+    $this->get(route('images.show', $image))
+        ->assertOk()
+        ->assertSee('クレジットなし')
+        ->assertDontSee('illustration by')
+        ->assertDontSee('photo by');
+});
+
 it('shows completed stories but hides idea and draft stories from guests', function () {
     $image = Image::factory()->create();
     Story::factory()->for($image)->complete()->create(['title' => '完成した物語']);

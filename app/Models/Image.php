@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\ImageCreditType;
 use Database\Factories\ImageFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -14,16 +15,29 @@ use Illuminate\Support\Facades\Storage;
 /**
  * @property int $id
  * @property string $title
+ * @property ImageCreditType|null $credit_type
+ * @property string|null $credit_author
+ * @property string|null $credit_service
  * @property string $file_path
  * @property int $user_id
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
-#[Fillable(['title', 'file_path', 'user_id'])]
+#[Fillable(['title', 'credit_type', 'credit_author', 'credit_service', 'file_path', 'user_id'])]
 class Image extends Model
 {
     /** @use HasFactory<ImageFactory> */
     use HasFactory;
+
+    /**
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'credit_type' => ImageCreditType::class,
+        ];
+    }
 
     /**
      * The admin who uploaded this image.
@@ -43,6 +57,25 @@ class Image extends Model
     public function stories(): HasMany
     {
         return $this->hasMany(Story::class);
+    }
+
+    /**
+     * Public credit line shown under the title, when attribution is set.
+     */
+    public function creditLine(): ?string
+    {
+        if ($this->credit_type === null || $this->credit_author === null || $this->credit_service === null) {
+            return null;
+        }
+
+        $author = trim($this->credit_author);
+        $service = trim($this->credit_service);
+
+        if ($author === '' || $service === '') {
+            return null;
+        }
+
+        return $this->credit_type->creditPrefix().' '.$author.'　'.$service;
     }
 
     /**
