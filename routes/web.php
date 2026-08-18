@@ -20,6 +20,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 Route::middleware(['auth', 'verified', 'admin'])->group(function () {
     Route::livewire('/admin/images/create', 'pages::admin.create-image')->name('admin.images.create');
+    Route::livewire('/admin/images/{image}/edit', 'pages::admin.edit-image')->name('admin.images.edit');
 });
 
 require __DIR__.'/settings.php';

@@ -105,11 +105,21 @@ new #[Layout('layouts.public')] class extends Component
         </figure>
 
         <div class="card-body p-5">
-            <h1 class="text-2xl font-bold">{{ $image->title }}</h1>
-            @if ($image->creditLine())
-                <p class="mt-1 text-sm text-base-content/60">{{ $image->creditLine() }}</p>
-            @endif
-            <p class="mt-1 text-base-content/70">投稿者: {{ $image->user?->name ?? '不明' }}</p>
+            <div class="flex items-start justify-between gap-4">
+                <div class="min-w-0">
+                    <h1 class="text-2xl font-bold">{{ $image->title }}</h1>
+                    @if ($image->creditLine())
+                        <p class="mt-1 text-sm text-base-content/60">{{ $image->creditLine() }}</p>
+                    @endif
+                    <p class="mt-1 text-base-content/70">投稿者: {{ $image->user?->name ?? '不明' }}</p>
+                </div>
+
+                @if (auth()->user()?->is_admin)
+                    <a href="{{ route('admin.images.edit', $image) }}" class="btn btn-ghost btn-sm shrink-0" wire:navigate>
+                        編集
+                    </a>
+                @endif
+            </div>
         </div>
     </div>
 
