@@ -129,7 +129,7 @@ new #[Layout('layouts.public')] class extends Component
                             @endif
                         </p>
                     @endif
-                    <p class="mt-1 text-base-content/70">投稿者: {{ $image->user?->name ?? '不明' }}</p>
+                    <p class="mt-1 text-base-content/70">投稿者：{{ $image->user?->name ?? '不明' }}</p>
                 </div>
 
                 @if (auth()->user()?->is_admin)

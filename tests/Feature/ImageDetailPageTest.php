@@ -23,7 +23,7 @@ it('shows credit under the title when attribution is set', function () {
         ->assertSee('写真：Sato Hanako')
         ->assertSee('Unsplash')
         ->assertSee('https://unsplash.com/@sato', false)
-        ->assertSee('投稿者:');
+        ->assertSee('投稿者：');
 });
 
 it('links the credit service name when a URL is set', function () {
