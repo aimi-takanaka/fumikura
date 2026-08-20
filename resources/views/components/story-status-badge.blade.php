@@ -6,8 +6,8 @@
 @php
     $badgeClass = match ($status) {
         \App\StoryStatus::Complete => 'badge-success',
-        \App\StoryStatus::Idea => 'badge-info',
-        \App\StoryStatus::Draft => 'badge-ghost',
+        \App\StoryStatus::Idea => 'border-info bg-info text-white',
+        \App\StoryStatus::Draft => 'border-zinc-600 bg-zinc-600 text-white',
     };
 
     $sizeClass = $size === 'sm' ? 'badge-sm' : '';

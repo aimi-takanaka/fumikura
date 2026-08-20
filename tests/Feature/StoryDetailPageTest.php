@@ -74,7 +74,19 @@ it('shows status labels on the story detail page', function () {
     $this->actingAs(User::factory()->create())
         ->get(route('stories.show', $story))
         ->assertOk()
-        ->assertSee('アイデア');
+        ->assertSee('アイデア')
+        ->assertSee('bg-info text-white', false);
+});
+
+it('shows draft badges with a darker gray background and white text', function () {
+    $user = User::factory()->create();
+    $story = Story::factory()->for($user)->draft()->create();
+
+    $this->actingAs($user)
+        ->get(route('stories.show', $story))
+        ->assertOk()
+        ->assertSee('下書き')
+        ->assertSee('bg-zinc-600 text-white', false);
 });
 
 it('shows a story body font picker and story body class on the story detail page', function () {
