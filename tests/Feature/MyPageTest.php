@@ -60,6 +60,20 @@ it('shows only the current user\'s stories', function () {
         ->assertDontSee('他人の物語');
 });
 
+it('shows like counts on the user\'s stories', function () {
+    $user = User::factory()->create();
+    $story = Story::factory()->for($user)->complete()->create(['title' => 'いいねされた物語']);
+    $story->likes()->create(['user_id' => User::factory()->create()->id]);
+    $story->likes()->create(['user_id' => User::factory()->create()->id]);
+
+    $this->actingAs($user)
+        ->get(route('mypage'))
+        ->assertOk()
+        ->assertSee('いいねされた物語')
+        ->assertSee('♡', false)
+        ->assertSee('いいね 2件', false);
+});
+
 it('shows the topic thumbnail below the topic title on my stories', function () {
     Storage::fake('public');
 

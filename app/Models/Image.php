@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
 
@@ -58,6 +59,16 @@ class Image extends Model
     public function stories(): HasMany
     {
         return $this->hasMany(Story::class);
+    }
+
+    /**
+     * The likes across all stories written for this image.
+     *
+     * @return HasManyThrough<Like, Story, $this>
+     */
+    public function likes(): HasManyThrough
+    {
+        return $this->hasManyThrough(Like::class, Story::class);
     }
 
     /**

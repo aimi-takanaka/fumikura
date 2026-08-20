@@ -54,7 +54,7 @@ new #[Layout('layouts.public')] #[Title('マイページ')] class extends Compon
      */
     private function filteredStories(): LengthAwarePaginator
     {
-        $query = auth()->user()->stories()->with('image')->latest();
+        $query = auth()->user()->stories()->with('image')->withCount('likes')->latest();
 
         if ($this->statusFilter !== 'all') {
             $query->where('status', $this->statusFilter);
@@ -206,6 +206,9 @@ new #[Layout('layouts.public')] #[Title('マイページ')] class extends Compon
                                     <p class="mt-1 text-sm text-base-content/70">お題「{{ $story->image->title }}」</p>
                                     <x-topic-thumbnail :image="$story->image" />
                                     <x-story-read-more :body="$story->body" :lines="2" class="mt-2" />
+                                    <div class="mt-2 text-sm text-base-content/70">
+                                        <x-story-likes-count :count="$story->likes_count" />
+                                    </div>
                                 </a>
 
                                 <div class="flex shrink-0 flex-col gap-1">

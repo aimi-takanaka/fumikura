@@ -30,6 +30,18 @@ it('counts completed and idea stories for each image', function () {
         ->assertSee('アイデア3件');
 });
 
+it('shows like counts for each topic card', function () {
+    $image = Image::factory()->create(['title' => '人気のお題カード']);
+    $story = Story::factory()->for($image)->complete()->create();
+    $story->likes()->create(['user_id' => User::factory()->create()->id]);
+
+    $this->get(route('topics.index'))
+        ->assertOk()
+        ->assertSee('人気のお題カード')
+        ->assertSee('♡', false)
+        ->assertSee('いいね 1件', false);
+});
+
 it('shows an empty state when there are no images', function () {
     $this->get(route('topics.index'))
         ->assertOk()

@@ -58,6 +58,7 @@
                         <div class="mt-1 text-base-content/70">
                             <span class="font-bold text-base-content">完成{{ $image->completed_stories_count }}件</span>
                             ・アイデア{{ $image->idea_stories_count }}件
+                            ・<x-story-likes-count :count="$image->likes_count" class="font-normal text-base-content/70" />
                         </div>
                     </div>
                 </a>

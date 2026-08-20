@@ -20,6 +20,19 @@ it('creates an image that belongs to an admin and has stories', function () {
         ->and($image->stories->first()->image->is($image))->toBeTrue();
 });
 
+it('counts likes across stories for an image', function () {
+    $image = Image::factory()->create();
+    $first = Story::factory()->for($image)->complete()->create();
+    $second = Story::factory()->for($image)->complete()->create();
+
+    Like::factory()->for($first)->create();
+    Like::factory()->for($first)->create();
+    Like::factory()->for($second)->create();
+
+    expect($image->likes)->toHaveCount(3)
+        ->and($image->likes()->count())->toBe(3);
+});
+
 it('links a story to its image, author, comments, likes and bookmarks', function () {
     $story = Story::factory()
         ->has(Comment::factory()->count(3))

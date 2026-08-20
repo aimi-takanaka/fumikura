@@ -31,6 +31,19 @@ it('counts completed and idea stories for each image on the welcome page', funct
         ->assertSee('アイデア3件');
 });
 
+it('shows like counts for each topic on the welcome page', function () {
+    $image = Image::factory()->create(['title' => 'いいね付きのお題']);
+    $story = Story::factory()->for($image)->complete()->create();
+    $story->likes()->create(['user_id' => User::factory()->create()->id]);
+    $story->likes()->create(['user_id' => User::factory()->create()->id]);
+
+    $this->get(route('home'))
+        ->assertOk()
+        ->assertSee('いいね付きのお題')
+        ->assertSee('♡', false)
+        ->assertSee('いいね 2件', false);
+});
+
 it('links to registration from the welcome page', function () {
     $this->get(route('home'))
         ->assertOk()

@@ -34,6 +34,7 @@ trait ListsTopics
                 'stories as completed_stories_count' => fn (Builder $query) => $query->complete(),
                 'stories as idea_stories_count' => fn (Builder $query) => $query->where('status', StoryStatus::Idea),
                 'stories as stories_count',
+                'likes',
             ]);
 
         return match ($this->sort) {

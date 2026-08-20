@@ -34,6 +34,20 @@ it('shows only the current user\'s bookmarked stories', function () {
         ->assertSee(route('mypage'), false);
 });
 
+it('shows like counts on bookmarked stories', function () {
+    $user = User::factory()->create();
+    $story = Story::factory()->complete()->create(['title' => 'いいね付きお気に入り']);
+    $story->likes()->create(['user_id' => User::factory()->create()->id]);
+    Bookmark::factory()->for($story)->for($user)->create();
+
+    $this->actingAs($user)
+        ->get(route('bookmarks'))
+        ->assertOk()
+        ->assertSee('いいね付きお気に入り')
+        ->assertSee('♡', false)
+        ->assertSee('いいね 1件', false);
+});
+
 it('shows the topic thumbnail below the topic title on bookmarked stories', function () {
     Storage::fake('public');
 

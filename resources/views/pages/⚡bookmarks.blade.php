@@ -28,7 +28,7 @@ new #[Layout('layouts.public')] #[Title('マイページ')] class extends Compon
     {
         return [
             'bookmarks' => auth()->user()->bookmarks()
-                ->with(['story.user', 'story.image'])
+                ->with(['story' => fn ($query) => $query->with(['user', 'image'])->withCount('likes')])
                 ->latest()
                 ->get(),
         ];
@@ -68,6 +68,9 @@ new #[Layout('layouts.public')] #[Title('マイページ')] class extends Compon
                             </div>
                             <x-topic-thumbnail :image="$bookmark->story->image" />
                             <x-story-read-more :body="$bookmark->story->body" :lines="2" class="mt-2" />
+                            <div class="mt-2 text-sm text-base-content/70">
+                                <x-story-likes-count :count="$bookmark->story->likes_count" />
+                            </div>
                         </a>
 
                         <flux:button
