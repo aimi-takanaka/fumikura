@@ -125,6 +125,6 @@ class Image extends Model
             return null;
         }
 
-        return Storage::disk('public')->url($this->file_path);
+        return rtrim((string) config('app.url'), '/').'/storage/'.$this->file_path;
     }
 }
