@@ -93,9 +93,9 @@ new #[Layout('layouts.public')] class extends Component
 
     <div class="card card-border bg-base-100 overflow-hidden">
         <figure class="relative aspect-video bg-base-200">
-            @if ($image->file_path && Illuminate\Support\Facades\Storage::disk('public')->exists($image->file_path))
+            @if ($image->url())
                 <img
-                    src="{{ Illuminate\Support\Facades\Storage::disk('public')->url($image->file_path) }}"
+                    src="{{ $image->url() }}"
                     alt="{{ $image->title }}"
                     class="size-full object-contain"
                 />
