@@ -37,16 +37,16 @@ jobs:
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.2.2
         with:
-          host: sv17172.xserver.jp
-          username: xs383211
+          host: ${{ secrets.XSERVER_HOST }}
+          username: ${{ secrets.XSERVER_USER }}
           key: ${{ secrets.XSERVER_SSH_KEY }}
-          port: '10022'
+          port: ${{ secrets.XSERVER_PORT }}
           timeout: 60s
           command_timeout: 10m
           use_insecure_cipher: true
           script: |
             set -e
-            cd ~/xs383211.xsrv.jp/fumikura
+            cd "${{ secrets.XSERVER_APP_PATH }}"
             git pull --ff-only origin main
             php8.4 artisan view:clear
             php8.4 artisan config:clear
@@ -56,14 +56,14 @@ jobs:
       - name: Upload built assets
         uses: appleboy/scp-action@v0.1.7
         with:
-          host: sv17172.xserver.jp
-          username: xs383211
+          host: ${{ secrets.XSERVER_HOST }}
+          username: ${{ secrets.XSERVER_USER }}
           key: ${{ secrets.XSERVER_SSH_KEY }}
-          port: '10022'
+          port: ${{ secrets.XSERVER_PORT }}
           timeout: 60s
           use_insecure_cipher: true
           source: 'public/build/*'
-          target: /home/xs383211/xs383211.xsrv.jp/fumikura/public/build
+          target: ${{ secrets.XSERVER_APP_PATH }}/public/build
           strip_components: 2
           overwrite: true
           rm: true
@@ -71,14 +71,14 @@ jobs:
       - name: Fix asset permissions
         uses: appleboy/ssh-action@v1.2.2
         with:
-          host: sv17172.xserver.jp
-          username: xs383211
+          host: ${{ secrets.XSERVER_HOST }}
+          username: ${{ secrets.XSERVER_USER }}
           key: ${{ secrets.XSERVER_SSH_KEY }}
-          port: '10022'
+          port: ${{ secrets.XSERVER_PORT }}
           timeout: 60s
           use_insecure_cipher: true
           script: |
             set -e
-            cd ~/xs383211.xsrv.jp/fumikura
+            cd "${{ secrets.XSERVER_APP_PATH }}"
             find public/build -type d -exec chmod 755 {} \;
             find public/build -type f -exec chmod 644 {} \;
