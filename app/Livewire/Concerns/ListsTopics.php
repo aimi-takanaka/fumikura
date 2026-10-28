@@ -38,7 +38,7 @@ trait ListsTopics
             ]);
 
         return match ($this->sort) {
-            'popular' => $query->orderByDesc('stories_count')->orderByDesc('id'),
+            'popular' => $query->orderByDesc('likes_count')->orderByDesc('id'),
             'most_completed' => $query->orderByDesc('completed_stories_count')->orderByDesc('id'),
             default => $query->latest(),
         };

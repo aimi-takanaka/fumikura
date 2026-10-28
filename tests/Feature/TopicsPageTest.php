@@ -106,3 +106,21 @@ it('sorts images by completed story count', function () {
 
     expect(strpos($html, '人気のお題'))->toBeLessThan(strpos($html, '静かなお題'));
 });
+
+it('sorts popular images by like count', function () {
+    $liked = Image::factory()->create(['title' => 'いいねが多いお題']);
+    $quiet = Image::factory()->create(['title' => 'いいねが少ないお題']);
+
+    $likedStory = Story::factory()->for($liked)->complete()->create();
+    $quietStory = Story::factory()->for($quiet)->complete()->create();
+
+    $likedStory->likes()->create(['user_id' => User::factory()->create()->id]);
+    $likedStory->likes()->create(['user_id' => User::factory()->create()->id]);
+    $quietStory->likes()->create(['user_id' => User::factory()->create()->id]);
+
+    $html = Livewire::test('pages::topics')
+        ->set('sort', 'popular')
+        ->html();
+
+    expect(strpos($html, 'いいねが多いお題'))->toBeLessThan(strpos($html, 'いいねが少ないお題'));
+});
